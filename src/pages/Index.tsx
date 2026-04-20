@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { X } from "lucide-react";
 import GSTCalculator from "@/components/GSTCalculator";
+import { ContextualTip } from "@/components/ContextualTip";
 import { getRandomTip } from "@/lib/gst-tips";
+import { useSessionStats } from "@/hooks/useSessionStats";
+import { buildContext, pickTip } from "@/lib/tips-engine";
 
 const SLAB_REF = [
   { pct: "0%", title: "Nil Rate", desc: "Essential food grains, milk, vegetables, fruits, eggs, salt, books, newspapers, sindoor, bangles" },
@@ -12,6 +16,7 @@ const SLAB_REF = [
 
 const Index = () => {
   const [tip, setTip] = useState<string>("");
+  const { stats, dismiss } = useSessionStats();
 
   useEffect(() => {
     setTip(getRandomTip());
@@ -29,8 +34,33 @@ const Index = () => {
     if (!meta.parentNode) document.head.appendChild(meta);
   }, []);
 
+  // Page-level tips depend only on date + visit count.
+  const pageCtx = useMemo(
+    () => buildContext({ slab: 0, amount: 0, type: "intra", stats }),
+    [stats],
+  );
+  const topTip = pickTip("topBanner", pageCtx);
+  const sidebarTip = pickTip("sidebar", pageCtx);
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Date-aware compliance banner — at most one tip. */}
+      {topTip && (
+        <div className="bg-warning-light text-warning-text border-b border-warning-border/40 px-6 sm:px-8 py-2 flex items-center gap-2.5 text-xs animate-slide-down">
+          <span aria-hidden>{topTip.icon}</span>
+          <span className="flex-1" dangerouslySetInnerHTML={{ __html: topTip.body }} />
+          {topTip.dismissDays && (
+            <button
+              onClick={() => dismiss(topTip.id, topTip.dismissDays)}
+              className="opacity-70 hover:opacity-100"
+              aria-label="Dismiss"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Nav */}
       <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between">
         <div className="text-primary-foreground font-bold tracking-tight">
@@ -77,10 +107,15 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl p-4 text-sm text-muted-foreground leading-relaxed">
-            <strong className="text-foreground block mb-1">💡 Quick Tip</strong>
-            {tip}
-          </div>
+          {/* Sidebar contextual tip swaps in for power/seasonal users only. */}
+          {sidebarTip ? (
+            <ContextualTip tip={sidebarTip} onDismiss={(t) => dismiss(t.id, t.dismissDays)} />
+          ) : (
+            <div className="bg-card border border-border rounded-xl p-4 text-sm text-muted-foreground leading-relaxed">
+              <strong className="text-foreground block mb-1">💡 Quick Tip</strong>
+              {tip}
+            </div>
+          )}
         </aside>
       </main>
 
