@@ -1,5 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useSessionStats } from "@/hooks/useSessionStats";
+import { buildContext, pickTip } from "@/lib/tips-engine";
+import { ContextualTip } from "./ContextualTip";
+import { ShareResult } from "./ShareResult";
 
 const SLABS = [0, 5, 12, 18, 28] as const;
 type Slab = (typeof SLABS)[number];
@@ -7,6 +11,7 @@ type Mode = "excl" | "incl";
 type TxType = "intra" | "inter";
 
 const STORAGE_KEY = "gst-calc-state-v1";
+const TOOLTIP_18_KEY = "gst-tip-18-seen";
 
 interface State {
   amount: string;
@@ -43,6 +48,14 @@ const fmt = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
 export default function GSTCalculator() {
   const [state, setState] = useState<State>(DEFAULT_STATE);
   const [hydrated, setHydrated] = useState(false);
+  const { stats, recordCalculation, dismiss } = useSessionStats();
+
+  // Spec: show 18% tooltip only the first time the user picks 18% — ever.
+  const [show18Tooltip, setShow18Tooltip] = useState(false);
+  const lastSlabRef = useRef<Slab | null>(null);
+  // Defer below-result tip a touch so it feels like a follow-up, not noise.
+  const [tipsReady, setTipsReady] = useState(false);
+  const tipDelayRef = useRef<number | null>(null);
 
   useEffect(() => {
     setState(loadState());
@@ -53,6 +66,21 @@ export default function GSTCalculator() {
     if (!hydrated) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, hydrated]);
+
+  // Recompute & count "calculations". Each meaningful change counts as one,
+  // throttled to one per state-settle.
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!parseFloat(state.amount)) return;
+    recordCalculation();
+    setTipsReady(false);
+    if (tipDelayRef.current) window.clearTimeout(tipDelayRef.current);
+    tipDelayRef.current = window.setTimeout(() => setTipsReady(true), 600);
+    return () => {
+      if (tipDelayRef.current) window.clearTimeout(tipDelayRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.amount, state.slab, state.mode, state.type, hydrated]);
 
   const { base, gstAmt, total } = useMemo(() => {
     const raw = parseFloat(state.amount) || 0;
@@ -69,6 +97,30 @@ export default function GSTCalculator() {
   }, [state]);
 
   const half = state.slab / 2;
+
+  const ctx = useMemo(
+    () => buildContext({ slab: state.slab, amount: base, type: state.type, stats }),
+    [state.slab, state.type, base, stats],
+  );
+  const belowResultTip = tipsReady ? pickTip("belowResult", ctx) : null;
+  const inlineToggleTip = pickTip("inlineToggle", ctx);
+  const breakdownRowTip = pickTip("breakdownRow", ctx);
+
+  const handleSlab = (s: Slab) => {
+    setState((st) => ({ ...st, slab: s }));
+    if (s === 18 && lastSlabRef.current !== 18) {
+      try {
+        if (!localStorage.getItem(TOOLTIP_18_KEY)) {
+          setShow18Tooltip(true);
+          localStorage.setItem(TOOLTIP_18_KEY, "1");
+          window.setTimeout(() => setShow18Tooltip(false), 6000);
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    lastSlabRef.current = s;
+  };
 
   return (
     <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
@@ -101,18 +153,29 @@ export default function GSTCalculator() {
           </label>
           <div className="grid grid-cols-5 gap-2">
             {SLABS.map((s) => (
-              <button
-                key={s}
-                onClick={() => setState((st) => ({ ...st, slab: s }))}
-                className={cn(
-                  "py-2.5 rounded-lg border-[1.5px] text-sm font-semibold transition-all",
-                  state.slab === s
-                    ? "bg-primary border-primary text-primary-foreground shadow-md shadow-primary/30"
-                    : "bg-card border-border text-muted-foreground hover:border-primary hover:text-primary"
+              <div key={s} className="relative">
+                <button
+                  onClick={() => handleSlab(s)}
+                  className={cn(
+                    "w-full py-2.5 rounded-lg border-[1.5px] text-sm font-semibold transition-all",
+                    state.slab === s
+                      ? "bg-primary border-primary text-primary-foreground shadow-md shadow-primary/30"
+                      : "bg-card border-border text-muted-foreground hover:border-primary hover:text-primary",
+                  )}
+                >
+                  {s}%
+                </button>
+                {s === 18 && show18Tooltip && (
+                  <div
+                    role="tooltip"
+                    onClick={() => setShow18Tooltip(false)}
+                    className="absolute z-20 left-1/2 -translate-x-1/2 bottom-full mb-2 w-[240px] sm:w-[280px] px-3 py-2 rounded-lg bg-primary-dark text-primary-foreground text-[11px] leading-relaxed shadow-lg animate-fade-in cursor-pointer"
+                  >
+                    💡 18% covers most IT services, telecom, financial services, AC restaurants & most electronics. The default for services.
+                    <span className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-primary-dark" />
+                  </div>
                 )}
-              >
-                {s}%
-              </button>
+              </div>
             ))}
           </div>
         </div>
@@ -139,6 +202,9 @@ export default function GSTCalculator() {
           ]}
         />
 
+        {/* Inline tip below the toggle (single tip max). */}
+        {inlineToggleTip && <ContextualTip tip={inlineToggleTip} compact />}
+
         {/* Result inline summary */}
         <div className="rounded-xl bg-primary-light p-5 text-center">
           <div className="text-[0.7rem] font-semibold text-primary-dark uppercase tracking-wider">
@@ -160,11 +226,30 @@ export default function GSTCalculator() {
           ) : (
             <BreakdownRow className="bg-br-igst" label="IGST" pct={`${state.slab}%`} value={fmt(gstAmt)} />
           )}
+          {breakdownRowTip && (
+            <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-warning-light text-warning-text text-xs animate-fade-in">
+              <span aria-hidden>{breakdownRowTip.icon}</span>
+              <span
+                className="flex-1"
+                dangerouslySetInnerHTML={{ __html: breakdownRowTip.body }}
+              />
+            </div>
+          )}
           <div className="flex justify-between items-center px-3.5 py-2.5 rounded-lg bg-primary-dark text-primary-foreground font-bold text-sm">
             <span>Total Payable</span>
             <span className="tabular-nums">{fmt(total)}</span>
           </div>
         </div>
+
+        {/* Below-result contextual tip — at most one. */}
+        {belowResultTip && (
+          <ContextualTip tip={belowResultTip} onDismiss={(t) => dismiss(t.id, t.dismissDays)} />
+        )}
+
+        {/* WhatsApp share / mailto card. */}
+        {base > 0 && (
+          <ShareResult base={base} gstAmt={gstAmt} total={total} slab={state.slab} type={state.type} />
+        )}
       </div>
     </div>
   );
@@ -217,7 +302,7 @@ function SegmentedToggle<T extends string>({
               "flex-1 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all",
               value === o.value
                 ? "bg-card text-primary shadow-sm"
-                : "bg-transparent text-muted-foreground hover:text-foreground"
+                : "bg-transparent text-muted-foreground hover:text-foreground",
             )}
           >
             {o.label}
