@@ -8,12 +8,27 @@ import {
   type SessionStats,
 } from "@/lib/session-stats";
 
+// Module-level guard: ensure bumpVisit() runs exactly once per page load,
+// even though this hook is mounted by multiple components.
+let bumpedThisLoad = false;
+
 export function useSessionStats() {
   const [stats, setStats] = useState<SessionStats>(() => loadStats());
 
-  // Bump exactly once per page load.
   useEffect(() => {
+    if (bumpedThisLoad) {
+      setStats(loadStats());
+      return;
+    }
+    bumpedThisLoad = true;
     setStats(bumpVisit());
+
+    // Cross-tab/component sync: when stats change elsewhere, refresh.
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "gst-session-stats-v1") setStats(loadStats());
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   const recordCalculation = useCallback(() => {
