@@ -105,5 +105,6 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Sora', sans-serif;
   }
 }
