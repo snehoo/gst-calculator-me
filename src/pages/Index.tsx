@@ -178,6 +178,16 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-border mt-4">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-muted-foreground">
+          <div>© {new Date().getFullYear()} GST Calculator · gstcalculator.me</div>
+          <div className="flex gap-5">
+            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
