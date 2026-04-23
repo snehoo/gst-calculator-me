@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
+import { Link } from "react-router-dom";
 import GSTCalculator from "@/components/GSTCalculator";
 import { ContextualTip } from "@/components/ContextualTip";
 import { getRandomTip } from "@/lib/gst-tips";
@@ -63,11 +64,17 @@ const Index = () => {
 
       {/* Nav */}
       <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between">
-        <div className="text-primary-foreground font-bold tracking-tight">
-          India<span className="text-primary-mid">Tools</span> · GST
-        </div>
-        <div className="text-primary-mid text-xs hidden sm:block">
-          Updated for 2025 · All slabs covered
+        <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
+          GST<span className="text-primary-mid"> Calculator</span>
+        </Link>
+        <div className="flex items-center gap-5 text-xs">
+          <Link to="/blog" className="text-primary-mid hover:text-primary-foreground transition-colors">
+            Blog
+          </Link>
+          <Link to="/privacy" className="text-primary-mid hover:text-primary-foreground transition-colors">
+            Privacy
+          </Link>
+          <span className="text-primary-mid hidden sm:inline">Updated for 2025</span>
         </div>
       </nav>
 
