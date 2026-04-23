@@ -11,24 +11,29 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gstcalculator.me/blog/gst-slabs-explained</loc>
+    <loc>https://gstcalculator.me/blog/how-to-calculate-gst</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/what-is-gst-india</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-rate-slabs-india</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gstcalculator.me/blog/cgst-sgst-igst-difference</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://gstcalculator.me/blog/gstr-3b-filing-guide</loc>
+    <loc>https://gstcalculator.me/blog/gst-for-freelancers-india</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://gstcalculator.me/blog/gst-registration-threshold</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gstcalculator.me/privacy</loc>
