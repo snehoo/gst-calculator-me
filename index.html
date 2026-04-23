@@ -2,45 +2,144 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ── 1. CORE IDENTITY ──────────────────────────────────────── -->
+    <title>GST Calculator India — Free CGST, SGST & IGST Calculator</title>
+
+    <meta name="description"
+      content="Free GST calculator for India. Instantly calculate CGST, SGST and IGST for all slabs — 5%, 12%, 18%, 28%. Add or remove GST. Updated for 2025.">
+
+    <meta name="keywords"
+      content="GST calculator, GST calculator India, CGST SGST calculator, IGST calculator, GST calculation formula, reverse GST calculator, 18% GST calculator, GST inclusive exclusive, how to calculate GST, free GST calculator online">
+
     <link rel="canonical" href="https://gstcalculator.me/" />
-    <meta name="theme-color" content="#0d4f4a" />
 
-    <title>GST Calculator India — Free CGST, SGST &amp; IGST Calculator</title>
-    <meta name="description" content="Free GST calculator for India. Instantly calculate CGST, SGST and IGST for all slabs — 5%, 12%, 18%, 28%. Add or remove GST. Updated for 2025.">
-    <meta name="keywords" content="GST calculator, GST calculator India, GST 2025, CGST SGST IGST calculator, GST slab calculator, inclusive GST, exclusive GST, GSTR-3B, GST registration threshold" />
-    <meta name="author" content="GST Calculator" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <!-- ── 2. FAVICON & ICONS ─────────────────────────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#0d5c4a">
+    <meta name="msapplication-TileColor" content="#0d5c4a">
+    <meta name="msapplication-TileImage" content="/apple-touch-icon.png">
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://gstcalculator.me/" />
-    
-    
-    <meta property="og:site_name" content="GST Calculator" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/qib9qRBBiQa8IFeMPn9K6u8NTfr1/social-images/social-1776925011568-gst-og-image.webp">
+    <!-- ── 3. OPEN GRAPH (WhatsApp, Facebook, LinkedIn) ──────────── -->
+    <meta property="og:type"        content="website">
+    <meta property="og:site_name"   content="GST Calculator">
+    <meta property="og:url"         content="https://gstcalculator.me/">
+    <meta property="og:title"       content="GST Calculator India — Free CGST, SGST & IGST Calculator">
+    <meta property="og:description"
+      content="Instantly calculate GST for any amount — all slabs, with CGST, SGST and IGST breakdown. Free, no signup, updated for 2025.">
+    <meta property="og:image"       content="https://gstcalculator.me/og-image.png">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt"
+      content="GST Calculator India showing CGST, SGST and IGST breakdown with share to WhatsApp feature">
+    <meta property="og:locale"      content="en_IN">
 
-    <meta name="twitter:card" content="summary_large_image" />
-    
-    
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/qib9qRBBiQa8IFeMPn9K6u8NTfr1/social-images/social-1776925011568-gst-og-image.webp">
+    <!-- ── 4. TWITTER / X CARD ───────────────────────────────────── -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="GST Calculator India — Free CGST, SGST & IGST">
+    <meta name="twitter:description"
+      content="Calculate GST instantly for all slabs with CGST, SGST & IGST breakdown. Free, no signup.">
+    <meta name="twitter:image"       content="https://gstcalculator.me/og-image.png">
+    <meta name="twitter:image:alt"
+      content="GST Calculator India — free online calculator for all GST slabs">
 
+    <!-- ── 5. GOOGLE / SEARCH ─────────────────────────────────────── -->
+    <meta name="robots"  content="index, follow, max-snippet:-1, max-image-preview:large">
+    <meta name="author"  content="gstcalculator.me">
+    <meta name="rating"  content="general">
+    <meta name="geo.region"        content="IN">
+    <meta name="geo.placename"     content="India">
+    <meta name="language"          content="English">
+
+    <!-- ── 6. MOBILE & PWA ───────────────────────────────────────── -->
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="mobile-web-app-capable"       content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title"   content="GST Calculator">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="application-name"             content="GST Calculator">
+
+    <!-- ── 7. STRUCTURED DATA — WebApplication ───────────────────── -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "GST Calculator",
+      "name": "GST Calculator India",
       "url": "https://gstcalculator.me/",
-      "description": "Free GST Calculator for India with CGST, SGST & IGST breakdown across all slabs.",
+      "description": "Free online GST calculator for India. Calculate CGST, SGST and IGST instantly for all tax slabs — 0%, 5%, 12%, 18%, 28%. Supports both GST-exclusive and GST-inclusive (reverse) calculations.",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Any",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+      "inLanguage": "en-IN",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "screenshot": "https://gstcalculator.me/og-image.png",
+      "featureList": [
+        "GST calculation for all slabs — 0%, 5%, 12%, 18%, 28%",
+        "CGST and SGST breakdown for intra-state transactions",
+        "IGST calculation for inter-state transactions",
+        "Reverse GST calculation — remove GST from inclusive price",
+        "Share calculation on WhatsApp",
+        "Email calculation to CA",
+        "E-way bill reminders for high-value transactions",
+        "GST slab reference guide",
+        "GST registration threshold information",
+        "Remembers last used slab for faster repeat use"
+      ]
     }
     </script>
-    <meta property="og:title" content="GST Calculator India — Free CGST, SGST &amp; IGST Calculator">
-  <meta name="twitter:title" content="GST Calculator India — Free CGST, SGST &amp; IGST Calculator">
-  <meta property="og:description" content="Free GST calculator for India. Instantly calculate CGST, SGST and IGST for all slabs — 5%, 12%, 18%, 28%. Add or remove GST. Updated for 2025.">
-  <meta name="twitter:description" content="Free GST calculator for India. Instantly calculate CGST, SGST and IGST for all slabs — 5%, 12%, 18%, 28%. Add or remove GST. Updated for 2025.">
-</head>
+
+    <!-- ── 8. STRUCTURED DATA — FAQPage ──────────────────────────── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I calculate 18% GST on an amount?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Multiply the base amount by 0.18 to get the GST amount, then add to the base for the total. For example, 18% GST on Rs.1,00,000 = Rs.18,000 GST, total payable Rs.1,18,000. Use gstcalculator.me for instant calculation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between CGST, SGST, and IGST?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "CGST and SGST apply to intra-state transactions — each is half the total GST rate. IGST applies to inter-state transactions at the full rate. For example, 18% GST within a state = 9% CGST + 9% SGST. Between states = 18% IGST."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I remove GST from an inclusive price?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use the formula: GST Amount = Total Price minus [Total Price x 100 divided by (100 + GST Rate)]. For example, to remove 18% GST from Rs.1,18,000: GST = Rs.18,000. Select Remove GST (Inclusive) on gstcalculator.me."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the GST rate slabs in India?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "India has five main GST slabs: 0% (essential goods), 5% (basic necessities), 12% (processed goods), 18% (most goods and services), and 28% (luxury and sin goods). Gold and silver attract 3%."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- ── 9. PERFORMANCE HINTS ───────────────────────────────────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  </head>
 
   <body>
     <div id="root"></div>
