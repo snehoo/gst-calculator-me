@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Home } from "lucide-react";
 import { getPost, POSTS, type Block } from "@/lib/blog-posts";
+import { setPageSeo } from "@/lib/seo";
+import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 
 const renderBlock = (b: Block, i: number) => {
   switch (b.type) {
@@ -162,12 +165,12 @@ const BlogPost = () => {
 
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} | GST Calculator`;
-      const meta =
-        document.querySelector('meta[name="description"]') ||
-        Object.assign(document.createElement("meta"), { name: "description" });
-      meta.setAttribute("content", post.description);
-      if (!meta.parentNode) document.head.appendChild(meta);
+      setPageSeo({
+        title: `${post.title} | GST Calculator`,
+        description: post.description,
+        path: `/blog/${post.slug}`,
+        type: "article",
+      });
     }
   }, [post]);
 
@@ -188,17 +191,7 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between">
-        <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
-          GST<span className="text-primary-mid"> Calculator</span>
-        </Link>
-        <div className="flex items-center gap-5 text-xs">
-          <Link to="/blog" className="text-primary-foreground">Blog</Link>
-          <Link to="/privacy" className="text-primary-mid hover:text-primary-foreground transition-colors">
-            Privacy
-          </Link>
-        </div>
-      </nav>
+      <SiteHeader active="blog" />
 
       <main className="max-w-3xl mx-auto px-6 sm:px-8 py-8">
         <div className="flex items-center gap-4 text-xs mb-4">
@@ -267,16 +260,7 @@ const BlogPost = () => {
         </article>
       </main>
 
-      <footer className="border-t border-border mt-4">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} GST Calculator · gstcalculator.me</div>
-          <div className="flex gap-5">
-            <Link to="/" className="hover:text-foreground transition-colors">Calculator</Link>
-            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
-            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

@@ -2,31 +2,25 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import { POSTS } from "@/lib/blog-posts";
+import { setPageSeo } from "@/lib/seo";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 const Blog = () => {
   useEffect(() => {
-    document.title = "GST Blog — Guides, Rates & Compliance Tips | GST Calculator";
-    const meta =
-      document.querySelector('meta[name="description"]') ||
-      Object.assign(document.createElement("meta"), { name: "description" });
-    meta.setAttribute(
-      "content",
-      "Practical GST guides for Indian businesses: how to calculate GST, slabs explained, CGST vs SGST vs IGST, and GST for freelancers.",
-    );
-    if (!meta.parentNode) document.head.appendChild(meta);
+    setPageSeo({
+      title: "GST Blog — Guides, Rates & Compliance Tips | GST Calculator",
+      description:
+        "Practical GST guides for Indian businesses: how to calculate GST, slabs explained, CGST vs SGST vs IGST, and GST for freelancers.",
+      path: "/blog",
+      keywords:
+        "GST blog India, GST guides, GST rate slabs, CGST SGST IGST explained, GST for freelancers",
+    });
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between">
-        <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
-          GST<span className="text-primary-mid"> Calculator</span>
-        </Link>
-        <div className="flex items-center gap-5 text-xs">
-          <Link to="/blog" className="text-primary-foreground transition-colors">Blog</Link>
-          <Link to="/privacy" className="text-primary-mid hover:text-primary-foreground transition-colors">Privacy</Link>
-        </div>
-      </nav>
+      <SiteHeader active="blog" />
 
       <header className="bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground">
         <Link to="/" className="inline-flex items-center gap-1.5 text-primary-mid text-xs hover:text-primary-foreground mb-3">
@@ -66,15 +60,7 @@ const Blog = () => {
         ))}
       </main>
 
-      <footer className="border-t border-border mt-4">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} GST Calculator · gstcalculator.me</div>
-          <div className="flex gap-5">
-            <Link to="/" className="hover:text-foreground transition-colors">Calculator</Link>
-            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };
