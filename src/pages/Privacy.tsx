@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { setPageSeo } from "@/lib/seo";
 import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 
 const Privacy = () => {
   useEffect(() => {
@@ -19,15 +20,7 @@ const Privacy = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between">
-        <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
-          GST<span className="text-primary-mid"> Calculator</span>
-        </Link>
-        <div className="flex items-center gap-5 text-xs">
-          <Link to="/blog" className="text-primary-mid hover:text-primary-foreground transition-colors">Blog</Link>
-          <Link to="/privacy" className="text-primary-foreground">Privacy</Link>
-        </div>
-      </nav>
+      <SiteHeader active="privacy" />
 
       <header className="bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground">
         <Link to="/" className="inline-flex items-center gap-1.5 text-primary-mid text-xs hover:text-primary-foreground mb-3">

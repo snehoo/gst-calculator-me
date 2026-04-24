@@ -4,6 +4,7 @@ import { ArrowLeft, Home } from "lucide-react";
 import { getPost, POSTS, type Block } from "@/lib/blog-posts";
 import { setPageSeo } from "@/lib/seo";
 import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 
 const renderBlock = (b: Block, i: number) => {
   switch (b.type) {
@@ -190,17 +191,7 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between">
-        <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
-          GST<span className="text-primary-mid"> Calculator</span>
-        </Link>
-        <div className="flex items-center gap-5 text-xs">
-          <Link to="/blog" className="text-primary-foreground">Blog</Link>
-          <Link to="/privacy" className="text-primary-mid hover:text-primary-foreground transition-colors">
-            Privacy
-          </Link>
-        </div>
-      </nav>
+      <SiteHeader active="blog" />
 
       <main className="max-w-3xl mx-auto px-6 sm:px-8 py-8">
         <div className="flex items-center gap-4 text-xs mb-4">

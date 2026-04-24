@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
-import { Link } from "react-router-dom";
 import GSTCalculator from "@/components/GSTCalculator";
 import { ContextualTip } from "@/components/ContextualTip";
 import { getRandomTip } from "@/lib/gst-tips";
 import { useSessionStats } from "@/hooks/useSessionStats";
 import { buildContext, pickTip } from "@/lib/tips-engine";
+import { setPageSeo } from "@/lib/seo";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 const SLAB_REF = [
   { pct: "0%", title: "Nil Rate", desc: "Essential food grains, milk, vegetables, fruits, eggs, salt, books, newspapers, sindoor, bangles" },
@@ -24,15 +26,14 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    document.title = "GST Calculator India 2025 — All Slabs, CGST/SGST/IGST";
-    const meta =
-      document.querySelector('meta[name="description"]') ||
-      Object.assign(document.createElement("meta"), { name: "description" });
-    meta.setAttribute(
-      "content",
-      "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown."
-    );
-    if (!meta.parentNode) document.head.appendChild(meta);
+    setPageSeo({
+      title: "GST Calculator India 2025 — All Slabs, CGST/SGST/IGST",
+      description:
+        "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown.",
+      path: "/",
+      keywords:
+        "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator",
+    });
   }, []);
 
   // Page-level tips depend only on date + visit count.
@@ -63,20 +64,7 @@ const Index = () => {
       )}
 
       {/* Nav */}
-      <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between">
-        <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
-          GST<span className="text-primary-mid"> Calculator</span>
-        </Link>
-        <div className="flex items-center gap-5 text-xs">
-          <Link to="/blog" className="text-primary-mid hover:text-primary-foreground transition-colors">
-            Blog
-          </Link>
-          <Link to="/privacy" className="text-primary-mid hover:text-primary-foreground transition-colors">
-            Privacy
-          </Link>
-          <span className="text-primary-mid hidden sm:inline">Updated for 2025</span>
-        </div>
-      </nav>
+      <SiteHeader showUpdatedLabel />
 
       {/* Hero */}
       <header className="bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground">
@@ -179,15 +167,7 @@ const Index = () => {
         </div>
       </section>
 
-      <footer className="border-t border-border mt-4">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} GST Calculator · gstcalculator.me</div>
-          <div className="flex gap-5">
-            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
-            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };
