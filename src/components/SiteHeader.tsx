@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 import { POSTS } from "@/lib/blog-posts";
 
@@ -8,9 +8,10 @@ type ActiveSection = "home" | "blog" | "privacy";
 interface SiteHeaderProps {
   active?: ActiveSection;
   showUpdatedLabel?: boolean;
+  hideWordmark?: boolean;
 }
 
-const SiteHeader = ({ active = "home", showUpdatedLabel = false }: SiteHeaderProps) => {
+const SiteHeader = ({ active = "home", showUpdatedLabel = false, hideWordmark = false }: SiteHeaderProps) => {
   const [isBlogOpen, setIsBlogOpen] = useState(false);
 
   const navLinkClass = (section: Exclude<ActiveSection, "home">) =>
@@ -20,9 +21,15 @@ const SiteHeader = ({ active = "home", showUpdatedLabel = false }: SiteHeaderPro
 
   return (
     <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between relative z-20">
-      <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
-        GST<span className="text-primary-mid"> Calculator</span>
-      </Link>
+      {hideWordmark ? (
+        <Link to="/" aria-label="Home" className="text-primary-foreground hover:opacity-90 inline-flex items-center">
+          <Home className="h-4 w-4" />
+        </Link>
+      ) : (
+        <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
+          GST<span className="text-primary-mid"> Calculator</span>
+        </Link>
+      )}
 
       <div className="flex items-center gap-5 text-xs relative">
         <div className="relative">
