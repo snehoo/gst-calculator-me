@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { setPageSeo } from "@/lib/seo";
+import SiteFooter from "@/components/SiteFooter";
 
 const Privacy = () => {
   useEffect(() => {
-    document.title = "Privacy Policy | GST Calculator";
-    const meta =
-      document.querySelector('meta[name="description"]') ||
-      Object.assign(document.createElement("meta"), { name: "description" });
-    meta.setAttribute(
-      "content",
-      "How GST Calculator handles your data: localStorage usage, no server-side logging of financial inputs, AdSense & Analytics cookies, and how to clear stored preferences.",
-    );
-    if (!meta.parentNode) document.head.appendChild(meta);
+    setPageSeo({
+      title: "Privacy Policy | GST Calculator",
+      description:
+        "How GST Calculator handles your data: localStorage usage, no server-side logging of financial inputs, AdSense & Analytics cookies, and how to clear stored preferences.",
+      path: "/privacy",
+      keywords: "GST Calculator privacy policy, gstcalculator.me privacy, localStorage GST calculator, AdSense cookies, Google Analytics",
+    });
   }, []);
 
   const lastUpdated = "April 2025";
@@ -156,15 +156,7 @@ const Privacy = () => {
         </article>
       </main>
 
-      <footer className="border-t border-border mt-4">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} GST Calculator · gstcalculator.me</div>
-          <div className="flex gap-5">
-            <Link to="/" className="hover:text-foreground transition-colors">Calculator</Link>
-            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Home } from "lucide-react";
 import { getPost, POSTS, type Block } from "@/lib/blog-posts";
+import { setPageSeo } from "@/lib/seo";
+import SiteFooter from "@/components/SiteFooter";
 
 const renderBlock = (b: Block, i: number) => {
   switch (b.type) {
@@ -162,12 +164,12 @@ const BlogPost = () => {
 
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} | GST Calculator`;
-      const meta =
-        document.querySelector('meta[name="description"]') ||
-        Object.assign(document.createElement("meta"), { name: "description" });
-      meta.setAttribute("content", post.description);
-      if (!meta.parentNode) document.head.appendChild(meta);
+      setPageSeo({
+        title: `${post.title} | GST Calculator`,
+        description: post.description,
+        path: `/blog/${post.slug}`,
+        type: "article",
+      });
     }
   }, [post]);
 
@@ -267,16 +269,7 @@ const BlogPost = () => {
         </article>
       </main>
 
-      <footer className="border-t border-border mt-4">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} GST Calculator · gstcalculator.me</div>
-          <div className="flex gap-5">
-            <Link to="/" className="hover:text-foreground transition-colors">Calculator</Link>
-            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
-            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };
