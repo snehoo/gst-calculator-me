@@ -68,6 +68,7 @@ const Index = () => {
 
       {/* Hero */}
       <header className="bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">GST Calculator</h1>
         <p className="text-primary-mid text-sm mt-1">
           Instant GST computation for all slabs — with CGST, SGST & IGST breakdown
         </p>
