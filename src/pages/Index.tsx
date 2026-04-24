@@ -64,7 +64,7 @@ const Index = () => {
       )}
 
       {/* Nav */}
-      <SiteHeader showUpdatedLabel />
+      <SiteHeader showUpdatedLabel hideWordmark />
 
       {/* Hero */}
       <header className="bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground">
