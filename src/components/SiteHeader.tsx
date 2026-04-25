@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Home } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { POSTS } from "@/lib/blog-posts";
 
@@ -20,12 +20,8 @@ const SiteHeader = ({ active = "home", showUpdatedLabel = false, hideWordmark = 
       : "text-primary-mid hover:text-primary-foreground transition-colors";
 
   return (
-    <nav className="bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center justify-between relative z-20">
-      {hideWordmark ? (
-        <Link to="/" aria-label="Home" className="text-primary-foreground hover:opacity-90 inline-flex items-center">
-          <Home className="h-4 w-4" />
-        </Link>
-      ) : (
+    <nav className={`bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center relative z-20 ${hideWordmark ? "justify-end" : "justify-between"}`}>
+      {!hideWordmark && (
         <Link to="/" className="text-primary-foreground font-bold tracking-tight hover:opacity-90">
           GST<span className="text-primary-mid"> Calculator</span>
         </Link>
