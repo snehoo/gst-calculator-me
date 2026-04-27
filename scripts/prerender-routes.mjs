@@ -72,7 +72,7 @@ if (typeof globalThis.document === "undefined") {
     querySelectorAll: () => [],
     addEventListener: () => {},
     removeEventListener: () => {},
-    documentElement: { lang: "en" },
+    documentElement: { lang: "en", style: {} },
   };
 }
 if (typeof globalThis.navigator === "undefined") globalThis.navigator = { userAgent: "node" };
