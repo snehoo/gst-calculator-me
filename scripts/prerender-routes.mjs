@@ -128,12 +128,23 @@ globalThis.window.matchMedia = globalThis.window.matchMedia || (() => ({
   removeEventListener: () => {},
   dispatchEvent: () => false,
 }));
-globalThis.window.getComputedStyle = globalThis.window.getComputedStyle || (() => ({
-  getPropertyValue: () => "",
-}));
-globalThis.window.requestAnimationFrame = globalThis.window.requestAnimationFrame || ((cb) => setTimeout(cb, 0));
-globalThis.window.cancelAnimationFrame = globalThis.window.cancelAnimationFrame || ((id) => clearTimeout(id));
-globalThis.window.scrollTo = globalThis.window.scrollTo || (() => {});
+const noop2 = () => {};
+const winStubs = {
+  getComputedStyle: () => ({ getPropertyValue: () => "" }),
+  requestAnimationFrame: (cb) => setTimeout(cb, 0),
+  cancelAnimationFrame: (id) => clearTimeout(id),
+  scrollTo: noop2,
+  scrollBy: noop2,
+  IntersectionObserver: class { observe(){} unobserve(){} disconnect(){} takeRecords(){return [];} },
+  ResizeObserver: class { observe(){} unobserve(){} disconnect(){} },
+  MutationObserver: class { observe(){} disconnect(){} takeRecords(){return [];} },
+};
+for (const [k, v] of Object.entries(winStubs)) {
+  if (typeof globalThis[k] === "undefined") globalThis[k] = v;
+  if (globalThis.window && typeof globalThis.window[k] === "undefined") {
+    try { globalThis.window[k] = v; } catch {}
+  }
+}
 
 // ---------- 4. Import the bundled SSR render() ----------
 const { render } = await import(pathToFileURL(ssrOutFile).href);
