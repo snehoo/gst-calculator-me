@@ -128,6 +128,12 @@ globalThis.window.matchMedia = globalThis.window.matchMedia || (() => ({
   removeEventListener: () => {},
   dispatchEvent: () => false,
 }));
+globalThis.window.getComputedStyle = globalThis.window.getComputedStyle || (() => ({
+  getPropertyValue: () => "",
+}));
+globalThis.window.requestAnimationFrame = globalThis.window.requestAnimationFrame || ((cb) => setTimeout(cb, 0));
+globalThis.window.cancelAnimationFrame = globalThis.window.cancelAnimationFrame || ((id) => clearTimeout(id));
+globalThis.window.scrollTo = globalThis.window.scrollTo || (() => {});
 
 // ---------- 4. Import the bundled SSR render() ----------
 const { render } = await import(pathToFileURL(ssrOutFile).href);
