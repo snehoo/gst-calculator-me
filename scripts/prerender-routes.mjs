@@ -64,35 +64,58 @@ if (typeof globalThis.localStorage === "undefined") globalThis.localStorage = me
 if (typeof globalThis.sessionStorage === "undefined") globalThis.sessionStorage = memoryStorage();
 console.log("[prerender] document defined?", typeof globalThis.document, !!globalThis.document?.createTextNode);
 {
-  const makeEl = () => ({
-    style: {},
-    setAttribute: () => {},
-    appendChild: () => {},
-    addEventListener: () => {},
-    removeEventListener: () => {},
-  });
+  // Build a deep no-op DOM stub so radix/sonner/react-dom probes don't crash.
+  const noop = () => {};
+  const makeEl = () => {
+    const el = {
+      nodeType: 1,
+      style: {},
+      classList: { add: noop, remove: noop, contains: () => false, toggle: noop },
+      attributes: [],
+      childNodes: [],
+      children: [],
+      firstChild: null,
+      lastChild: null,
+      parentNode: null,
+      ownerDocument: null,
+      dataset: {},
+      setAttribute: noop,
+      getAttribute: () => null,
+      removeAttribute: noop,
+      hasAttribute: () => false,
+      appendChild: (c) => c,
+      removeChild: (c) => c,
+      insertBefore: (c) => c,
+      addEventListener: noop,
+      removeEventListener: noop,
+      dispatchEvent: () => true,
+      contains: () => false,
+      cloneNode: () => makeEl(),
+      getBoundingClientRect: () => ({ x: 0, y: 0, width: 0, height: 0, top: 0, left: 0, right: 0, bottom: 0 }),
+      focus: noop,
+      blur: noop,
+      click: noop,
+    };
+    return el;
+  };
   globalThis.document = {
     title: "",
     hidden: false,
-    head: { appendChild: () => {}, firstChild: null, insertBefore: () => {} },
-    body: { appendChild: () => {} },
+    head: makeEl(),
+    body: makeEl(),
+    documentElement: makeEl(),
     createElement: () => makeEl(),
     createElementNS: () => makeEl(),
     createTextNode: (text) => ({ nodeType: 3, textContent: String(text) }),
-    getElementsByTagName: () => [{ appendChild: () => {}, firstChild: null, insertBefore: () => {} }],
+    createDocumentFragment: () => makeEl(),
+    getElementsByTagName: () => [makeEl()],
+    getElementById: () => null,
     querySelector: () => null,
     querySelectorAll: () => [],
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    documentElement: {
-      lang: "en",
-      style: {},
-      getAttribute: () => null,
-      setAttribute: () => {},
-      removeAttribute: () => {},
-      classList: { add: () => {}, remove: () => {}, contains: () => false, toggle: () => {} },
-    },
+    addEventListener: noop,
+    removeEventListener: noop,
   };
+  globalThis.document.documentElement.lang = "en";
 }
 if (typeof globalThis.navigator === "undefined") globalThis.navigator = { userAgent: "node" };
 globalThis.window.matchMedia = globalThis.window.matchMedia || (() => ({
