@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "production";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -39,6 +40,7 @@ await esbuild.build({
   packages: "external",
   loader: { ".css": "empty", ".svg": "dataurl", ".png": "dataurl", ".jpg": "dataurl" },
   alias: { "@": path.resolve("src") },
+  define: { "process.env.NODE_ENV": '"production"' },
   logLevel: "warning",
 });
 
