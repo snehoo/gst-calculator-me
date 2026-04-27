@@ -63,11 +63,19 @@ if (typeof globalThis.window === "undefined") globalThis.window = globalThis;
 if (typeof globalThis.localStorage === "undefined") globalThis.localStorage = memoryStorage();
 if (typeof globalThis.sessionStorage === "undefined") globalThis.sessionStorage = memoryStorage();
 if (typeof globalThis.document === "undefined") {
+  const makeEl = () => ({
+    style: {},
+    setAttribute: () => {},
+    appendChild: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  });
   globalThis.document = {
     title: "",
     head: { appendChild: () => {} },
     body: { appendChild: () => {} },
-    createElement: () => ({ setAttribute: () => {}, appendChild: () => {} }),
+    createElement: () => makeEl(),
+    createElementNS: () => makeEl(),
     querySelector: () => null,
     querySelectorAll: () => [],
     addEventListener: () => {},
