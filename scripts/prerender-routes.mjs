@@ -62,7 +62,8 @@ const memoryStorage = () => {
 if (typeof globalThis.window === "undefined") globalThis.window = globalThis;
 if (typeof globalThis.localStorage === "undefined") globalThis.localStorage = memoryStorage();
 if (typeof globalThis.sessionStorage === "undefined") globalThis.sessionStorage = memoryStorage();
-if (typeof globalThis.document === "undefined") {
+console.log("[prerender] document defined?", typeof globalThis.document, !!globalThis.document?.createTextNode);
+{
   const makeEl = () => ({
     style: {},
     setAttribute: () => {},
