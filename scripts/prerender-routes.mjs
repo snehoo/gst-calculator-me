@@ -84,7 +84,14 @@ console.log("[prerender] document defined?", typeof globalThis.document, !!globa
     querySelectorAll: () => [],
     addEventListener: () => {},
     removeEventListener: () => {},
-    documentElement: { lang: "en", style: {} },
+    documentElement: {
+      lang: "en",
+      style: {},
+      getAttribute: () => null,
+      setAttribute: () => {},
+      removeAttribute: () => {},
+      classList: { add: () => {}, remove: () => {}, contains: () => false, toggle: () => {} },
+    },
   };
 }
 if (typeof globalThis.navigator === "undefined") globalThis.navigator = { userAgent: "node" };
