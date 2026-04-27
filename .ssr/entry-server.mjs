@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 // src/App.tsx
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { StaticRouter } from "react-router-dom/server";
+import { StaticRouter } from "react-router-dom/server.js";
 
 // src/components/ui/sonner.tsx
 import { useTheme } from "next-themes";
