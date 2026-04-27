@@ -1,11 +1,15 @@
+process.env.NODE_ENV = "production";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
+import esbuild from "esbuild";
 import ts from "typescript";
 
 const distDir = path.resolve("dist");
 const rootHtmlPath = path.join(distDir, "index.html");
 const siteUrl = "https://gstcalculator.me";
 
+// ---------- 1. Load blog posts data (TS) ----------
 const loadPosts = async () => {
   const source = await fs.readFile(path.resolve("src/lib/blog-posts.ts"), "utf8");
   const { outputText } = ts.transpileModule(source, {
@@ -21,6 +25,130 @@ const loadPosts = async () => {
 
 const POSTS = await loadPosts();
 
+// ---------- 2. Bundle the SSR entry with esbuild ----------
+const ssrOutFile = path.resolve(".ssr/entry-server.mjs");
+await fs.mkdir(path.dirname(ssrOutFile), { recursive: true });
+
+await esbuild.build({
+  entryPoints: [path.resolve("src/entry-server.tsx")],
+  outfile: ssrOutFile,
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  jsx: "automatic",
+  target: "node18",
+  packages: "external",
+  loader: { ".css": "empty", ".svg": "dataurl", ".png": "dataurl", ".jpg": "dataurl" },
+  alias: { "@": path.resolve("src") },
+  define: { "process.env.NODE_ENV": '"production"' },
+  logLevel: "warning",
+});
+
+// ---------- 3. Install minimal browser globals so module-init code doesn't crash ----------
+const memoryStorage = () => {
+  const store = new Map();
+  return {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k),
+    clear: () => store.clear(),
+    key: (i) => Array.from(store.keys())[i] ?? null,
+    get length() {
+      return store.size;
+    },
+  };
+};
+
+if (typeof globalThis.window === "undefined") globalThis.window = globalThis;
+if (typeof globalThis.localStorage === "undefined") globalThis.localStorage = memoryStorage();
+if (typeof globalThis.sessionStorage === "undefined") globalThis.sessionStorage = memoryStorage();
+{
+  // Build a deep no-op DOM stub so radix/sonner/react-dom probes don't crash.
+  const noop = () => {};
+  const makeEl = () => {
+    const el = {
+      nodeType: 1,
+      style: {},
+      classList: { add: noop, remove: noop, contains: () => false, toggle: noop },
+      attributes: [],
+      childNodes: [],
+      children: [],
+      firstChild: null,
+      lastChild: null,
+      parentNode: null,
+      ownerDocument: null,
+      dataset: {},
+      setAttribute: noop,
+      getAttribute: () => null,
+      removeAttribute: noop,
+      hasAttribute: () => false,
+      appendChild: (c) => c,
+      removeChild: (c) => c,
+      insertBefore: (c) => c,
+      addEventListener: noop,
+      removeEventListener: noop,
+      dispatchEvent: () => true,
+      contains: () => false,
+      cloneNode: () => makeEl(),
+      getBoundingClientRect: () => ({ x: 0, y: 0, width: 0, height: 0, top: 0, left: 0, right: 0, bottom: 0 }),
+      focus: noop,
+      blur: noop,
+      click: noop,
+    };
+    return el;
+  };
+  globalThis.document = {
+    title: "",
+    hidden: false,
+    head: makeEl(),
+    body: makeEl(),
+    documentElement: makeEl(),
+    createElement: () => makeEl(),
+    createElementNS: () => makeEl(),
+    createTextNode: (text) => ({ nodeType: 3, textContent: String(text) }),
+    createDocumentFragment: () => makeEl(),
+    getElementsByTagName: () => [makeEl()],
+    getElementById: () => null,
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    addEventListener: noop,
+    removeEventListener: noop,
+  };
+  globalThis.document.documentElement.lang = "en";
+}
+if (typeof globalThis.navigator === "undefined") globalThis.navigator = { userAgent: "node" };
+globalThis.window.matchMedia = globalThis.window.matchMedia || (() => ({
+  matches: false,
+  media: "",
+  onchange: null,
+  addListener: () => {},
+  removeListener: () => {},
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  dispatchEvent: () => false,
+}));
+const noop2 = () => {};
+const winStubs = {
+  getComputedStyle: () => ({ getPropertyValue: () => "" }),
+  requestAnimationFrame: (cb) => setTimeout(cb, 0),
+  cancelAnimationFrame: (id) => clearTimeout(id),
+  scrollTo: noop2,
+  scrollBy: noop2,
+  IntersectionObserver: class { observe(){} unobserve(){} disconnect(){} takeRecords(){return [];} },
+  ResizeObserver: class { observe(){} unobserve(){} disconnect(){} },
+  MutationObserver: class { observe(){} disconnect(){} takeRecords(){return [];} },
+};
+for (const [k, v] of Object.entries(winStubs)) {
+  if (typeof globalThis[k] === "undefined") globalThis[k] = v;
+  if (globalThis.window && typeof globalThis.window[k] === "undefined") {
+    try { globalThis.window[k] = v; } catch {}
+  }
+}
+
+// ---------- 4. Import the bundled SSR render() ----------
+const { render } = await import(pathToFileURL(ssrOutFile).href);
+
+// ---------- 5. Routes & meta ----------
 const routes = [
   {
     path: "/",
@@ -73,136 +201,12 @@ const stripHtml = (value) =>
     .replace(/\s+/g, " ")
     .trim();
 
-const renderBlogLinks = () => `
-  <nav class="static-blog-nav" aria-label="GST blog articles">
-    <a href="/">GST Calculator</a>
-    <a href="/blog">GST Blog</a>
-    ${POSTS.map((post) => `<a href="/blog/${post.slug}">${escapeHtml(post.title)}</a>`).join("\n    ")}
-    <a href="/privacy">Privacy</a>
-  </nav>`;
-
-const renderStaticShell = (inner) => `
-  <div class="seo-static-page">
-    <header class="seo-static-header">
-      <p><a href="/">GST Calculator</a></p>
-      ${renderBlogLinks()}
-    </header>
-    ${inner}
-  </div>`;
-
-const renderHomeContent = () =>
-  renderStaticShell(`
-    <main>
-      <h1>GST Calculator</h1>
-      <p>Instant GST computation for all Indian tax slabs with CGST, SGST and IGST breakdowns.</p>
-      <section aria-labelledby="gst-slabs-heading">
-        <h2 id="gst-slabs-heading">GST Slab Reference Guide</h2>
-        <ul>
-          <li><strong>0%:</strong> Essential food grains, milk, vegetables, fruits, books and newspapers.</li>
-          <li><strong>5%:</strong> Packaged foods, sugar, tea, coffee, edible oil and transport services.</li>
-          <li><strong>12%:</strong> Apparel above ₹1000, processed food, mobile phones and computers.</li>
-          <li><strong>18%:</strong> Electronics, IT services, telecom, restaurants and most financial services.</li>
-          <li><strong>28%:</strong> Luxury cars, tobacco, cement, pan masala and premium goods.</li>
-        </ul>
-      </section>
-      <section aria-labelledby="gst-guides-heading">
-        <h2 id="gst-guides-heading">GST Guides</h2>
-        ${POSTS.map(
-          (post) => `<article>
-            <h3><a href="/blog/${post.slug}">${escapeHtml(post.title)}</a></h3>
-            <p>${escapeHtml(post.description)}</p>
-          </article>`,
-        ).join("\n        ")}
-      </section>
-    </main>`);
-
-const renderBlogIndexContent = () =>
-  renderStaticShell(`
-    <main>
-      <h1>GST Blog</h1>
-      <p>Guides, rate references and compliance tips for Indian businesses.</p>
-      ${POSTS.map(
-        (post) => `<article>
-          <p>${escapeHtml(post.category)} · ${escapeHtml(post.readTime)}</p>
-          <h2><a href="/blog/${post.slug}">${escapeHtml(post.title)}</a></h2>
-          <p>${escapeHtml(post.description)}</p>
-        </article>`,
-      ).join("\n      ")}
-    </main>`);
-
-const renderBlock = (block) => {
-  switch (block.type) {
-    case "lead":
-    case "p":
-      return `<p>${block.type === "p" ? block.text : escapeHtml(block.text)}</p>`;
-    case "h2":
-      return `<h2>${escapeHtml(block.text)}</h2>`;
-    case "h3":
-      return `<h3>${escapeHtml(block.text)}</h3>`;
-    case "stat":
-      return `<aside><strong>${escapeHtml(block.num)}</strong><p>${escapeHtml(block.label)}</p></aside>`;
-    case "statGrid":
-      return `<ul>${block.items.map((item) => `<li><strong>${escapeHtml(item.n)}</strong> — ${escapeHtml(item.l)}</li>`).join("")}</ul>`;
-    case "slabGrid":
-      return `<ul>${block.items.map((item) => `<li><strong>${escapeHtml(item.r)}</strong> — ${escapeHtml(item.l)}</li>`).join("")}</ul>`;
-    case "formula":
-      return `<section><h3>${escapeHtml(block.title)}</h3><pre>${escapeHtml(block.code)}</pre></section>`;
-    case "highlight":
-      return `<aside>${block.html}</aside>`;
-    case "example":
-      return `<section><h3>${escapeHtml(block.title)}</h3>${block.lines.map((line) => `<p>${line}</p>`).join("")}</section>`;
-    case "quote":
-      return `<blockquote>${escapeHtml(block.text)}</blockquote>`;
-    case "steps":
-      return `<ol>${block.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>`;
-    case "cta":
-      return `<aside><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(block.text)}</p><p><a href="/">Open GST Calculator</a></p></aside>`;
-    default:
-      return "";
-  }
-};
-
-const renderPostContent = (post) =>
-  renderStaticShell(`
-    <main>
-      <p><a href="/blog">All blog posts</a> · <a href="/">Home</a></p>
-      <article>
-        <p>${escapeHtml(post.category)} · ${escapeHtml(post.readTime)}</p>
-        <h1>${escapeHtml(post.title)}</h1>
-        <p>${escapeHtml(post.description)}</p>
-        ${post.body.map(renderBlock).join("\n        ")}
-      </article>
-      <aside>
-        <h2>More from GST Calculator</h2>
-        <ul>
-          ${POSTS.filter((item) => item.slug !== post.slug)
-            .map((item) => `<li><a href="/blog/${item.slug}">${escapeHtml(item.title)}</a></li>`)
-            .join("\n          ")}
-        </ul>
-      </aside>
-    </main>`);
-
-const renderPrivacyContent = () =>
-  renderStaticShell(`
-    <main>
-      <h1>Privacy Policy</h1>
-      <p>GST Calculator keeps calculator inputs local in your browser and uses basic cookies or storage only for site functionality, analytics, and advertising where enabled.</p>
-    </main>`);
-
-const getStaticContent = (route) => {
-  if (route.path === "/") return renderHomeContent();
-  if (route.path === "/blog") return renderBlogIndexContent();
-  if (route.path === "/privacy") return renderPrivacyContent();
-  if (route.post) return renderPostContent(route.post);
-  return "";
-};
-
 const replaceTag = (html, pattern, replacement) => {
   if (!pattern.test(html)) return html;
   return html.replace(pattern, replacement);
 };
 
-const applySeo = (html, route) => {
+const applySeo = (html, route, bodyHtml) => {
   const canonical = `${siteUrl}${route.path === "/" ? "/" : route.path}`;
   let nextHtml = html;
 
@@ -215,7 +219,12 @@ const applySeo = (html, route) => {
   nextHtml = replaceTag(nextHtml, /<meta property="og:type"\s+content="[^"]*">/, `<meta property="og:type" content="${route.type}">`);
   nextHtml = replaceTag(nextHtml, /<meta name="twitter:title"\s+content="[^"]*">/, `<meta name="twitter:title" content="${escapeHtml(route.title)}">`);
   nextHtml = replaceTag(nextHtml, /<meta name="twitter:description"\s+content="[^"]*">/, `<meta name="twitter:description" content="${escapeHtml(route.description)}">`);
-  nextHtml = nextHtml.replace("<!--SEO_STATIC_CONTENT-->", getStaticContent(route));
+
+  // Inject the SSR-rendered HTML into the #root container
+  nextHtml = nextHtml.replace(
+    /<div id="root">[\s\S]*?<\/div>/,
+    `<div id="root">${bodyHtml}</div>`,
+  );
 
   if (route.keywords) {
     nextHtml = replaceTag(nextHtml, /<meta name="keywords"\s+content="[^"]*">/, `<meta name="keywords" content="${escapeHtml(route.keywords)}">`);
@@ -232,17 +241,35 @@ const applySeo = (html, route) => {
       inLanguage: "en-IN",
       mainEntityOfPage: canonical,
       author: { "@type": "Organization", name: "GST Calculator" },
-      publisher: { "@type": "Organization", name: "GST Calculator", logo: { "@type": "ImageObject", url: `${siteUrl}/apple-touch-icon.png` } },
-      articleBody: route.post.body.map((block) => stripHtml(block.text || block.html || block.code || block.title || "")).filter(Boolean).join(" "),
+      publisher: {
+        "@type": "Organization",
+        name: "GST Calculator",
+        logo: { "@type": "ImageObject", url: `${siteUrl}/apple-touch-icon.png` },
+      },
+      articleBody: route.post.body
+        .map((block) => stripHtml(block.text || block.html || block.code || block.title || ""))
+        .filter(Boolean)
+        .join(" "),
     };
-    nextHtml = nextHtml.replace("</head>", `<script type="application/ld+json">${JSON.stringify(articleSchema)}</script>\n  </head>`);
+    nextHtml = nextHtml.replace(
+      "</head>",
+      `<script type="application/ld+json">${JSON.stringify(articleSchema)}</script>\n  </head>`,
+    );
   }
 
   return nextHtml;
 };
 
 const writeRouteHtml = async (route, template) => {
-  const routeHtml = applySeo(template, route);
+  let bodyHtml = "";
+  try {
+    bodyHtml = render(route.path);
+  } catch (err) {
+    console.error(`[prerender] SSR render failed for ${route.path}:`, err);
+    throw err;
+  }
+
+  const routeHtml = applySeo(template, route, bodyHtml);
 
   if (route.path === "/") {
     await fs.writeFile(rootHtmlPath, routeHtml, "utf8");
@@ -255,4 +282,11 @@ const writeRouteHtml = async (route, template) => {
 };
 
 const rootHtml = await fs.readFile(rootHtmlPath, "utf8");
-await Promise.all(routes.map((route) => writeRouteHtml(route, rootHtml)));
+
+// Run sequentially so SSR errors are easy to attribute.
+for (const route of routes) {
+  await writeRouteHtml(route, rootHtml);
+  console.log(`[prerender] ${route.path}`);
+}
+
+console.log(`[prerender] done — ${routes.length} routes`);
