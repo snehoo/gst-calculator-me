@@ -72,10 +72,13 @@ if (typeof globalThis.document === "undefined") {
   });
   globalThis.document = {
     title: "",
-    head: { appendChild: () => {} },
+    hidden: false,
+    head: { appendChild: () => {}, firstChild: null, insertBefore: () => {} },
     body: { appendChild: () => {} },
     createElement: () => makeEl(),
     createElementNS: () => makeEl(),
+    createTextNode: (text) => ({ nodeType: 3, textContent: String(text) }),
+    getElementsByTagName: () => [{ appendChild: () => {}, firstChild: null, insertBefore: () => {} }],
     querySelector: () => null,
     querySelectorAll: () => [],
     addEventListener: () => {},
