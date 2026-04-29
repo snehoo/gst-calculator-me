@@ -36,6 +36,31 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://gstcalculator.me/blog/input-tax-credit-gst</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-invoice-format-india</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/reverse-charge-mechanism-gst</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-composition-scheme</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-on-ecommerce-india</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://gstcalculator.me/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
