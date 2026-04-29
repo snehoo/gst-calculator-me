@@ -263,7 +263,7 @@ var TooltipContent = React3.forwardRef(({ className, sideOffset = 4, ...props },
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
 // src/pages/Index.tsx
-import { useEffect as useEffect4, useMemo as useMemo2, useState as useState6 } from "react";
+import { useEffect as useEffect4, useMemo as useMemo2, useState as useState5 } from "react";
 import { X as X3 } from "lucide-react";
 
 // src/components/GSTCalculator.tsx
@@ -981,9 +981,182 @@ var setPageSeo = ({ title, description, path, keywords, type = "website" }) => {
 };
 
 // src/components/SiteHeader.tsx
-import { useState as useState5 } from "react";
-import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { jsx as jsx8, jsxs as jsxs5 } from "react/jsx-runtime";
+var SiteHeader = ({ active = "home", showUpdatedLabel = false, hideWordmark = false }) => {
+  const navLinkClass = (section) => section === active ? "text-primary-foreground" : "text-primary-mid hover:text-primary-foreground transition-colors";
+  return /* @__PURE__ */ jsxs5("nav", { className: `bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center relative z-20 ${hideWordmark ? "justify-end" : "justify-between"}`, children: [
+    !hideWordmark && /* @__PURE__ */ jsxs5(Link, { to: "/", className: "text-primary-foreground font-bold tracking-tight hover:opacity-90", children: [
+      "GST",
+      /* @__PURE__ */ jsx8("span", { className: "text-primary-mid", children: " Calculator" })
+    ] }),
+    /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-5 text-xs", children: [
+      /* @__PURE__ */ jsx8(Link, { to: "/blog", className: navLinkClass("blog"), children: "Blog" }),
+      /* @__PURE__ */ jsx8(Link, { to: "/privacy", className: navLinkClass("privacy"), children: "Privacy" }),
+      showUpdatedLabel && /* @__PURE__ */ jsx8("span", { className: "text-primary-mid hidden sm:inline", children: "Updated for 2025" })
+    ] })
+  ] });
+};
+var SiteHeader_default = SiteHeader;
+
+// src/components/SiteFooter.tsx
+import { Link as Link2 } from "react-router-dom";
+import { jsx as jsx9, jsxs as jsxs6 } from "react/jsx-runtime";
+var SiteFooter = () => /* @__PURE__ */ jsx9("footer", { className: "border-t border-border mt-4", children: /* @__PURE__ */ jsxs6("div", { className: "max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground", children: [
+  /* @__PURE__ */ jsx9(Link2, { to: "/", className: "hover:text-foreground transition-colors", children: "Calculator" }),
+  /* @__PURE__ */ jsx9(Link2, { to: "/blog", className: "hover:text-foreground transition-colors", children: "Blog" }),
+  /* @__PURE__ */ jsx9(Link2, { to: "/privacy", className: "hover:text-foreground transition-colors", children: "Privacy Policy" })
+] }) });
+var SiteFooter_default = SiteFooter;
+
+// src/pages/Index.tsx
+import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
+var SLAB_REF = [
+  { pct: "0%", title: "Nil Rate", desc: "Essential food grains, milk, vegetables, fruits, eggs, salt, books, newspapers, sindoor, bangles" },
+  { pct: "5%", title: "Essential Rate", desc: "Packaged foods, sugar, tea, coffee, edible oil, transport services, small restaurants (turnover <1.5 Cr)" },
+  { pct: "12%", title: "Standard Rate I", desc: "Apparel above \u20B91000, computers, processed food, mobile phones, business class air travel" },
+  { pct: "18%", title: "Standard Rate II (Most common)", desc: "AC restaurants, electronics, most financial services, IT services, telecom" },
+  { pct: "28%", title: "Luxury Rate", desc: "Luxury cars, tobacco, cement, pan masala, high-end personal care, AC hotels above \u20B97500/night" }
+];
+var Index = () => {
+  const [tip, setTip] = useState5("");
+  const { stats, dismiss } = useSessionStats();
+  useEffect4(() => {
+    setTip(getRandomTip());
+  }, []);
+  useEffect4(() => {
+    setPageSeo({
+      title: "GST Calculator India 2025 \u2014 All Slabs, CGST/SGST/IGST",
+      description: "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown.",
+      path: "/",
+      keywords: "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator"
+    });
+  }, []);
+  const pageCtx = useMemo2(
+    () => buildContext({ slab: 0, amount: 0, type: "intra", stats }),
+    [stats]
+  );
+  const topTip = pickTip("topBanner", pageCtx);
+  const sidebarTip = pickTip("sidebar", pageCtx);
+  return /* @__PURE__ */ jsxs7("div", { className: "min-h-screen bg-background", children: [
+    topTip && /* @__PURE__ */ jsxs7("div", { className: "bg-warning-light text-warning-text border-b border-warning-border/40 px-6 sm:px-8 py-2 flex items-center gap-2.5 text-xs animate-slide-down", children: [
+      /* @__PURE__ */ jsx10("span", { "aria-hidden": true, children: topTip.icon }),
+      /* @__PURE__ */ jsx10("span", { className: "flex-1", dangerouslySetInnerHTML: { __html: topTip.body } }),
+      topTip.dismissDays && /* @__PURE__ */ jsx10(
+        "button",
+        {
+          onClick: () => dismiss(topTip.id, topTip.dismissDays),
+          className: "opacity-70 hover:opacity-100",
+          "aria-label": "Dismiss",
+          children: /* @__PURE__ */ jsx10(X3, { className: "h-3.5 w-3.5" })
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsx10(SiteHeader_default, { showUpdatedLabel: true, hideWordmark: true }),
+    /* @__PURE__ */ jsxs7("header", { className: "bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground", children: [
+      /* @__PURE__ */ jsx10("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "GST Calculator" }),
+      /* @__PURE__ */ jsx10("p", { className: "text-primary-mid text-sm mt-1", children: "Instant GST computation for all slabs \u2014 with CGST, SGST & IGST breakdown" })
+    ] }),
+    /* @__PURE__ */ jsxs7("main", { className: "max-w-6xl mx-auto px-6 sm:px-8 py-6 grid lg:grid-cols-[1fr_300px] gap-5 items-start", children: [
+      /* @__PURE__ */ jsx10(GSTCalculator, {}),
+      /* @__PURE__ */ jsxs7("aside", { className: "flex flex-col gap-4", children: [
+        /* @__PURE__ */ jsxs7("div", { className: "bg-gradient-to-br from-primary-light to-accent border-[1.5px] border-primary-mid rounded-xl p-4", children: [
+          /* @__PURE__ */ jsx10("h3", { className: "text-sm font-bold text-primary-dark mb-2.5", children: "\u{1F4CA} File GST Returns" }),
+          /* @__PURE__ */ jsx10("div", { className: "space-y-1.5", children: [
+            { name: "Zoho Books", tag: "\u20B92,999/yr" },
+            { name: "ClearTax GST", tag: "Free tier" },
+            { name: "Tally Prime", tag: "Most popular" },
+            { name: "Vyapar App", tag: "Mobile" }
+          ].map((i) => /* @__PURE__ */ jsxs7(
+            "div",
+            {
+              className: "flex items-center justify-between px-2.5 py-2 bg-card rounded-md border border-primary-light",
+              children: [
+                /* @__PURE__ */ jsx10("span", { className: "text-sm font-semibold text-primary-dark", children: i.name }),
+                /* @__PURE__ */ jsx10("span", { className: "text-[0.65rem] bg-primary-light text-primary-dark px-2 py-0.5 rounded-full", children: i.tag })
+              ]
+            },
+            i.name
+          )) })
+        ] }),
+        sidebarTip ? /* @__PURE__ */ jsx10(ContextualTip, { tip: sidebarTip, onDismiss: (t) => dismiss(t.id, t.dismissDays) }) : /* @__PURE__ */ jsxs7("div", { className: "bg-card border border-border rounded-xl p-4 text-sm text-muted-foreground leading-relaxed", children: [
+          /* @__PURE__ */ jsx10("strong", { className: "text-foreground block mb-1", children: "\u{1F4A1} Quick Tip" }),
+          tip
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs7("section", { className: "max-w-6xl mx-auto px-6 sm:px-8 pb-10 grid md:grid-cols-2 gap-5", children: [
+      /* @__PURE__ */ jsxs7("div", { className: "bg-card rounded-2xl border border-border overflow-hidden", children: [
+        /* @__PURE__ */ jsx10("div", { className: "px-5 py-3.5 bg-warning text-warning-foreground text-sm font-semibold", children: "\u{1F4CB} GST Slab Reference Guide" }),
+        /* @__PURE__ */ jsx10("div", { className: "px-4 py-2", children: SLAB_REF.map((s, i) => /* @__PURE__ */ jsxs7(
+          "div",
+          {
+            className: `flex gap-3 py-2.5 ${i < SLAB_REF.length - 1 ? "border-b border-border" : ""}`,
+            children: [
+              /* @__PURE__ */ jsx10("div", { className: "min-w-[42px] text-base font-bold text-primary-dark", children: s.pct }),
+              /* @__PURE__ */ jsxs7("div", { className: "text-xs text-muted-foreground leading-relaxed", children: [
+                /* @__PURE__ */ jsx10("strong", { className: "text-foreground block text-[0.78rem] mb-0.5", children: s.title }),
+                s.desc
+              ] })
+            ]
+          },
+          s.pct
+        )) })
+      ] }),
+      /* @__PURE__ */ jsxs7("div", { className: "bg-card rounded-2xl border border-border overflow-hidden", children: [
+        /* @__PURE__ */ jsx10("div", { className: "px-5 py-3.5 bg-primary-dark text-primary-foreground text-sm font-semibold", children: "\u26A0\uFE0F GST Registration Thresholds" }),
+        /* @__PURE__ */ jsxs7("div", { className: "p-5", children: [
+          /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-2 gap-3", children: [
+            /* @__PURE__ */ jsxs7("div", { className: "bg-primary-light rounded-lg p-3 text-center", children: [
+              /* @__PURE__ */ jsx10("div", { className: "text-[0.65rem] font-semibold text-primary-dark uppercase mb-1", children: "Goods" }),
+              /* @__PURE__ */ jsx10("div", { className: "text-2xl font-bold text-primary-dark", children: "\u20B940L" }),
+              /* @__PURE__ */ jsx10("div", { className: "text-xs text-primary-dark/70", children: "Annual turnover" })
+            ] }),
+            /* @__PURE__ */ jsxs7("div", { className: "bg-accent rounded-lg p-3 text-center", children: [
+              /* @__PURE__ */ jsx10("div", { className: "text-[0.65rem] font-semibold text-success uppercase mb-1", children: "Services" }),
+              /* @__PURE__ */ jsx10("div", { className: "text-2xl font-bold text-success", children: "\u20B920L" }),
+              /* @__PURE__ */ jsx10("div", { className: "text-xs text-success/80", children: "Annual turnover" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs7("div", { className: "mt-3 text-sm text-muted-foreground leading-relaxed space-y-2", children: [
+            /* @__PURE__ */ jsxs7("p", { children: [
+              /* @__PURE__ */ jsx10("strong", { className: "text-foreground", children: "Composition Scheme:" }),
+              " Businesses up to \u20B91.5 Cr (goods) / \u20B975L (services) can opt for simplified quarterly filing at lower flat rates."
+            ] }),
+            /* @__PURE__ */ jsxs7("p", { children: [
+              /* @__PURE__ */ jsx10("strong", { className: "text-foreground", children: "E-invoicing mandatory" }),
+              " for turnover above \u20B95 Cr from FY 2023-24."
+            ] })
+          ] })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx10(SiteFooter_default, {})
+  ] });
+};
+var Index_default = Index;
+
+// src/pages/NotFound.tsx
+import { useLocation } from "react-router-dom";
+import { useEffect as useEffect5 } from "react";
+import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
+var NotFound = () => {
+  const location = useLocation();
+  useEffect5(() => {
+    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+  }, [location.pathname]);
+  return /* @__PURE__ */ jsx11("div", { className: "flex min-h-screen items-center justify-center bg-muted", children: /* @__PURE__ */ jsxs8("div", { className: "text-center", children: [
+    /* @__PURE__ */ jsx11("h1", { className: "mb-4 text-4xl font-bold", children: "404" }),
+    /* @__PURE__ */ jsx11("p", { className: "mb-4 text-xl text-muted-foreground", children: "Oops! Page not found" }),
+    /* @__PURE__ */ jsx11("a", { href: "/", className: "text-primary underline hover:text-primary/90", children: "Return to Home" })
+  ] }) });
+};
+var NotFound_default = NotFound;
+
+// src/pages/Blog.tsx
+import { useEffect as useEffect6 } from "react";
+import { Link as Link3 } from "react-router-dom";
+import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
 // src/lib/blog-posts.ts
 var POSTS = [
@@ -1254,233 +1427,254 @@ var POSTS = [
       { type: "p", text: 'For the exact formula to calculate 18% GST on your service invoices, use our <a href="/">free GST calculator</a>. To understand whether your transactions qualify as intra-state or inter-state, read our guide on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>. For a complete overview, see <a href="/blog/what-is-gst-india">what is GST in India</a>.' },
       { type: "cta", title: "Calculate your freelance GST invoice amount", text: "Enter your fee amount \u2014 instant 18% GST breakdown with CGST/SGST and IGST splits. Free, no registration required." }
     ]
+  },
+  {
+    slug: "input-tax-credit-gst",
+    title: "Input Tax Credit Under GST \u2014 How to Claim What You're Owed",
+    description: "Complete guide to Input Tax Credit under GST \u2014 eligibility conditions, blocked credits, the 180-day rule, GSTR-2B reconciliation, and how to avoid costly mistakes.",
+    category: "Tax Credit",
+    readTime: "6 min",
+    date: "2026-04-20",
+    body: [
+      { type: "lead", text: "Input Tax Credit is one of the most powerful \u2014 and most misunderstood \u2014 features of India's GST system. Moreover, it is the mechanism that prevents the dreaded cascading effect of taxes. Furthermore, businesses that claim ITC correctly reduce their effective tax burden significantly. However, those who claim it incorrectly face 100% penalties plus interest." },
+      { type: "p", text: "The stakes are high on both sides. Specifically, a business that misses eligible ITC loses money it is legally entitled to. Conversely, a business that claims ineligible ITC invites a penalty equal to the full tax amount. Consequently, understanding ITC rules is not optional \u2014 it is fundamental to running a GST-compliant business in India." },
+      { type: "stat", num: "Net GST = Output Tax \u2212 ITC", label: "The core ITC formula \u2014 you pay GST only on the value you add, not on the full sale price" },
+      { type: "h2", text: "What Is Input Tax Credit and How Does It Work?" },
+      { type: "p", text: "<strong>Input Tax Credit (ITC)</strong> allows a GST-registered business to deduct the GST it paid on purchases from the GST it collects on sales. Consequently, you pay tax only on the value you added \u2014 not on the full sale price. Furthermore, this mechanism eliminates the cascading effect where tax is paid on top of already-taxed amounts." },
+      { type: "example", title: "ITC in action \u2014 a manufacturer example", lines: [
+        "<strong>Purchase:</strong> Raw materials worth \u20B91,00,000. GST paid at 18% = \u20B918,000. This is your input tax.",
+        "<strong>Sale:</strong> Finished goods worth \u20B91,50,000. GST collected at 18% = \u20B927,000. This is your output tax.",
+        "<strong>Net GST payable:</strong> \u20B927,000 \u2212 \u20B918,000 = <strong>\u20B99,000</strong> \u2014 only on the \u20B950,000 value added.",
+        "Without ITC, you would pay \u20B927,000 in full \u2014 nearly three times more. Furthermore, your \u20B918,000 in input tax would simply be a sunk cost."
+      ] },
+      { type: "h2", text: "Five Conditions You Must Meet to Claim ITC" },
+      { type: "p", text: "Section 16 of the CGST Act lays down strict eligibility conditions. Moreover, all five must be satisfied simultaneously \u2014 failing even one disqualifies the claim. Consequently, businesses must track each condition actively rather than assuming ITC is automatic." },
+      { type: "checklist", items: [
+        { mark: "1", html: "<strong>GST registration:</strong> You must be registered under GST. Additionally, the purchase must be for business purposes \u2014 not personal use." },
+        { mark: "2", html: "<strong>Valid tax invoice:</strong> You must hold a proper tax invoice or debit note from a GST-registered supplier. Furthermore, the invoice must show their GSTIN, your GSTIN, HSN/SAC codes, and correct tax breakdowns." },
+        { mark: "3", html: "<strong>Goods or services received:</strong> ITC can only be claimed after you have actually received the goods or services. Moreover, for goods delivered in instalments, ITC is available only when the final instalment arrives." },
+        { mark: "4", html: "<strong>Supplier has paid GST:</strong> Your supplier must have filed their GSTR-1 and the invoice must appear in your <strong>GSTR-2B</strong>. Consequently, if your supplier is non-compliant, you lose the ITC \u2014 even if you have a valid invoice." },
+        { mark: "5", html: "<strong>GST returns filed:</strong> You must file your own GSTR-3B returns. Furthermore, ITC must be claimed by 30 November of the following financial year, or by the date of filing GSTR-9, whichever is earlier." }
+      ] },
+      { type: "h2", text: "The 180-Day Payment Rule \u2014 A Commonly Missed Condition" },
+      { type: "p", text: "One of the most frequently overlooked ITC conditions is the <strong>180-day supplier payment rule</strong>. Specifically, Section 16(2) requires that you pay your supplier \u2014 including the GST amount \u2014 within 180 days of the invoice date. Moreover, if you fail to do so, the ITC already claimed must be reversed and added back to your output tax liability, along with interest." },
+      { type: "warn", html: "<strong>Important:</strong> The 180-day clock starts from the invoice date \u2014 not from when you received the goods. Furthermore, part payments do not proportionally preserve ITC. Additionally, once you make the full payment, you can reclaim the reversed ITC in the return period when payment is made." },
+      { type: "h3", text: "GSTR-2B reconciliation \u2014 why it matters" },
+      { type: "p", text: "Since October 2022, ITC claims in GSTR-3B must match exactly with invoices appearing in your <strong>GSTR-2B</strong>. Specifically, GSTR-2B is an auto-generated statement showing all purchases declared by your suppliers in GSTR-1. Consequently, you cannot claim provisional ITC on purchases that your supplier has not yet uploaded. Moreover, regular reconciliation of your purchase register against GSTR-2B is now essential \u2014 not optional \u2014 for every GST filer." },
+      { type: "h2", text: "What ITC Cannot Be Claimed \u2014 Blocked Credits Under Section 17(5)" },
+      { type: "p", text: "The GST Act explicitly blocks ITC on certain categories regardless of how the purchase is used. Moreover, claiming blocked credit \u2014 even accidentally \u2014 triggers 100% penalty plus 18% interest. Furthermore, the blocked credit list covers some surprisingly common business expenses." },
+      { type: "example", title: "Common blocked credits \u2014 ITC not available on these", lines: [
+        "<strong>Motor vehicles</strong> (unless used for transportation of goods/passengers or driver training)",
+        "<strong>Food and beverages, outdoor catering, beauty treatments, health services</strong> (unless providing these as outward supply)",
+        "<strong>Membership fees</strong> \u2014 club memberships, gym memberships, health centre memberships",
+        "<strong>Travel benefits to employees</strong> for personal purposes (holidays, leave travel)",
+        "<strong>Works contract services</strong> for construction of immovable property (except plant and machinery)",
+        "<strong>Goods or services for personal consumption</strong> by the registered person or their employees"
+      ] },
+      { type: "h2", text: "ITC on Capital Goods \u2014 Special Rules" },
+      { type: "p", text: "Capital goods \u2014 machinery, equipment, computers, vehicles used for business \u2014 attract specific ITC rules. Specifically, you can claim ITC on capital goods used exclusively for taxable supplies. However, if capital goods are used for both taxable and exempt supplies, the ITC must be apportioned. Furthermore, you cannot claim ITC on a capital good if depreciation has been claimed on the GST component in your income tax accounts \u2014 claiming both constitutes double benefit." },
+      { type: "h2", text: "ITC for E-Commerce Sellers and Importers" },
+      { type: "p", text: "E-commerce sellers claiming ITC on inventory purchases follow the standard ITC conditions. However, TCS (Tax Collected at Source) deducted by platforms like Amazon and Flipkart appears as credit in your GST electronic cash ledger \u2014 not as ITC. Consequently, these are different mechanisms and should not be confused. Additionally, importers can claim ITC on IGST paid at customs, provided the goods are used for taxable outward supplies." },
+      { type: "p", text: 'For the formulas to calculate exactly how much GST you will collect on sales \u2014 which determines your ITC offset \u2014 use our <a href="/">free GST calculator</a>. Additionally, for understanding which supplies attract which rate and therefore what ITC flows to which account, read our guide on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>. Furthermore, if you are a freelancer wondering about ITC on laptops and software subscriptions, see our <a href="/blog/gst-for-freelancers-india">GST guide for freelancers</a>.' },
+      { type: "cta", title: "Calculate your GST output tax instantly", text: "Know your output tax before applying ITC \u2014 enter any amount for instant CGST, SGST, and IGST breakdown." }
+    ]
+  },
+  {
+    slug: "gst-invoice-format-india",
+    title: "GST Invoice Format \u2014 All Mandatory Fields and Rules",
+    description: "All 16 mandatory fields under GST Rule 46, invoice types, e-invoicing rules, and the most common mistakes that invalidate ITC claims \u2014 with a field checklist.",
+    category: "Invoicing",
+    readTime: "5 min",
+    date: "2026-04-20",
+    body: [
+      { type: "lead", text: "A GST invoice is not just a payment request \u2014 it is a legal document. Moreover, it is the only instrument through which your buyer can claim Input Tax Credit. Furthermore, an invoice missing even one mandatory field can be considered invalid under the GST Act \u2014 resulting in rejected ITC claims, penalties, and supplier disputes." },
+      { type: "p", text: "Getting the invoice format right is therefore not merely an administrative detail. Specifically, it is the foundation of your entire GST compliance. Additionally, with e-invoicing now mandatory for businesses above \u20B95 crore, the stakes of non-compliance have increased significantly." },
+      { type: "stat", num: "16", label: "Mandatory fields required on every GST tax invoice under Rule 46 of the CGST Rules, 2017" },
+      { type: "h2", text: "All 16 Mandatory Fields on a GST Invoice \u2014 Rule 46 Explained" },
+      { type: "p", text: "Rule 46 of the CGST Rules prescribes the exact fields every tax invoice must contain. Moreover, these apply to all GST-registered businesses issuing invoices for taxable supplies. Consequently, whether you use a manual template, Excel, or invoicing software, every invoice must include all 16 elements." },
+      { type: "invoiceFields", items: [
+        { title: "Supplier's name, address, and GSTIN", text: "Your complete legal name as registered, registered address, and 15-digit GSTIN. Furthermore, the state code embedded in your GSTIN determines whether CGST/SGST or IGST applies." },
+        { title: "Invoice number", text: "A unique consecutive serial number within a financial year. Specifically, it can contain up to 16 characters including letters, numbers, and / or - symbols. Moreover, gaps in numbering are not permitted." },
+        { title: "Invoice date", text: "The date of issue. Furthermore, for goods, the invoice must be issued before or at the time of delivery. For services, it must be issued within 30 days of supply." },
+        { title: "Recipient's name, address, and GSTIN", text: "If the buyer is GST-registered, their GSTIN is mandatory. Consequently, an incorrect GSTIN \u2014 even one digit wrong \u2014 prevents the buyer from claiming ITC." },
+        { title: "Place of supply", text: "The state where the supply is deemed to occur. Specifically, this field determines whether CGST+SGST or IGST applies \u2014 it is not simply the delivery address." },
+        { title: "HSN code (goods) or SAC code (services)", text: "The classification code for goods (Harmonised System of Nomenclature) or services (Service Accounting Code). Moreover, businesses above \u20B95 crore must show the full 8-digit code." },
+        { title: "Description of goods or services", text: 'A clear description of what was supplied. Furthermore, vague descriptions like "services rendered" are insufficient and may trigger audit queries.' },
+        { title: "Quantity and unit (for goods)", text: "Quantity in the relevant unit of measurement (kg, metres, pieces, etc.). Additionally, this field enables buyers and auditors to verify transaction values against market rates." },
+        { title: "Taxable value", text: "The value of goods or services before GST \u2014 also called the GST-exclusive amount. Consequently, this is the base on which the tax percentage is applied." },
+        { title: "GST rate", text: "The applicable rate \u2014 5%, 12%, 18%, or 28%. Furthermore, if multiple items attract different rates, each must be listed separately with its own tax line." },
+        { title: "CGST + SGST or IGST amounts", text: "The actual tax amounts in rupees \u2014 either split as CGST/SGST for intra-state or shown as IGST for inter-state. Moreover, these amounts must be mathematically consistent with the rate and taxable value." },
+        { title: "Total invoice value", text: "Taxable value plus all applicable GST. Additionally, if the invoice is in foreign currency, the INR equivalent must also be stated." },
+        { title: "Whether tax is payable on reverse charge", text: "A mandatory Yes/No statement. Furthermore, if RCM applies, the recipient pays GST \u2014 not the supplier. Consequently, this field alerts the buyer to their liability." },
+        { title: "Signature of authorised signatory", text: "Physical or digital signature of the supplier or their authorised representative. Moreover, e-invoices authenticated through the IRP system are deemed digitally signed." },
+        { title: "Delivery address (if different from billing)", text: "Required when goods are shipped to a location different from the billing address. Specifically, this determines the correct state for IGST/SGST classification." },
+        { title: "For unregistered buyers above \u20B950,000", text: "Additional recipient details \u2014 name, address, and state of delivery \u2014 are mandatory when selling to an unregistered person and the invoice value exceeds \u20B950,000." }
+      ] },
+      { type: "h2", text: "Types of GST Invoices \u2014 Which One Should You Issue?" },
+      { type: "p", text: "Not every transaction requires a tax invoice. Specifically, the type of invoice depends on your GST registration status, the nature of the supply, and whether the recipient can claim ITC." },
+      { type: "statGrid", items: [
+        { n: "Tax Invoice", l: "Standard \u2014 taxable goods/services \u2014 buyer can claim ITC" },
+        { n: "Bill of Supply", l: "Exempt goods or composition dealers \u2014 no GST charged" },
+        { n: "Credit Note", l: "Reduce taxable value \u2014 returns, discounts, rate corrections" },
+        { n: "Debit Note", l: "Increase taxable value \u2014 underbilling corrections" }
+      ] },
+      { type: "h2", text: "E-Invoicing \u2014 Is It Mandatory for Your Business?" },
+      { type: "p", text: "E-invoicing under GST requires eligible businesses to register invoices on the <strong>Invoice Registration Portal (IRP)</strong> before sending them to buyers. Moreover, the IRP generates a unique <strong>Invoice Reference Number (IRN)</strong> and a QR code that must appear on the invoice." },
+      { type: "p", text: "Currently, e-invoicing is mandatory for businesses with <strong>annual aggregate turnover above \u20B95 crore</strong>. Furthermore, from 1 April 2025, businesses above \u20B910 crore must upload invoices to the IRP within <strong>30 days</strong> of the invoice date \u2014 invoices uploaded later are rejected. Additionally, e-invoices are automatically populated in GSTR-1, significantly reducing manual filing effort. Consequently, businesses close to the \u20B95 crore threshold should prepare their systems proactively rather than scrambling at the last moment." },
+      { type: "h3", text: "What happens if you don't generate an e-invoice when required?" },
+      { type: "p", text: "The consequences are significant. Specifically, a non-e-invoiced invoice from an eligible business is treated as invalid under GST law. Moreover, your buyer cannot claim ITC against it \u2014 creating a serious commercial dispute. Furthermore, you face a penalty of \u20B910,000 per invoice or 100% of the tax involved, whichever is higher. As a result, e-invoicing compliance is not a back-office detail \u2014 it directly affects your business relationships." },
+      { type: "h2", text: "Six Most Common GST Invoice Mistakes to Avoid" },
+      { type: "checklist", items: [
+        { mark: "\u2717", html: "<strong>Wrong GSTIN:</strong> A single digit error in the buyer's GSTIN invalidates their ITC claim. Furthermore, always verify GSTINs on the official GST portal before issuing an invoice." },
+        { mark: "\u2717", html: "<strong>Incorrect HSN/SAC code:</strong> Using a wrong code misclassifies the supply and may trigger audit questions. Additionally, it may indicate an incorrect GST rate was applied." },
+        { mark: "\u2717", html: "<strong>Wrong place of supply:</strong> Charging CGST/SGST on an inter-state transaction \u2014 or IGST on an intra-state one \u2014 creates a liability mismatch that is extremely difficult to correct after filing." },
+        { mark: "\u2717", html: "<strong>Non-sequential invoice numbers:</strong> Gaps in invoice numbering are a red flag in GST audits. Consequently, every invoice number in a financial year must follow without interruption." },
+        { mark: "\u2717", html: "<strong>Omitting RCM declaration:</strong> Failing to state whether reverse charge applies leaves the buyer uncertain about their tax liability. Moreover, it may result in double tax payment." },
+        { mark: "\u2717", html: "<strong>Missing IRN/QR code for eligible businesses:</strong> If you are above the e-invoicing threshold and omit the IRN, your invoice is legally invalid \u2014 regardless of how correct all other fields are." }
+      ] },
+      { type: "p", text: 'To calculate the exact CGST, SGST, and IGST amounts that must appear on your invoice, use our <a href="/">free GST calculator</a>. Additionally, for understanding which type of GST applies to your transaction, read our guide on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>. Furthermore, to understand how your buyer uses this invoice to claim credit, see our article on <a href="/blog/input-tax-credit-gst">Input Tax Credit under GST</a>.' },
+      { type: "cta", title: "Calculate the tax amounts for your invoice", text: "Enter your taxable value \u2014 get instant CGST, SGST, and IGST figures ready to fill into your invoice." }
+    ]
+  },
+  {
+    slug: "reverse-charge-mechanism-gst",
+    title: "Reverse Charge Mechanism Under GST \u2014 Complete Guide",
+    description: "What is Reverse Charge Mechanism under GST? When buyers pay GST instead of sellers \u2014 who it applies to, RCM on imports, self-invoice rules, and ITC on RCM.",
+    category: "Compliance",
+    readTime: "5 min",
+    date: "2026-04-20",
+    body: [
+      { type: "lead", text: "In most transactions, the seller collects GST from the buyer and pays it to the government. However, the Reverse Charge Mechanism (RCM) turns this on its head. Specifically, under RCM the buyer is responsible for paying GST directly to the government \u2014 bypassing the supplier entirely. Furthermore, this rule catches many business owners off guard, creating unexpected tax liabilities." },
+      { type: "p", text: "Moreover, RCM is not a rare exception. Specifically, it applies to a broad range of transactions including purchases from unregistered suppliers, imports of services, legal services, and goods transport. Consequently, any business that buys from unregistered vendors or imports services from abroad must understand RCM thoroughly." },
+      { type: "stat", num: "Buyer pays GST", label: "Under Reverse Charge Mechanism \u2014 not the supplier. The buyer must self-invoice and file a reverse charge entry in GSTR-3B." },
+      { type: "h2", text: "What Is Reverse Charge Mechanism \u2014 and Why Does It Exist?" },
+      { type: "p", text: "RCM exists primarily to ensure GST compliance in transactions where the supplier is either unregistered, operating in an unorganised sector, or located outside India. Specifically, the government recognised that collecting tax from millions of small unregistered vendors would be administratively impossible. Consequently, it shifted the compliance burden to the GST-registered buyer \u2014 who is already in the tax system and has a GSTIN." },
+      { type: "p", text: "Additionally, RCM applies to specific categories of notified goods and services under Section 9(3) of the CGST Act \u2014 regardless of whether the supplier is registered or not. Therefore, even when buying from a fully registered GST vendor, RCM can apply if the transaction falls under the notified list." },
+      { type: "h2", text: "When Does RCM Apply? The Three Main Scenarios" },
+      { type: "h3", text: "Scenario 1 \u2014 Purchases from unregistered suppliers (Section 9(4))" },
+      { type: "p", text: "When a GST-registered business purchases goods or services from an <strong>unregistered supplier</strong>, RCM applies. Moreover, this was a major compliance concern for small businesses buying from local vendors, contractors, and petty traders who are not GST-registered." },
+      { type: "highlight", html: "Practical example: A registered Mumbai retailer pays \u20B950,000 to a local unregistered interior designer. As a result, the retailer must self-assess GST at 18% (\u20B99,000), pay it to the government, issue a self-invoice, and declare it in GSTR-3B under reverse charge." },
+      { type: "h3", text: "Scenario 2 \u2014 Notified goods and services (Section 9(3))" },
+      { type: "p", text: "Certain specific goods and services attract RCM regardless of whether the supplier is registered. Furthermore, these are listed in notifications issued by the GST Council. Consequently, businesses in these sectors must check applicability proactively." },
+      { type: "example", title: "Common notified RCM categories", lines: [
+        "<strong>Legal services:</strong> Services by an advocate or law firm to a business entity. Therefore, companies paying legal fees must pay GST under RCM.",
+        "<strong>Goods Transport Agency (GTA):</strong> Freight services by a GTA to a registered recipient attract 5% GST under RCM (alternatively, the GTA can charge 12% and pay themselves).",
+        "<strong>Sponsorship services:</strong> Any body corporate or partnership firm receiving sponsorship services pays GST under RCM.",
+        "<strong>Director's services:</strong> Services by a director to their own company attract RCM on the company.",
+        "<strong>Security services:</strong> Supply by an individual to a registered body corporate attracts RCM.",
+        "<strong>Renting of motor vehicles:</strong> In specific configurations defined by GST notifications."
+      ] },
+      { type: "h3", text: "Scenario 3 \u2014 Import of services from outside India" },
+      { type: "p", text: "When a business imports services from a foreign supplier \u2014 for instance, paying a US-based SaaS company, a UK marketing agency, or a Singapore consultant \u2014 IGST under RCM applies. Specifically, the Indian recipient must pay IGST at the applicable rate on the foreign payment amount. Moreover, this is called <strong>Online Information and Database Access or Retrieval (OIDAR)</strong> services in specific contexts. Consequently, Indian businesses paying for Zoom subscriptions, Google Workspace, Adobe Creative Cloud, or foreign consulting fees all have potential RCM liability." },
+      { type: "h2", text: "How to Comply With RCM \u2014 Step by Step" },
+      { type: "steps", items: [
+        "Identify the RCM transaction. Specifically, check whether the purchase is from an unregistered supplier or falls under the Section 9(3) notified list.",
+        "Issue a self-invoice. Furthermore, the registered buyer must create an invoice on behalf of the unregistered supplier \u2014 showing their own GSTIN as recipient, the supplier's details, and the GST amount.",
+        "Calculate the GST liability. Apply the appropriate rate to the transaction value.",
+        "Pay the GST in cash. Specifically, RCM liability cannot be paid using existing ITC balances in your electronic credit ledger. As a result, it must be paid in cash to the government.",
+        "Declare in GSTR-3B. Report the RCM liability in Table 3.1(d) of GSTR-3B in the month the payment is made to the supplier.",
+        "Claim ITC on the RCM paid. Crucially, the buyer can claim ITC on the RCM GST paid \u2014 provided the purchase is for business purposes and not blocked under Section 17(5). Consequently, the net cash outflow is often zero for fully registered businesses."
+      ] },
+      { type: "h2", text: "Can You Claim ITC on RCM Payments?" },
+      { type: "p", text: "Yes \u2014 with conditions. Specifically, ITC on RCM-paid GST is available in the same return period in which the RCM GST is paid. Moreover, this ITC is available only if the underlying purchase is for business purposes and not in the blocked credit list. Consequently, for many businesses the ITC immediately offsets the RCM liability, making the net impact zero. However, the compliance steps \u2014 self-invoice, GSTR-3B declaration, cash payment \u2014 must still be completed correctly." },
+      { type: "p", text: 'For calculating the GST amount payable under RCM on any transaction, use our <a href="/">GST calculator</a>. Additionally, understanding which type of GST (CGST/SGST or IGST) applies to your RCM purchase requires knowing the place of supply \u2014 see our guide on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>. Furthermore, for how ITC works after RCM payment, read our full article on <a href="/blog/input-tax-credit-gst">Input Tax Credit under GST</a>.' },
+      { type: "cta", title: "Calculate RCM GST amount instantly", text: "Enter the transaction value \u2014 get instant CGST, SGST, and IGST amounts for any RCM calculation. Free and instant." }
+    ]
+  },
+  {
+    slug: "gst-composition-scheme",
+    title: "GST Composition Scheme \u2014 Who Qualifies and How It Works",
+    description: "The GST Composition Scheme lets small businesses pay a flat low rate instead of regular GST \u2014 eligibility, rates, restrictions, and whether it suits your business.",
+    category: "Small Business",
+    readTime: "5 min",
+    date: "2026-04-20",
+    body: [
+      { type: "lead", text: "India's GST system includes a simplified option specifically designed for small businesses \u2014 the Composition Scheme. Moreover, it offers a dramatically lower tax rate, reduced compliance, and quarterly instead of monthly filing. Furthermore, for small traders, manufacturers, and restaurants with mostly local customers, it can significantly reduce the administrative burden of GST." },
+      { type: "p", text: "However, the scheme comes with important restrictions that make it unsuitable for many businesses. Specifically, composition dealers cannot collect GST from customers, cannot issue tax invoices, and cannot claim input tax credit. Consequently, choosing between the Composition Scheme and regular GST requires careful analysis of your business model." },
+      { type: "stat", num: "\u20B91.5 crore", label: "Annual turnover limit for traders and manufacturers to opt into the Composition Scheme (\u20B975 lakhs for special category states)" },
+      { type: "h2", text: "What Is the GST Composition Scheme?" },
+      { type: "p", text: "The Composition Scheme is an alternative to regular GST registration. Specifically, instead of calculating GST on every transaction and filing detailed returns monthly, a composition dealer pays a fixed percentage of their annual turnover as GST. Moreover, this rate is substantially lower than regular GST rates. Furthermore, the scheme is administered under Section 10 of the CGST Act." },
+      { type: "h3", text: "Composition scheme GST rates by business type" },
+      { type: "statGrid", items: [
+        { n: "1%", l: "Manufacturers and traders (0.5% CGST + 0.5% SGST)" },
+        { n: "5%", l: "Restaurants not serving alcohol" },
+        { n: "6%", l: "Service providers under CGST Rule 7 (3% CGST + 3% SGST)" },
+        { n: "Quarterly", l: "Filing frequency \u2014 vs monthly for regular GST dealers" }
+      ] },
+      { type: "h2", text: "Who Can Opt for the Composition Scheme?" },
+      { type: "p", text: "Eligibility depends on both turnover thresholds and the nature of your business. Moreover, all conditions must be met simultaneously. Specifically, the key eligibility criteria are:" },
+      { type: "checklist", items: [
+        { mark: "\u2713", html: "<strong>Turnover below \u20B91.5 crore:</strong> Annual aggregate turnover must not exceed \u20B91.5 crore. Furthermore, for businesses in special category states (including northeastern states, Himachal Pradesh, and Uttarakhand), the limit is \u20B975 lakhs." },
+        { mark: "\u2713", html: "<strong>Goods-based or restaurant business:</strong> Primarily available for traders, manufacturers, and restaurants. Moreover, a separate scheme under CGST Rule 7 extends a similar option to service providers with turnover below \u20B950 lakhs." },
+        { mark: "\u2713", html: "<strong>Intra-state supplies only:</strong> Composition dealers can only supply within their home state. Consequently, businesses with regular interstate customers are ineligible." },
+        { mark: "\u2713", html: "<strong>No e-commerce sales:</strong> If you sell through Amazon, Flipkart, Meesho, or any other e-commerce operator, you cannot opt for the Composition Scheme. Specifically, e-commerce platforms are required to collect TCS, which is incompatible with the composition mechanism." }
+      ] },
+      { type: "h2", text: "Who Is Excluded From the Composition Scheme?" },
+      { type: "p", text: "Certain businesses are explicitly barred from the scheme regardless of turnover. Specifically, these include ice cream and pan masala manufacturers, producers of tobacco products, suppliers of goods not leviable to GST, suppliers who provide services other than restaurant services (in the standard scheme), and any business making inter-state supplies. Moreover, if any one business in a PAN has opted out of the scheme, all businesses under that PAN must also opt out. Consequently, composition dealers with multiple business verticals must plan carefully." },
+      { type: "h2", text: "Key Restrictions \u2014 What Composition Dealers Cannot Do" },
+      { type: "p", text: "The simplicity of the Composition Scheme comes with significant trade-offs. Furthermore, these restrictions are deal-breakers for many business models. Consequently, understanding them before opting in is essential." },
+      { type: "example", title: "What composition dealers cannot do", lines: [
+        "<strong>Cannot collect GST from customers:</strong> The tax you pay is entirely from your own pocket \u2014 at 1% or 5% of turnover. Specifically, you cannot add GST to your invoice and collect it from buyers.",
+        '<strong>Cannot issue a tax invoice:</strong> Instead, composition dealers issue a <strong>bill of supply</strong> which bears the words "Composition taxable person, not eligible to collect tax on supplies." As a result, your B2B customers cannot claim ITC on purchases from you.',
+        "<strong>Cannot claim input tax credit:</strong> Composition dealers are ineligible for ITC on their purchases. Therefore, GST paid on inputs is simply a cost \u2014 it cannot be offset against any liability.",
+        "<strong>Cannot make inter-state supplies:</strong> All sales must be within the state of registration. Moreover, even occasional inter-state orders disqualify you from the scheme retroactively."
+      ] },
+      { type: "h2", text: "How to Register for the Composition Scheme" },
+      { type: "p", text: "Existing GST registrants can opt into the Composition Scheme at the beginning of a financial year by filing <strong>Form CMP-02</strong> on the GST portal. Specifically, the option must be exercised before the start of the financial year for which it is to apply. Furthermore, new registrants can choose the scheme at the time of initial GST registration." },
+      { type: "p", text: "Importantly, opting into the scheme means filing <strong>GSTR-4</strong> \u2014 an annual return \u2014 instead of monthly GSTR-1 and GSTR-3B. Moreover, a quarterly challan (CMP-08) is filed to pay the tax. Consequently, total annual compliance filings reduce from approximately 25 returns to just 5 \u2014 a significant administrative simplification." },
+      { type: "h2", text: "Composition Scheme vs Regular GST \u2014 Which Is Better for You?" },
+      { type: "p", text: "The Composition Scheme is advantageous if your customers are primarily end consumers (B2C) who do not need ITC. Moreover, it suits businesses with high turnover but low input costs \u2014 since ITC is unavailable, the scheme works best when your input GST is minimal. Conversely, businesses with significant B2B customers who claim ITC will find that composition registration makes them unattractive as suppliers \u2014 losing customers who need tax invoices." },
+      { type: "quote", text: "Rule of thumb: If more than 50% of your revenue comes from B2B customers who claim ITC, regular GST registration almost always serves you better than the Composition Scheme." },
+      { type: "p", text: 'For calculating how much tax you would pay under regular GST versus the composition rate, use our <a href="/">GST calculator</a>. Additionally, if you are a service provider wondering about the \u20B950 lakh service composition scheme, see our guide on <a href="/blog/gst-for-freelancers-india">GST for freelancers and service providers</a>. Furthermore, for understanding what ITC you give up by opting in, read our full article on <a href="/blog/input-tax-credit-gst">Input Tax Credit under GST</a>.' },
+      { type: "cta", title: "Compare your regular vs composition GST liability", text: "Enter your sale amount to see the regular GST figure \u2014 then compare it to 1% or 5% of your turnover under composition." }
+    ]
+  },
+  {
+    slug: "gst-on-ecommerce-india",
+    title: "GST for E-Commerce Sellers in India \u2014 Amazon, Flipkart, and Meesho",
+    description: "Everything Indian e-commerce sellers need to know about GST \u2014 mandatory registration, TCS deductions, marketplace GSTR-8 filing, and reconciling online sales.",
+    category: "E-Commerce",
+    readTime: "6 min",
+    date: "2026-04-20",
+    body: [
+      { type: "lead", text: "If you sell products online through Amazon, Flipkart, Meesho, Myntra, or any other marketplace in India, GST has specific rules that apply only to e-commerce transactions. Moreover, these rules differ significantly from regular offline selling. Furthermore, non-compliance \u2014 even unintentionally \u2014 can result in blocked seller accounts, tax demands, and penalties that disrupt your business." },
+      { type: "p", text: "Additionally, the e-commerce GST framework involves a mechanism called Tax Collected at Source (TCS) that most new online sellers discover only when they notice money being deducted from their marketplace payouts. Consequently, understanding TCS \u2014 and how to reconcile it \u2014 is essential for every e-commerce seller on any Indian platform." },
+      { type: "stat", num: "Mandatory", label: "GST registration for ALL e-commerce sellers in India \u2014 no turnover threshold exemption applies, unlike offline businesses" },
+      { type: "h2", text: "Why E-Commerce Sellers Must Register for GST Regardless of Turnover" },
+      { type: "p", text: "This is the single most important difference between online and offline selling under GST. Specifically, offline businesses below \u20B940 lakhs (goods) or \u20B920 lakhs (services) turnover are exempt from mandatory GST registration. However, e-commerce sellers are explicitly excluded from this exemption under Section 24 of the CGST Act. Consequently, even a seller with \u20B91 lakh annual turnover on Amazon must obtain GST registration before making their first sale." },
+      { type: "p", text: "Furthermore, this rule applies across all platforms \u2014 Amazon India, Flipkart, Meesho, Nykaa, Myntra, Snapdeal, and any other marketplace. Moreover, it applies whether you are an individual selling handmade crafts or a business selling manufactured goods. As a result, the very first step before listing products on any marketplace is obtaining a GSTIN." },
+      { type: "h2", text: "What Is TCS Under GST \u2014 and Why Are Marketplaces Deducting from Your Payout?" },
+      { type: "p", text: "<strong>Tax Collected at Source (TCS)</strong> under GST is governed by Section 52 of the CGST Act. Specifically, every e-commerce operator \u2014 Amazon, Flipkart, Meesho \u2014 must deduct 1% TCS (0.5% CGST + 0.5% SGST for intra-state, or 1% IGST for inter-state) from every payment made to you. Moreover, this deduction happens automatically before the marketplace transfers your settlement amount." },
+      { type: "example", title: "How TCS works on a \u20B910,000 sale", lines: [
+        "<strong>Customer pays:</strong> \u20B910,000 (inclusive of GST) to Amazon at checkout.",
+        "<strong>TCS deducted:</strong> 1% of net value = \u20B985 (approximately, after removing the GST component).",
+        "<strong>Payout to seller:</strong> \u20B910,000 minus Amazon commission minus TCS minus other charges.",
+        "<strong>Your benefit:</strong> The \u20B985 TCS appears as a <strong>credit in your GST electronic cash ledger</strong> \u2014 available to offset your GST liability. Consequently, TCS is not a loss \u2014 it is an advance tax credit."
+      ] },
+      { type: "h2", text: "Marketplace GST Obligations \u2014 What Amazon, Flipkart, and Meesho Must Do" },
+      { type: "p", text: "E-commerce operators have their own GST compliance obligations. Specifically, every marketplace must register for GST across all states where it operates \u2014 regardless of turnover. Furthermore, they must file <strong>GSTR-8</strong> monthly, declaring all TCS collected from sellers and remitting it to the government. Additionally, they must provide sellers with a statement of TCS deductions, which feeds into the seller's GSTR-2B for reconciliation purposes." },
+      { type: "p", text: "As a result, TCS deducted by your marketplace appears in your <strong>GSTR-2B</strong> by the 10th of the following month. Consequently, you can claim this credit in your GSTR-3B to reduce your net GST payable. Furthermore, if TCS credits exceed your GST liability for a period, you can claim a cash refund from the government \u2014 though this process requires filing a specific refund application." },
+      { type: "h2", text: "How to Reconcile Your E-Commerce Sales for GST Filing" },
+      { type: "p", text: "Most e-commerce sellers struggle with reconciliation because their sales involve multiple states, different GST rates across products, and marketplace deductions. Moreover, the volume of transactions makes manual reconciliation impractical. Consequently, a systematic approach is essential." },
+      { type: "steps", items: [
+        "Download your sales report from the marketplace. Specifically, Amazon's Seller Central and Flipkart's Seller Hub provide downloadable transaction reports with order-level GST details.",
+        "Classify by state of buyer. Furthermore, each sale must be classified as intra-state (CGST+SGST) or inter-state (IGST) based on the delivery state versus your registered state.",
+        "Reconcile with GSTR-2B. Specifically, check that TCS credits appearing in GSTR-2B match the TCS deductions shown in your marketplace settlement statements.",
+        "Report in GSTR-1. Moreover, all sales must be declared invoice-by-invoice (or in aggregate for B2C sales below \u20B92.5 lakh per state) in GSTR-1 by the 11th of the following month.",
+        "File GSTR-3B. Consequently, pay the net GST liability after offsetting ITC on purchases and TCS credits. Additionally, declare TCS credits claimed in the relevant table of GSTR-3B."
+      ] },
+      { type: "h2", text: "Can E-Commerce Sellers Use the Composition Scheme?" },
+      { type: "p", text: "No. Explicitly, e-commerce sellers are barred from opting for the GST Composition Scheme under Section 10(2) of the CGST Act. Specifically, any business making supplies through an e-commerce operator \u2014 regardless of turnover \u2014 must be a regular GST registrant. Consequently, if you started as a composition dealer and want to start selling online, you must convert to regular GST registration first." },
+      { type: "h2", text: "GST on Returns, Cancellations, and Refunds in E-Commerce" },
+      { type: "p", text: "Returns are a significant volume event for e-commerce sellers. Specifically, when a customer returns an order, the original GST liability must be reversed. Moreover, this is handled through a <strong>credit note</strong> \u2014 issued by you (the seller) against the original tax invoice. Furthermore, the credit note reduces your output tax liability in the period it is issued. Consequently, returned goods should not lead to permanent GST costs if credit notes are raised correctly and within the same financial year." },
+      { type: "p", text: 'For calculating GST on individual product listings at different rate slabs, use our <a href="/">free GST calculator</a>. Additionally, to understand why e-commerce sellers cannot use composition scheme, see our guide on the <a href="/blog/gst-composition-scheme">GST Composition Scheme</a>. Furthermore, for how to handle inter-state sales and the CGST/IGST classification, read our article on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>.' },
+      { type: "cta", title: "Calculate GST on your product listings instantly", text: "Enter any product price \u2014 instant CGST, SGST, and IGST breakdown for all rate slabs. Free, no registration needed." }
+    ]
   }
 ];
 var getPost = (slug) => POSTS.find((p) => p.slug === slug);
 
-// src/components/SiteHeader.tsx
-import { jsx as jsx8, jsxs as jsxs5 } from "react/jsx-runtime";
-var SiteHeader = ({ active = "home", showUpdatedLabel = false, hideWordmark = false }) => {
-  const [isBlogOpen, setIsBlogOpen] = useState5(false);
-  const navLinkClass = (section) => section === active ? "text-primary-foreground" : "text-primary-mid hover:text-primary-foreground transition-colors";
-  return /* @__PURE__ */ jsxs5("nav", { className: `bg-primary-dark px-6 sm:px-8 py-3.5 flex items-center relative z-20 ${hideWordmark ? "justify-end" : "justify-between"}`, children: [
-    !hideWordmark && /* @__PURE__ */ jsxs5(Link, { to: "/", className: "text-primary-foreground font-bold tracking-tight hover:opacity-90", children: [
-      "GST",
-      /* @__PURE__ */ jsx8("span", { className: "text-primary-mid", children: " Calculator" })
-    ] }),
-    /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-5 text-xs relative", children: [
-      /* @__PURE__ */ jsxs5("div", { className: "relative", children: [
-        /* @__PURE__ */ jsxs5(
-          "button",
-          {
-            type: "button",
-            onClick: () => setIsBlogOpen((open) => !open),
-            "aria-expanded": isBlogOpen,
-            "aria-controls": "blog-submenu",
-            className: `inline-flex items-center gap-1.5 ${navLinkClass("blog")}`,
-            children: [
-              "Blog",
-              /* @__PURE__ */ jsx8(ChevronDown, { className: `h-3.5 w-3.5 transition-transform ${isBlogOpen ? "rotate-180" : ""}` })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs5(
-          "div",
-          {
-            id: "blog-submenu",
-            className: `absolute right-0 top-full mt-3 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-border bg-card shadow-lg transition-all ${isBlogOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1 pointer-events-none"}`,
-            children: [
-              /* @__PURE__ */ jsx8("div", { className: "p-2", children: /* @__PURE__ */ jsx8(
-                Link,
-                {
-                  to: "/blog",
-                  onClick: () => setIsBlogOpen(false),
-                  className: "block rounded-lg px-3 py-2 text-sm font-semibold text-foreground hover:bg-muted transition-colors",
-                  children: "All blog posts"
-                }
-              ) }),
-              /* @__PURE__ */ jsx8("div", { className: "border-t border-border px-2 py-2", children: POSTS.map((post) => /* @__PURE__ */ jsxs5(
-                Link,
-                {
-                  to: `/blog/${post.slug}`,
-                  onClick: () => setIsBlogOpen(false),
-                  className: "block rounded-lg px-3 py-2 hover:bg-muted transition-colors",
-                  children: [
-                    /* @__PURE__ */ jsx8("div", { className: "text-sm font-medium text-foreground leading-snug", children: post.title }),
-                    /* @__PURE__ */ jsx8("div", { className: "text-[11px] text-muted-foreground mt-1", children: post.category })
-                  ]
-                },
-                post.slug
-              )) })
-            ]
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsx8(Link, { to: "/privacy", className: navLinkClass("privacy"), children: "Privacy" }),
-      showUpdatedLabel && /* @__PURE__ */ jsx8("span", { className: "text-primary-mid hidden sm:inline", children: "Updated for 2025" })
-    ] })
-  ] });
-};
-var SiteHeader_default = SiteHeader;
-
-// src/components/SiteFooter.tsx
-import { Link as Link2 } from "react-router-dom";
-import { jsx as jsx9, jsxs as jsxs6 } from "react/jsx-runtime";
-var SiteFooter = () => /* @__PURE__ */ jsx9("footer", { className: "border-t border-border mt-4", children: /* @__PURE__ */ jsxs6("div", { className: "max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground", children: [
-  /* @__PURE__ */ jsx9(Link2, { to: "/", className: "hover:text-foreground transition-colors", children: "Calculator" }),
-  /* @__PURE__ */ jsx9(Link2, { to: "/blog", className: "hover:text-foreground transition-colors", children: "Blog" }),
-  /* @__PURE__ */ jsx9(Link2, { to: "/privacy", className: "hover:text-foreground transition-colors", children: "Privacy Policy" })
-] }) });
-var SiteFooter_default = SiteFooter;
-
-// src/pages/Index.tsx
-import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
-var SLAB_REF = [
-  { pct: "0%", title: "Nil Rate", desc: "Essential food grains, milk, vegetables, fruits, eggs, salt, books, newspapers, sindoor, bangles" },
-  { pct: "5%", title: "Essential Rate", desc: "Packaged foods, sugar, tea, coffee, edible oil, transport services, small restaurants (turnover <1.5 Cr)" },
-  { pct: "12%", title: "Standard Rate I", desc: "Apparel above \u20B91000, computers, processed food, mobile phones, business class air travel" },
-  { pct: "18%", title: "Standard Rate II (Most common)", desc: "AC restaurants, electronics, most financial services, IT services, telecom" },
-  { pct: "28%", title: "Luxury Rate", desc: "Luxury cars, tobacco, cement, pan masala, high-end personal care, AC hotels above \u20B97500/night" }
-];
-var Index = () => {
-  const [tip, setTip] = useState6("");
-  const { stats, dismiss } = useSessionStats();
-  useEffect4(() => {
-    setTip(getRandomTip());
-  }, []);
-  useEffect4(() => {
-    setPageSeo({
-      title: "GST Calculator India 2025 \u2014 All Slabs, CGST/SGST/IGST",
-      description: "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown.",
-      path: "/",
-      keywords: "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator"
-    });
-  }, []);
-  const pageCtx = useMemo2(
-    () => buildContext({ slab: 0, amount: 0, type: "intra", stats }),
-    [stats]
-  );
-  const topTip = pickTip("topBanner", pageCtx);
-  const sidebarTip = pickTip("sidebar", pageCtx);
-  return /* @__PURE__ */ jsxs7("div", { className: "min-h-screen bg-background", children: [
-    topTip && /* @__PURE__ */ jsxs7("div", { className: "bg-warning-light text-warning-text border-b border-warning-border/40 px-6 sm:px-8 py-2 flex items-center gap-2.5 text-xs animate-slide-down", children: [
-      /* @__PURE__ */ jsx10("span", { "aria-hidden": true, children: topTip.icon }),
-      /* @__PURE__ */ jsx10("span", { className: "flex-1", dangerouslySetInnerHTML: { __html: topTip.body } }),
-      topTip.dismissDays && /* @__PURE__ */ jsx10(
-        "button",
-        {
-          onClick: () => dismiss(topTip.id, topTip.dismissDays),
-          className: "opacity-70 hover:opacity-100",
-          "aria-label": "Dismiss",
-          children: /* @__PURE__ */ jsx10(X3, { className: "h-3.5 w-3.5" })
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsx10(SiteHeader_default, { showUpdatedLabel: true, hideWordmark: true }),
-    /* @__PURE__ */ jsxs7("header", { className: "bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground", children: [
-      /* @__PURE__ */ jsx10("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "GST Calculator" }),
-      /* @__PURE__ */ jsx10("p", { className: "text-primary-mid text-sm mt-1", children: "Instant GST computation for all slabs \u2014 with CGST, SGST & IGST breakdown" })
-    ] }),
-    /* @__PURE__ */ jsxs7("main", { className: "max-w-6xl mx-auto px-6 sm:px-8 py-6 grid lg:grid-cols-[1fr_300px] gap-5 items-start", children: [
-      /* @__PURE__ */ jsx10(GSTCalculator, {}),
-      /* @__PURE__ */ jsxs7("aside", { className: "flex flex-col gap-4", children: [
-        /* @__PURE__ */ jsxs7("div", { className: "bg-gradient-to-br from-primary-light to-accent border-[1.5px] border-primary-mid rounded-xl p-4", children: [
-          /* @__PURE__ */ jsx10("h3", { className: "text-sm font-bold text-primary-dark mb-2.5", children: "\u{1F4CA} File GST Returns" }),
-          /* @__PURE__ */ jsx10("div", { className: "space-y-1.5", children: [
-            { name: "Zoho Books", tag: "\u20B92,999/yr" },
-            { name: "ClearTax GST", tag: "Free tier" },
-            { name: "Tally Prime", tag: "Most popular" },
-            { name: "Vyapar App", tag: "Mobile" }
-          ].map((i) => /* @__PURE__ */ jsxs7(
-            "div",
-            {
-              className: "flex items-center justify-between px-2.5 py-2 bg-card rounded-md border border-primary-light",
-              children: [
-                /* @__PURE__ */ jsx10("span", { className: "text-sm font-semibold text-primary-dark", children: i.name }),
-                /* @__PURE__ */ jsx10("span", { className: "text-[0.65rem] bg-primary-light text-primary-dark px-2 py-0.5 rounded-full", children: i.tag })
-              ]
-            },
-            i.name
-          )) })
-        ] }),
-        sidebarTip ? /* @__PURE__ */ jsx10(ContextualTip, { tip: sidebarTip, onDismiss: (t) => dismiss(t.id, t.dismissDays) }) : /* @__PURE__ */ jsxs7("div", { className: "bg-card border border-border rounded-xl p-4 text-sm text-muted-foreground leading-relaxed", children: [
-          /* @__PURE__ */ jsx10("strong", { className: "text-foreground block mb-1", children: "\u{1F4A1} Quick Tip" }),
-          tip
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxs7("section", { className: "max-w-6xl mx-auto px-6 sm:px-8 pb-10 grid md:grid-cols-2 gap-5", children: [
-      /* @__PURE__ */ jsxs7("div", { className: "bg-card rounded-2xl border border-border overflow-hidden", children: [
-        /* @__PURE__ */ jsx10("div", { className: "px-5 py-3.5 bg-warning text-warning-foreground text-sm font-semibold", children: "\u{1F4CB} GST Slab Reference Guide" }),
-        /* @__PURE__ */ jsx10("div", { className: "px-4 py-2", children: SLAB_REF.map((s, i) => /* @__PURE__ */ jsxs7(
-          "div",
-          {
-            className: `flex gap-3 py-2.5 ${i < SLAB_REF.length - 1 ? "border-b border-border" : ""}`,
-            children: [
-              /* @__PURE__ */ jsx10("div", { className: "min-w-[42px] text-base font-bold text-primary-dark", children: s.pct }),
-              /* @__PURE__ */ jsxs7("div", { className: "text-xs text-muted-foreground leading-relaxed", children: [
-                /* @__PURE__ */ jsx10("strong", { className: "text-foreground block text-[0.78rem] mb-0.5", children: s.title }),
-                s.desc
-              ] })
-            ]
-          },
-          s.pct
-        )) })
-      ] }),
-      /* @__PURE__ */ jsxs7("div", { className: "bg-card rounded-2xl border border-border overflow-hidden", children: [
-        /* @__PURE__ */ jsx10("div", { className: "px-5 py-3.5 bg-primary-dark text-primary-foreground text-sm font-semibold", children: "\u26A0\uFE0F GST Registration Thresholds" }),
-        /* @__PURE__ */ jsxs7("div", { className: "p-5", children: [
-          /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-2 gap-3", children: [
-            /* @__PURE__ */ jsxs7("div", { className: "bg-primary-light rounded-lg p-3 text-center", children: [
-              /* @__PURE__ */ jsx10("div", { className: "text-[0.65rem] font-semibold text-primary-dark uppercase mb-1", children: "Goods" }),
-              /* @__PURE__ */ jsx10("div", { className: "text-2xl font-bold text-primary-dark", children: "\u20B940L" }),
-              /* @__PURE__ */ jsx10("div", { className: "text-xs text-primary-dark/70", children: "Annual turnover" })
-            ] }),
-            /* @__PURE__ */ jsxs7("div", { className: "bg-accent rounded-lg p-3 text-center", children: [
-              /* @__PURE__ */ jsx10("div", { className: "text-[0.65rem] font-semibold text-success uppercase mb-1", children: "Services" }),
-              /* @__PURE__ */ jsx10("div", { className: "text-2xl font-bold text-success", children: "\u20B920L" }),
-              /* @__PURE__ */ jsx10("div", { className: "text-xs text-success/80", children: "Annual turnover" })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxs7("div", { className: "mt-3 text-sm text-muted-foreground leading-relaxed space-y-2", children: [
-            /* @__PURE__ */ jsxs7("p", { children: [
-              /* @__PURE__ */ jsx10("strong", { className: "text-foreground", children: "Composition Scheme:" }),
-              " Businesses up to \u20B91.5 Cr (goods) / \u20B975L (services) can opt for simplified quarterly filing at lower flat rates."
-            ] }),
-            /* @__PURE__ */ jsxs7("p", { children: [
-              /* @__PURE__ */ jsx10("strong", { className: "text-foreground", children: "E-invoicing mandatory" }),
-              " for turnover above \u20B95 Cr from FY 2023-24."
-            ] })
-          ] })
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsx10(SiteFooter_default, {})
-  ] });
-};
-var Index_default = Index;
-
-// src/pages/NotFound.tsx
-import { useLocation } from "react-router-dom";
-import { useEffect as useEffect5 } from "react";
-import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
-var NotFound = () => {
-  const location = useLocation();
-  useEffect5(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
-  return /* @__PURE__ */ jsx11("div", { className: "flex min-h-screen items-center justify-center bg-muted", children: /* @__PURE__ */ jsxs8("div", { className: "text-center", children: [
-    /* @__PURE__ */ jsx11("h1", { className: "mb-4 text-4xl font-bold", children: "404" }),
-    /* @__PURE__ */ jsx11("p", { className: "mb-4 text-xl text-muted-foreground", children: "Oops! Page not found" }),
-    /* @__PURE__ */ jsx11("a", { href: "/", className: "text-primary underline hover:text-primary/90", children: "Return to Home" })
-  ] }) });
-};
-var NotFound_default = NotFound;
-
 // src/pages/Blog.tsx
-import { useEffect as useEffect6 } from "react";
-import { Link as Link3 } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
 var Blog = () => {
   useEffect6(() => {
@@ -1615,6 +1809,48 @@ var renderBlock = (b, i) => {
         },
         i
       );
+    case "warn":
+      return /* @__PURE__ */ jsx13(
+        "div",
+        {
+          className: "bg-yellow-50 border-l-[3px] border-yellow-500 rounded-r-lg px-5 py-4 text-sm text-yellow-900 leading-relaxed",
+          dangerouslySetInnerHTML: { __html: b.html }
+        },
+        i
+      );
+    case "checklist":
+      return /* @__PURE__ */ jsx13("div", { className: "flex flex-col gap-2.5", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
+        "div",
+        {
+          className: "flex gap-3 items-start bg-card border border-border rounded-xl px-4 py-3",
+          children: [
+            /* @__PURE__ */ jsx13("span", { className: "text-primary-dark font-bold text-sm flex-shrink-0 mt-0.5 min-w-[1rem]", children: it.mark ?? "\u2022" }),
+            /* @__PURE__ */ jsx13(
+              "p",
+              {
+                className: "text-[15px] text-foreground leading-relaxed flex-1 [&_a]:text-primary-dark [&_a]:underline",
+                dangerouslySetInnerHTML: { __html: it.html }
+              }
+            )
+          ]
+        },
+        j
+      )) }, i);
+    case "invoiceFields":
+      return /* @__PURE__ */ jsx13("div", { className: "flex flex-col", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
+        "div",
+        {
+          className: "flex gap-3 items-start py-3 border-b border-border last:border-b-0",
+          children: [
+            /* @__PURE__ */ jsx13("div", { className: "bg-primary-dark text-primary-foreground text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5", children: j + 1 }),
+            /* @__PURE__ */ jsxs10("div", { className: "flex-1", children: [
+              /* @__PURE__ */ jsx13("div", { className: "text-sm font-bold text-foreground mb-1", children: it.title }),
+              /* @__PURE__ */ jsx13("p", { className: "text-[14px] text-muted-foreground leading-relaxed", children: it.text })
+            ] })
+          ]
+        },
+        j
+      )) }, i);
     case "example":
       return /* @__PURE__ */ jsxs10("div", { className: "bg-card border border-border rounded-xl p-5", children: [
         /* @__PURE__ */ jsx13("div", { className: "text-[11px] font-bold text-primary-dark uppercase tracking-wider mb-2", children: b.title }),

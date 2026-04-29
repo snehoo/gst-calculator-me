@@ -99,6 +99,52 @@ const renderBlock = (b: Block, i: number) => {
           dangerouslySetInnerHTML={{ __html: b.html }}
         />
       );
+    case "warn":
+      return (
+        <div
+          key={i}
+          className="bg-yellow-50 border-l-[3px] border-yellow-500 rounded-r-lg px-5 py-4 text-sm text-yellow-900 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: b.html }}
+        />
+      );
+    case "checklist":
+      return (
+        <div key={i} className="flex flex-col gap-2.5">
+          {b.items.map((it, j) => (
+            <div
+              key={j}
+              className="flex gap-3 items-start bg-card border border-border rounded-xl px-4 py-3"
+            >
+              <span className="text-primary-dark font-bold text-sm flex-shrink-0 mt-0.5 min-w-[1rem]">
+                {it.mark ?? "•"}
+              </span>
+              <p
+                className="text-[15px] text-foreground leading-relaxed flex-1 [&_a]:text-primary-dark [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: it.html }}
+              />
+            </div>
+          ))}
+        </div>
+      );
+    case "invoiceFields":
+      return (
+        <div key={i} className="flex flex-col">
+          {b.items.map((it, j) => (
+            <div
+              key={j}
+              className="flex gap-3 items-start py-3 border-b border-border last:border-b-0"
+            >
+              <div className="bg-primary-dark text-primary-foreground text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                {j + 1}
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-bold text-foreground mb-1">{it.title}</div>
+                <p className="text-[14px] text-muted-foreground leading-relaxed">{it.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
     case "example":
       return (
         <div key={i} className="bg-card border border-border rounded-xl p-5">
