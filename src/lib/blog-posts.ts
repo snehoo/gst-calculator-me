@@ -11,9 +11,12 @@ export type Block =
   | { type: "slabGrid"; items: { r: string; l: string }[] }
   | { type: "formula"; title: string; code: string }
   | { type: "highlight"; html: string }
+  | { type: "warn"; html: string }
   | { type: "example"; title: string; lines: string[] }
   | { type: "quote"; text: string }
   | { type: "steps"; items: string[] }
+  | { type: "checklist"; items: { mark?: string; html: string }[] }
+  | { type: "invoiceFields"; items: { title: string; text: string }[] }
   | { type: "cta"; title: string; text: string };
 
 export interface Post {
