@@ -17,6 +17,11 @@ export type Block =
   | { type: "steps"; items: string[] }
   | { type: "checklist"; items: { mark?: string; html: string }[] }
   | { type: "invoiceFields"; items: { title: string; text: string }[] }
+  | { type: "image"; src: string; alt: string }
+  | { type: "table"; headers: string[]; rows: string[][] }
+  | { type: "ul"; items: string[] } // supports inline <strong>
+  | { type: "divider" }
+  | { type: "sourceLink"; href: string; label?: string }
   | { type: "cta"; title: string; text: string };
 
 export interface Post {
