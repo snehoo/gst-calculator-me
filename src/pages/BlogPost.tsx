@@ -202,6 +202,68 @@ const renderBlock = (b: Block, i: number) => {
           </Link>
         </div>
       );
+    case "image":
+      return (
+        <img
+          key={i}
+          src={b.src}
+          alt={b.alt}
+          loading="lazy"
+          className="w-full rounded-xl border border-border my-2"
+        />
+      );
+    case "table":
+      return (
+        <div key={i} className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-primary-light/40">
+              <tr>
+                {b.headers.map((h, j) => (
+                  <th key={j} className="text-left font-bold text-primary-dark px-3 py-2 border-b border-border">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {b.rows.map((row, r) => (
+                <tr key={r} className="odd:bg-card even:bg-background">
+                  {row.map((cell, c) => (
+                    <td
+                      key={c}
+                      className="px-3 py-2 border-b border-border last:border-b-0 text-foreground align-top"
+                      dangerouslySetInnerHTML={{ __html: cell }}
+                    />
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    case "ul":
+      return (
+        <ul key={i} className="list-disc pl-5 space-y-1.5 text-[15px] text-foreground leading-relaxed marker:text-primary-mid">
+          {b.items.map((it, j) => (
+            <li key={j} dangerouslySetInnerHTML={{ __html: it }} />
+          ))}
+        </ul>
+      );
+    case "divider":
+      return <hr key={i} className="border-t border-border my-2" />;
+    case "sourceLink":
+      return (
+        <p key={i} className="text-xs">
+          <a
+            href={b.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary-dark underline underline-offset-2 hover:text-primary-mid"
+          >
+            {b.label ?? "Source"}
+          </a>
+        </p>
+      );
   }
 };
 
