@@ -61,6 +61,31 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://gstcalculator.me/blog/gst-impact-indian-economy-statistics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-rates-structure-statistics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-business-compliance-statistics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-vs-vat-global-comparison-statistics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gstcalculator.me/blog/gst-impact-consumer-prices-statistics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://gstcalculator.me/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
