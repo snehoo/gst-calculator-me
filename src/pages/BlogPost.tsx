@@ -179,7 +179,7 @@ const renderBlock = (b: Block, i: number) => {
               <div className="bg-primary-dark text-primary-foreground text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 {j + 1}
               </div>
-              <p className="text-[15px] text-foreground leading-relaxed flex-1">{s}</p>
+              <p className="text-[15px] text-foreground leading-relaxed flex-1" dangerouslySetInnerHTML={{ __html: s }} />
             </div>
           ))}
         </div>
