@@ -74,48 +74,22 @@ const Index = () => {
         </p>
       </header>
 
-      {/* Main grid */}
-      <main className="max-w-6xl mx-auto px-6 sm:px-8 py-6 grid lg:grid-cols-[1fr_300px] gap-5 items-start">
+      {/* Main column */}
+      <main className="max-w-3xl mx-auto px-6 sm:px-8 py-6 flex flex-col gap-5">
         <GSTCalculator />
 
-        {/* Sidebar */}
-        <aside className="flex flex-col gap-4">
-          <div className="bg-gradient-to-br from-primary-light to-accent border-[1.5px] border-primary-mid rounded-xl p-4">
-            <h3 className="text-sm font-bold text-primary-dark mb-2.5">📊 File GST Returns</h3>
-            <div className="space-y-1.5">
-              {[
-                { name: "Zoho Books", tag: "₹2,999/yr" },
-                { name: "ClearTax GST", tag: "Free tier" },
-                { name: "Tally Prime", tag: "Most popular" },
-                { name: "Vyapar App", tag: "Mobile" },
-              ].map((i) => (
-                <div
-                  key={i.name}
-                  className="flex items-center justify-between px-2.5 py-2 bg-card rounded-md border border-primary-light"
-                >
-                  <span className="text-sm font-semibold text-primary-dark">{i.name}</span>
-                  <span className="text-[0.65rem] bg-primary-light text-primary-dark px-2 py-0.5 rounded-full">
-                    {i.tag}
-                  </span>
-                </div>
-              ))}
-            </div>
+        {sidebarTip ? (
+          <ContextualTip tip={sidebarTip} onDismiss={(t) => dismiss(t.id, t.dismissDays)} />
+        ) : (
+          <div className="bg-card border border-border rounded-xl p-4 text-sm text-muted-foreground leading-relaxed">
+            <strong className="text-foreground block mb-1">💡 Quick Tip</strong>
+            {tip}
           </div>
-
-          {/* Sidebar contextual tip swaps in for power/seasonal users only. */}
-          {sidebarTip ? (
-            <ContextualTip tip={sidebarTip} onDismiss={(t) => dismiss(t.id, t.dismissDays)} />
-          ) : (
-            <div className="bg-card border border-border rounded-xl p-4 text-sm text-muted-foreground leading-relaxed">
-              <strong className="text-foreground block mb-1">💡 Quick Tip</strong>
-              {tip}
-            </div>
-          )}
-        </aside>
+        )}
       </main>
 
       {/* Reference */}
-      <section className="max-w-6xl mx-auto px-6 sm:px-8 pb-10 grid md:grid-cols-2 gap-5">
+      <section className="max-w-3xl mx-auto px-6 sm:px-8 pb-10 flex flex-col gap-5">
         <div className="bg-card rounded-2xl border border-border overflow-hidden">
           <div className="px-5 py-3.5 bg-warning text-warning-foreground text-sm font-semibold">
             📋 GST Slab Reference Guide
