@@ -1,10 +1,12 @@
 # Cloudflare Pages configuration
 # This config is for Cloudflare Pages (static site hosting)
-# Build output directory where the pre-rendered site lives
+name = "gst-calculator-me"
+type = "javascript"
+pages_build_output_dir = "dist"
+
 [build]
 command = "npm run build"
 cwd = "./"
-root = "."
 
 [env.production]
 name = "gst-calculator-me"
