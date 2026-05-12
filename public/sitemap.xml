@@ -111,6 +111,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://gstcalculator.me/blog/gst-2-0-reforms-india-2025</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gstcalculator.me/blog/new-gst-rate-slab-list-2025-26</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

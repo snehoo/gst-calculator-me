@@ -1,4 +1,28 @@
+# GST Calculator robots.txt
+# Controls access for search engines and crawlers
+
 User-agent: *
 Allow: /
+
+# AI training crawlers — currently disallowed by default (conservative choice)
+# To appear in AI-generated answers and training data, change Disallow to Allow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
 
 Sitemap: https://gstcalculator.me/sitemap.xml
