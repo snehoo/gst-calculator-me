@@ -1,9 +1,5 @@
-# Redirect www to non-www (301)
-http://www.gstcalculator.me/* https://gstcalculator.me/:splat 301
-https://www.gstcalculator.me/* https://gstcalculator.me/:splat 301
-
-# Redirect HTTP to HTTPS (301) — Netlify handles automatically, but explicit for clarity
-http://gstcalculator.me/* https://gstcalculator.me/:splat 301
-
-# SPA fallback — serve index.html for all non-file routes
-/*    /index.html   200
+# Cloudflare Pages handles HTTP→HTTPS and www→non-www redirects automatically
+# via dashboard configuration, so no explicit redirects needed here.
+#
+# Since all routes are pre-rendered with SSG (34 routes with their own HTML files),
+# there is no need for a catch-all SPA fallback rule.
