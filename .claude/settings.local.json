@@ -41,7 +41,8 @@
       "Bash(curl -s http://localhost:8080)",
       "Bash(curl -s http://localhost:8080/blog)",
       "Bash(curl -s http://localhost:8080/blog/gst-2-0-reforms-india-2025)",
-      "mcp__Claude_in_Chrome__javascript_tool"
+      "mcp__Claude_in_Chrome__javascript_tool",
+      "Bash(git commit -m 'Update package-lock.json for Vite 6 \\(Wrangler compatible\\) *)"
     ]
   }
 }
