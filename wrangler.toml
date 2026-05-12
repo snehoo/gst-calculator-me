@@ -1,12 +1,13 @@
-name = "gst-calculator-me"
-type = "javascript"
-
 # Cloudflare Pages configuration
-pages_build_output_dir = "dist"
-
-compatibility_date = "2024-12-16"
-compatibility_flags = ["nodejs_compat"]
-
+# This config is for Cloudflare Pages (static site hosting)
+# Build output directory where the pre-rendered site lives
 [build]
 command = "npm run build"
-watch_paths = ["src/**/*.ts", "src/**/*.tsx"]
+cwd = "./"
+root = "."
+
+[env.production]
+name = "gst-calculator-me"
+routes = [
+  { pattern = "gstcalculator.me/*", zone_name = "gstcalculator.me" }
+]
