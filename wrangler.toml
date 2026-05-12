@@ -1,12 +1,15 @@
 # Cloudflare Pages configuration
 # This config is for Cloudflare Pages (static site hosting)
 name = "gst-calculator-me"
-type = "javascript"
+compatibility_date = "2026-05-12"
 pages_build_output_dir = "dist"
 
 [build]
 command = "npm run build"
 cwd = "./"
+
+[assets]
+directory = "./dist"
 
 [env.production]
 name = "gst-calculator-me"
