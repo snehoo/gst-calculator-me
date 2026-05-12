@@ -230,8 +230,96 @@ const applySeo = (html, route, bodyHtml) => {
     nextHtml = replaceTag(nextHtml, /<meta name="keywords"\s+content="[^"]*">/, `<meta name="keywords" content="${escapeHtml(route.keywords)}">`);
   }
 
+  const schemas = [];
+
+  if (route.path === "/") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "GST Calculator India",
+      url: canonical,
+      description: route.description,
+      applicationCategory: "FinanceApplication",
+      operatingSystem: "Any",
+      inLanguage: "en-IN",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        "priceCurrency": "INR",
+      },
+    });
+
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What is the GST registration threshold for goods?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Businesses with an annual turnover of ₹40 lakh or more need to register for GST. Goods suppliers above this threshold must register.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the GST registration threshold for services?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Service providers with an annual turnover of ₹20 lakh or more need to register for GST. This is lower than the goods threshold.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the GST Composition Scheme?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Businesses with turnover up to ₹1.5 Cr (goods) or ₹75 lakh (services) can opt for the simplified Composition Scheme and pay flat GST rates with quarterly filing instead of monthly, reducing compliance burden.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Who needs to file e-invoicing?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "E-invoicing is mandatory for businesses with turnover above ₹5 Cr from FY 2023-24. It integrates directly with the GST portal for better tracking and reduced fraud.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What are the main GST slabs in India?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "India has 5 main GST slabs: 0% (nil rate on essentials), 5% (essential goods/services), 12% (standard rate I), 18% (standard rate II - most common), and 28% (luxury goods). Different products fall into different slabs based on their nature.",
+          },
+        },
+      ],
+    });
+  }
+
+  if (route.path === "/blog") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+        { "@type": "ListItem", position: 2, name: "Blog", item: canonical },
+      ],
+    });
+  }
+
   if (route.type === "article" && route.post) {
-    const articleSchema = {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+        { "@type": "ListItem", position: 2, name: "Blog", item: `${siteUrl}/blog` },
+        { "@type": "ListItem", position: 3, name: route.post.title, item: canonical },
+      ],
+    });
+
+    schemas.push({
       "@context": "https://schema.org",
       "@type": "Article",
       headline: route.post.title,
@@ -239,6 +327,7 @@ const applySeo = (html, route, bodyHtml) => {
       datePublished: route.post.date,
       dateModified: route.post.date,
       inLanguage: "en-IN",
+      url: canonical,
       mainEntityOfPage: canonical,
       author: { "@type": "Organization", name: "GST Calculator" },
       publisher: {
@@ -250,11 +339,12 @@ const applySeo = (html, route, bodyHtml) => {
         .map((block) => stripHtml(block.text || block.html || block.code || block.title || ""))
         .filter(Boolean)
         .join(" "),
-    };
-    nextHtml = nextHtml.replace(
-      "</head>",
-      `<script type="application/ld+json">${JSON.stringify(articleSchema)}</script>\n  </head>`,
-    );
+    });
+  }
+
+  if (schemas.length > 0) {
+    const schemaScripts = schemas.map((s) => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join("\n  ");
+    nextHtml = nextHtml.replace("</head>", `  ${schemaScripts}\n  </head>`);
   }
 
   return nextHtml;

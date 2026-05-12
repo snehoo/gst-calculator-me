@@ -964,6 +964,17 @@ var upsertCanonical = (href) => {
   }
   link.setAttribute("href", href);
 };
+var injectJsonLd = (schema) => {
+  const script = document.createElement("script");
+  script.setAttribute("type", "application/ld+json");
+  script.textContent = JSON.stringify(schema);
+  document.head.appendChild(script);
+};
+var clearJsonLdScripts = () => {
+  document.querySelectorAll('script[type="application/ld+json"]').forEach((el) => {
+    if (el.parentNode) el.parentNode.removeChild(el);
+  });
+};
 var setPageSeo = ({ title, description, path, keywords, type = "website" }) => {
   const url = new URL(path, SITE_URL).toString();
   document.title = title;
@@ -978,6 +989,76 @@ var setPageSeo = ({ title, description, path, keywords, type = "website" }) => {
   upsertPropertyMeta("og:type", type);
   upsertNamedMeta("twitter:title", title);
   upsertNamedMeta("twitter:description", description);
+};
+var setWebApplicationSchema = ({ name, description }) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name,
+    url: SITE_URL + "/",
+    description,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Any",
+    inLanguage: "en-IN",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      "priceCurrency": "INR"
+    }
+  };
+  injectJsonLd(schema);
+};
+var setFAQPageSchema = (items) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer
+      }
+    }))
+  };
+  injectJsonLd(schema);
+};
+var setBreadcrumbListSchema = (items) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item) => ({
+      "@type": "ListItem",
+      position: item.position,
+      name: item.name,
+      item: item.item
+    }))
+  };
+  injectJsonLd(schema);
+};
+var setArticleSchema = ({
+  headline,
+  description,
+  datePublished,
+  dateModified
+}) => {
+  const url = new URL(window.location.pathname, SITE_URL).toString();
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline,
+    description,
+    url,
+    datePublished,
+    dateModified,
+    inLanguage: "en-IN",
+    publisher: {
+      "@type": "Organization",
+      name: "GST Calculator",
+      url: SITE_URL
+    }
+  };
+  injectJsonLd(schema);
 };
 
 // src/components/SiteHeader.tsx
@@ -1025,12 +1106,39 @@ var Index = () => {
     setTip(getRandomTip());
   }, []);
   useEffect4(() => {
+    clearJsonLdScripts();
     setPageSeo({
       title: "GST Calculator India 2025 \u2014 All Slabs, CGST/SGST/IGST",
       description: "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown.",
       path: "/",
       keywords: "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator"
     });
+    setWebApplicationSchema({
+      name: "GST Calculator India",
+      description: "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown."
+    });
+    setFAQPageSchema([
+      {
+        question: "What is the GST registration threshold for goods?",
+        answer: "Businesses with an annual turnover of \u20B940 lakh or more need to register for GST. Goods suppliers above this threshold must register."
+      },
+      {
+        question: "What is the GST registration threshold for services?",
+        answer: "Service providers with an annual turnover of \u20B920 lakh or more need to register for GST. This is lower than the goods threshold."
+      },
+      {
+        question: "What is the GST Composition Scheme?",
+        answer: "Businesses with turnover up to \u20B91.5 Cr (goods) or \u20B975 lakh (services) can opt for the simplified Composition Scheme and pay flat GST rates with quarterly filing instead of monthly, reducing compliance burden."
+      },
+      {
+        question: "Who needs to file e-invoicing?",
+        answer: "E-invoicing is mandatory for businesses with turnover above \u20B95 Cr from FY 2023-24. It integrates directly with the GST portal for better tracking and reduced fraud."
+      },
+      {
+        question: "What are the main GST slabs in India?",
+        answer: "India has 5 main GST slabs: 0% (nil rate on essentials), 5% (essential goods/services), 12% (standard rate I), 18% (standard rate II - most common), and 28% (luxury goods). Different products fall into different slabs based on their nature."
+      }
+    ]);
   }, []);
   const pageCtx = useMemo2(
     () => buildContext({ slab: 0, amount: 0, type: "intra", stats }),
@@ -3886,12 +3994,17 @@ var getPost = (slug) => POSTS.find((p) => p.slug === slug);
 import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
 var Blog = () => {
   useEffect6(() => {
+    clearJsonLdScripts();
     setPageSeo({
       title: "GST Blog \u2014 Guides, Rates & Compliance Tips | GST Calculator",
       description: "Practical GST guides for Indian businesses: how to calculate GST, slabs explained, CGST vs SGST vs IGST, and GST for freelancers.",
       path: "/blog",
       keywords: "GST blog India, GST guides, GST rate slabs, CGST SGST IGST explained, GST for freelancers"
     });
+    setBreadcrumbListSchema([
+      { position: 1, name: "Home", item: "https://gstcalculator.me/" },
+      { position: 2, name: "Blog", item: "https://gstcalculator.me/blog" }
+    ]);
   }, []);
   return /* @__PURE__ */ jsxs9("div", { className: "min-h-screen bg-background", children: [
     /* @__PURE__ */ jsx12(SiteHeader_default, { active: "blog" }),
@@ -4150,12 +4263,24 @@ var BlogPost = () => {
   const post = slug ? getPost(slug) : void 0;
   useEffect7(() => {
     if (post) {
+      clearJsonLdScripts();
       setPageSeo({
         title: `${post.title} | GST Calculator`,
         description: post.description,
         path: `/blog/${post.slug}`,
         type: "article"
       });
+      setArticleSchema({
+        headline: post.title,
+        description: post.description,
+        datePublished: post.date,
+        dateModified: post.date
+      });
+      setBreadcrumbListSchema([
+        { position: 1, name: "Home", item: "https://gstcalculator.me/" },
+        { position: 2, name: "Blog", item: "https://gstcalculator.me/blog" },
+        { position: 3, name: post.title, item: `https://gstcalculator.me/blog/${post.slug}` }
+      ]);
     }
   }, [post]);
   if (!post) {

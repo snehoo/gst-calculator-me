@@ -44,6 +44,19 @@ interface PageSeoInput {
   type?: "website" | "article";
 }
 
+const injectJsonLd = (schema: Record<string, unknown>) => {
+  const script = document.createElement("script");
+  script.setAttribute("type", "application/ld+json");
+  script.textContent = JSON.stringify(schema);
+  document.head.appendChild(script);
+};
+
+export const clearJsonLdScripts = () => {
+  document.querySelectorAll('script[type="application/ld+json"]').forEach((el) => {
+    if (el.parentNode) el.parentNode.removeChild(el);
+  });
+};
+
 export const setPageSeo = ({ title, description, path, keywords, type = "website" }: PageSeoInput) => {
   const url = new URL(path, SITE_URL).toString();
 
@@ -61,4 +74,101 @@ export const setPageSeo = ({ title, description, path, keywords, type = "website
   upsertPropertyMeta("og:type", type);
   upsertNamedMeta("twitter:title", title);
   upsertNamedMeta("twitter:description", description);
+};
+
+interface WebApplicationSchema {
+  name: string;
+  description: string;
+}
+
+export const setWebApplicationSchema = ({ name, description }: WebApplicationSchema) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name,
+    url: SITE_URL + "/",
+    description,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Any",
+    inLanguage: "en-IN",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      "priceCurrency": "INR",
+    },
+  };
+  injectJsonLd(schema);
+};
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export const setFAQPageSchema = (items: FAQItem[]) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+  injectJsonLd(schema);
+};
+
+interface BreadcrumbItem {
+  position: number;
+  name: string;
+  item: string;
+}
+
+export const setBreadcrumbListSchema = (items: BreadcrumbItem[]) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item) => ({
+      "@type": "ListItem",
+      position: item.position,
+      name: item.name,
+      item: item.item,
+    })),
+  };
+  injectJsonLd(schema);
+};
+
+interface ArticleSchema {
+  headline: string;
+  description: string;
+  datePublished?: string;
+  dateModified?: string;
+}
+
+export const setArticleSchema = ({
+  headline,
+  description,
+  datePublished,
+  dateModified,
+}: ArticleSchema) => {
+  const url = new URL(window.location.pathname, SITE_URL).toString();
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline,
+    description,
+    url,
+    datePublished,
+    dateModified,
+    inLanguage: "en-IN",
+    publisher: {
+      "@type": "Organization",
+      name: "GST Calculator",
+      url: SITE_URL,
+    },
+  };
+  injectJsonLd(schema);
 };

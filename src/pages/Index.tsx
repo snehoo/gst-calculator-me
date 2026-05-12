@@ -5,7 +5,7 @@ import { ContextualTip } from "@/components/ContextualTip";
 import { getRandomTip } from "@/lib/gst-tips";
 import { useSessionStats } from "@/hooks/useSessionStats";
 import { buildContext, pickTip } from "@/lib/tips-engine";
-import { setPageSeo } from "@/lib/seo";
+import { setPageSeo, setWebApplicationSchema, setFAQPageSchema, clearJsonLdScripts } from "@/lib/seo";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -26,6 +26,8 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    clearJsonLdScripts();
+
     setPageSeo({
       title: "GST Calculator India 2025 — All Slabs, CGST/SGST/IGST",
       description:
@@ -34,6 +36,40 @@ const Index = () => {
       keywords:
         "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator",
     });
+
+    setWebApplicationSchema({
+      name: "GST Calculator India",
+      description:
+        "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown.",
+    });
+
+    setFAQPageSchema([
+      {
+        question: "What is the GST registration threshold for goods?",
+        answer:
+          "Businesses with an annual turnover of ₹40 lakh or more need to register for GST. Goods suppliers above this threshold must register.",
+      },
+      {
+        question: "What is the GST registration threshold for services?",
+        answer:
+          "Service providers with an annual turnover of ₹20 lakh or more need to register for GST. This is lower than the goods threshold.",
+      },
+      {
+        question: "What is the GST Composition Scheme?",
+        answer:
+          "Businesses with turnover up to ₹1.5 Cr (goods) or ₹75 lakh (services) can opt for the simplified Composition Scheme and pay flat GST rates with quarterly filing instead of monthly, reducing compliance burden.",
+      },
+      {
+        question: "Who needs to file e-invoicing?",
+        answer:
+          "E-invoicing is mandatory for businesses with turnover above ₹5 Cr from FY 2023-24. It integrates directly with the GST portal for better tracking and reduced fraud.",
+      },
+      {
+        question: "What are the main GST slabs in India?",
+        answer:
+          "India has 5 main GST slabs: 0% (nil rate on essentials), 5% (essential goods/services), 12% (standard rate I), 18% (standard rate II - most common), and 28% (luxury goods). Different products fall into different slabs based on their nature.",
+      },
+    ]);
   }, []);
 
   // Page-level tips depend only on date + visit count.

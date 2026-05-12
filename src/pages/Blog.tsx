@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import { POSTS } from "@/lib/blog-posts";
-import { setPageSeo } from "@/lib/seo";
+import { setPageSeo, setBreadcrumbListSchema, clearJsonLdScripts } from "@/lib/seo";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
 const Blog = () => {
   useEffect(() => {
+    clearJsonLdScripts();
+
     setPageSeo({
       title: "GST Blog — Guides, Rates & Compliance Tips | GST Calculator",
       description:
@@ -16,6 +18,11 @@ const Blog = () => {
       keywords:
         "GST blog India, GST guides, GST rate slabs, CGST SGST IGST explained, GST for freelancers",
     });
+
+    setBreadcrumbListSchema([
+      { position: 1, name: "Home", item: "https://gstcalculator.me/" },
+      { position: 2, name: "Blog", item: "https://gstcalculator.me/blog" },
+    ]);
   }, []);
 
   return (

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Home } from "lucide-react";
 import { getPost, POSTS, type Block } from "@/lib/blog-posts";
-import { setPageSeo } from "@/lib/seo";
+import { setPageSeo, setArticleSchema, setBreadcrumbListSchema, clearJsonLdScripts } from "@/lib/seo";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 
@@ -273,12 +273,27 @@ const BlogPost = () => {
 
   useEffect(() => {
     if (post) {
+      clearJsonLdScripts();
+
       setPageSeo({
         title: `${post.title} | GST Calculator`,
         description: post.description,
         path: `/blog/${post.slug}`,
         type: "article",
       });
+
+      setArticleSchema({
+        headline: post.title,
+        description: post.description,
+        datePublished: post.date,
+        dateModified: post.date,
+      });
+
+      setBreadcrumbListSchema([
+        { position: 1, name: "Home", item: "https://gstcalculator.me/" },
+        { position: 2, name: "Blog", item: "https://gstcalculator.me/blog" },
+        { position: 3, name: post.title, item: `https://gstcalculator.me/blog/${post.slug}` },
+      ]);
     }
   }, [post]);
 
