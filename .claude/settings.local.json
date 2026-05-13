@@ -42,7 +42,12 @@
       "Bash(curl -s http://localhost:8080/blog)",
       "Bash(curl -s http://localhost:8080/blog/gst-2-0-reforms-india-2025)",
       "mcp__Claude_in_Chrome__javascript_tool",
-      "Bash(git commit -m 'Update package-lock.json for Vite 6 \\(Wrangler compatible\\) *)"
+      "Bash(git commit -m 'Update package-lock.json for Vite 6 \\(Wrangler compatible\\) *)",
+      "Bash(bun install *)",
+      "Bash(git commit -m 'Sync bun lockfiles with Vite 6 upgrade *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git commit -m 'Fix _redirects for Cloudflare Pages compatibility *)",
+      "Bash(git commit -m 'Add note about www redirects for Cloudflare Pages *)"
     ]
   }
 }
