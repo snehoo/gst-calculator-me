@@ -1,5 +1,7 @@
-# Cloudflare Pages handles HTTP→HTTPS and www→non-www redirects automatically
-# via dashboard configuration, so no explicit redirects needed here.
+# Cloudflare Pages requires www→non-www redirects to be configured via:
+# 1. Cloudflare Worker/Function for domain-level redirects, OR
+# 2. Cloudflare Dashboard Page Rules, OR
+# 3. Google Search Console preferred domain setting
 #
-# Since all routes are pre-rendered with SSG (34 routes with their own HTML files),
-# there is no need for a catch-all SPA fallback rule.
+# For now, ensure preferred domain is set in Search Console to:
+# https://gstcalculator.me (without www)
