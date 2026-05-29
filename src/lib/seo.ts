@@ -58,7 +58,9 @@ export const clearJsonLdScripts = () => {
 };
 
 export const setPageSeo = ({ title, description, path, keywords, type = "website" }: PageSeoInput) => {
-  const url = new URL(path, SITE_URL).toString();
+  // Ensure trailing slash for all URLs except root
+  const normalizedPath = path === "/" ? "/" : path.endsWith("/") ? path : path + "/";
+  const url = new URL(normalizedPath, SITE_URL).toString();
 
   document.title = title;
   upsertNamedMeta("description", description);
@@ -154,7 +156,10 @@ export const setArticleSchema = ({
   datePublished,
   dateModified,
 }: ArticleSchema) => {
-  const url = new URL(window.location.pathname, SITE_URL).toString();
+  // Ensure trailing slash for article URLs
+  const pathname = window.location.pathname;
+  const normalizedPathname = pathname === "/" ? "/" : pathname.endsWith("/") ? pathname : pathname + "/";
+  const url = new URL(normalizedPathname, SITE_URL).toString();
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
