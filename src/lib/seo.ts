@@ -1,174 +1,174 @@
-/**
- * seo.ts — canonical, meta, and JSON-LD helpers for gstcalculator.me
- *
- * Key fix: canonical tag is always written/updated BEFORE any other meta so
- * that when vite-plugin-prerender snapshots the DOM, the correct URL is present.
- */
+const SITE_URL = "https://gstcalculator.me";
 
-const BASE_URL = "https://gstcalculator.me";
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-function setMeta(selector: string, attr: string, value: string) {
-  let el = document.querySelector<HTMLMetaElement>(selector);
-  if (!el) {
-    el = document.createElement("meta");
-    // Set the identifying attribute (name or property) from the selector
-    const match = selector.match(/\[([^\]]+)="([^"]+)"\]/);
-    if (match) el.setAttribute(match[1], match[2]);
-    document.head.appendChild(el);
+const upsertNamedMeta = (name: string, content: string) => {
+  let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute("name", name);
+    document.head.appendChild(meta);
   }
-  el.setAttribute(attr, value);
-}
+  meta.setAttribute("content", content);
+};
 
-function setLink(rel: string, href: string) {
-  // Remove any existing tags with this rel first to avoid duplicates
-  document
-    .querySelectorAll<HTMLLinkElement>(`link[rel="${rel}"]`)
-    .forEach((el) => el.remove());
-
-  const el = document.createElement("link");
-  el.setAttribute("rel", rel);
-  el.setAttribute("href", href);
-  document.head.appendChild(el);
-}
-
-function injectJsonLd(id: string, data: object) {
-  let el = document.querySelector<HTMLScriptElement>(`script[data-ld="${id}"]`);
-  if (!el) {
-    el = document.createElement("script");
-    el.setAttribute("type", "application/ld+json");
-    el.setAttribute("data-ld", id);
-    document.head.appendChild(el);
+const upsertPropertyMeta = (property: string, content: string) => {
+  let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement | null;
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute("property", property);
+    document.head.appendChild(meta);
   }
-  el.textContent = JSON.stringify(data);
-}
+  meta.setAttribute("content", content);
+};
 
-// ─── Public API ─────────────────────────────────────────────────────────────
+const upsertCanonical = (href: string) => {
+  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", href);
+};
 
-export interface PageSeoOptions {
+interface PageSeoInput {
   title: string;
   description: string;
-  /** Path starting with /, e.g. "/blog/how-to-calculate-gst" — NO trailing slash */
   path: string;
   keywords?: string;
   type?: "website" | "article";
 }
 
-export function setPageSeo({
-  title,
-  description,
-  path,
-  keywords,
-  type = "website",
-}: PageSeoOptions) {
-  // Normalise: strip trailing slash (except root "/")
-  const normPath = path.length > 1 ? path.replace(/\/$/, "") : path;
-  const canonical = `${BASE_URL}${normPath}`;
+const injectJsonLd = (schema: Record<string, unknown>) => {
+  const script = document.createElement("script");
+  script.setAttribute("type", "application/ld+json");
+  script.textContent = JSON.stringify(schema);
+  document.head.appendChild(script);
+};
 
-  // 1. Title
+export const clearJsonLdScripts = () => {
+  document.querySelectorAll('script[type="application/ld+json"]').forEach((el) => {
+    if (el.parentNode) el.parentNode.removeChild(el);
+  });
+};
+
+export const setPageSeo = ({ title, description, path, keywords, type = "website" }: PageSeoInput) => {
+  // ⚠️ NO trailing slash — must match sitemap.xml and prerender-routes.mjs exactly.
+  // Root "/" stays as-is. All other paths strip any trailing slash.
+  const normalizedPath = path === "/" ? "/" : path.replace(/\/$/, "");
+  const url = `${SITE_URL}${normalizedPath}`;
+
   document.title = title;
+  upsertNamedMeta("description", description);
 
-  // 2. Canonical — must be set first and must be the exact URL in the sitemap
-  setLink("canonical", canonical);
-
-  // 3. Standard meta
-  setMeta('meta[name="description"]', "content", description);
   if (keywords) {
-    setMeta('meta[name="keywords"]', "content", keywords);
+    upsertNamedMeta("keywords", keywords);
   }
 
-  // 4. Open Graph
-  setMeta('meta[property="og:title"]', "content", title);
-  setMeta('meta[property="og:description"]', "content", description);
-  setMeta('meta[property="og:url"]', "content", canonical);
-  setMeta('meta[property="og:type"]', "content", type);
-  setMeta('meta[property="og:site_name"]', "content", "GST Calculator India");
+  upsertCanonical(url);
+  upsertPropertyMeta("og:title", title);
+  upsertPropertyMeta("og:description", description);
+  upsertPropertyMeta("og:url", url);
+  upsertPropertyMeta("og:type", type);
+  upsertNamedMeta("twitter:title", title);
+  upsertNamedMeta("twitter:description", description);
+};
 
-  // 5. Twitter / X card
-  setMeta('meta[name="twitter:card"]', "content", "summary");
-  setMeta('meta[name="twitter:title"]', "content", title);
-  setMeta('meta[name="twitter:description"]', "content", description);
-}
-
-// ─── Schema helpers ──────────────────────────────────────────────────────────
-
-export function clearJsonLdScripts() {
-  document
-    .querySelectorAll('script[type="application/ld+json"][data-ld]')
-    .forEach((el) => el.remove());
-}
-
-export function setWebApplicationSchema({
-  name,
-  description,
-}: {
+interface WebApplicationSchema {
   name: string;
   description: string;
-}) {
-  injectJsonLd("webapp", {
+}
+
+export const setWebApplicationSchema = ({ name, description }: WebApplicationSchema) => {
+  const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name,
+    url: SITE_URL + "/",
     description,
-    url: BASE_URL,
     applicationCategory: "FinanceApplication",
-    operatingSystem: "All",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
-  });
+    operatingSystem: "Any",
+    inLanguage: "en-IN",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      "priceCurrency": "INR",
+    },
+  };
+  injectJsonLd(schema);
+};
+
+interface FAQItem {
+  question: string;
+  answer: string;
 }
 
-export function setArticleSchema({
+export const setFAQPageSchema = (items: FAQItem[]) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+  injectJsonLd(schema);
+};
+
+interface BreadcrumbItem {
+  position: number;
+  name: string;
+  item: string;
+}
+
+export const setBreadcrumbListSchema = (items: BreadcrumbItem[]) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item) => ({
+      "@type": "ListItem",
+      position: item.position,
+      name: item.name,
+      item: item.item,
+    })),
+  };
+  injectJsonLd(schema);
+};
+
+interface ArticleSchema {
+  headline: string;
+  description: string;
+  datePublished?: string;
+  dateModified?: string;
+}
+
+export const setArticleSchema = ({
   headline,
   description,
   datePublished,
   dateModified,
-}: {
-  headline: string;
-  description: string;
-  datePublished: string;
-  dateModified: string;
-}) {
-  injectJsonLd("article", {
+}: ArticleSchema) => {
+  // ⚠️ NO trailing slash — strip it to stay consistent with canonical
+  const pathname = window.location.pathname;
+  const normalizedPathname = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
+  const url = `${SITE_URL}${normalizedPathname}`;
+  const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline,
     description,
+    url,
     datePublished,
     dateModified,
+    inLanguage: "en-IN",
     publisher: {
       "@type": "Organization",
-      name: "GST Calculator India",
-      url: BASE_URL,
+      name: "GST Calculator",
+      url: SITE_URL,
     },
-  });
-}
-
-export function setBreadcrumbListSchema(
-  items: { position: number; name: string; item: string }[],
-) {
-  injectJsonLd("breadcrumb", {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: items.map(({ position, name, item }) => ({
-      "@type": "ListItem",
-      position,
-      name,
-      item,
-    })),
-  });
-}
-
-export function setFAQPageSchema(
-  faqs: { question: string; answer: string }[],
-) {
-  injectJsonLd("faq", {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map(({ question, answer }) => ({
-      "@type": "Question",
-      name: question,
-      acceptedAnswer: { "@type": "Answer", text: answer },
-    })),
-  });
-}
+  };
+  injectJsonLd(schema);
+};
