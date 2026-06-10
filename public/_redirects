@@ -1,7 +1,6 @@
-# Cloudflare Pages requires www→non-www redirects to be configured via:
-# 1. Cloudflare Worker/Function for domain-level redirects, OR
-# 2. Cloudflare Dashboard Page Rules, OR
-# 3. Google Search Console preferred domain setting
-#
-# For now, ensure preferred domain is set in Search Console to:
-# https://gstcalculator.me (without www)
+# Cloudflare Pages SPA fallback — serves index.html for all routes
+# This is what allows React Router to handle /blog/slug etc.
+/* /index.html 200
+
+# www → non-www canonical redirect (308 = permanent)
+https://www.gstcalculator.me/* https://gstcalculator.me/:splat 308
