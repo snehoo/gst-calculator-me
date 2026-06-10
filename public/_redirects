@@ -1,1 +1,2 @@
-/* /index.html 200
+# Cloudflare Pages — no SPA fallback needed because all routes are pre-rendered to index.html files.
+# www redirect is handled via Cloudflare Dashboard > Rules > Redirect Rules.
