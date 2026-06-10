@@ -1,6 +1,1 @@
-# Cloudflare Pages SPA fallback — serves index.html for all routes
-# This is what allows React Router to handle /blog/slug etc.
 /* /index.html 200
-
-# www → non-www canonical redirect (308 = permanent)
-https://www.gstcalculator.me/* https://gstcalculator.me/:splat 308
