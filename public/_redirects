@@ -1,2 +1,11 @@
-# Cloudflare Pages — no SPA fallback needed because all routes are pre-rendered to index.html files.
-# www redirect is handled via Cloudflare Dashboard > Rules > Redirect Rules.
+# Cloudflare Pages _redirects — gstcalculator.me
+# Enforces trailing slash on all URLs
+
+# Blog posts
+/blog/:slug  /blog/:slug/  301
+
+# Top-level pages
+/blog     /blog/     301
+/privacy  /privacy/  301
+/about    /about/    301
+/contact  /contact/  301
