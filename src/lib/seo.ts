@@ -52,9 +52,11 @@ export const clearJsonLdScripts = () => {
 };
 
 export const setPageSeo = ({ title, description, path, keywords, type = "website" }: PageSeoInput) => {
-  // ⚠️ NO trailing slash — must match sitemap.xml and prerender-routes.mjs exactly.
-  // Root "/" stays as-is. All other paths strip any trailing slash.
-  const normalizedPath = path === "/" ? "/" : path.replace(/\/$/, "");
+  // Add trailing slash for blog posts, but not for root or privacy
+  let normalizedPath = path === "/" ? "/" : path.replace(/\/$/, "");
+  if (normalizedPath.startsWith("/blog")) {
+    normalizedPath = `${normalizedPath}/`;
+  }
   const url = `${SITE_URL}${normalizedPath}`;
 
   document.title = title;
@@ -151,9 +153,12 @@ export const setArticleSchema = ({
   datePublished,
   dateModified,
 }: ArticleSchema) => {
-  // ⚠️ NO trailing slash — strip it to stay consistent with canonical
+  // Add trailing slash for blog posts to stay consistent with canonical
   const pathname = window.location.pathname;
-  const normalizedPathname = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
+  let normalizedPathname = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
+  if (normalizedPathname.startsWith("/blog")) {
+    normalizedPathname = `${normalizedPathname}/`;
+  }
   const url = `${SITE_URL}${normalizedPathname}`;
   const schema = {
     "@context": "https://schema.org",

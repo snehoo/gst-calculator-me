@@ -291,8 +291,8 @@ const BlogPost = () => {
 
       setBreadcrumbListSchema([
         { position: 1, name: "Home", item: "https://gstcalculator.me/" },
-        { position: 2, name: "Blog", item: "https://gstcalculator.me/blog" },
-        { position: 3, name: post.title, item: `https://gstcalculator.me/blog/${post.slug}` },
+        { position: 2, name: "Blog", item: "https://gstcalculator.me/blog/" },
+        { position: 3, name: post.title, item: `https://gstcalculator.me/blog/${post.slug}/` },
       ]);
     }
   }, [post]);

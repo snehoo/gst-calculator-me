@@ -207,7 +207,14 @@ const replaceTag = (html, pattern, replacement) => {
 };
 
 const applySeo = (html, route, bodyHtml) => {
-  const canonical = `${siteUrl}${route.path === "/" ? "/" : route.path}`;
+  // Add trailing slash for blog posts and /blog, but not for /privacy
+  let path = route.path;
+  if (route.path.startsWith("/blog") && route.path !== "/blog") {
+    path = `${route.path}/`;
+  } else if (route.path === "/blog") {
+    path = `${route.path}/`;
+  }
+  const canonical = `${siteUrl}${path === "/" ? "/" : path}`;
   let nextHtml = html;
 
   nextHtml = replaceTag(nextHtml, /<title>.*?<\/title>/s, `<title>${escapeHtml(route.title)}</title>`);
