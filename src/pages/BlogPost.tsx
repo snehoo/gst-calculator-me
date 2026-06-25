@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Home } from "lucide-react";
 import { getPost, POSTS, type Block } from "@/lib/blog-posts";
-import { setPageSeo, setArticleSchema, setBreadcrumbListSchema, clearJsonLdScripts } from "@/lib/seo";
+import { setPageSeo, setArticleSchema, setBreadcrumbListSchema, setFAQPageSchema, clearJsonLdScripts } from "@/lib/seo";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 
@@ -251,6 +251,36 @@ const renderBlock = (b: Block, i: number) => {
       );
     case "divider":
       return <hr key={i} className="border-t border-border my-2" />;
+    case "tldr":
+      return (
+        <div
+          key={i}
+          className="bg-primary-light/60 border-l-[3px] border-primary-mid rounded-r-lg px-5 py-4"
+        >
+          <div className="text-xs font-bold text-primary-dark uppercase tracking-wider mb-2">
+            Key Takeaways
+          </div>
+          <ul className="list-disc pl-5 space-y-1.5 text-[15px] text-primary-dark leading-relaxed marker:text-primary-mid">
+            {b.items.map((it, j) => (
+              <li key={j} dangerouslySetInnerHTML={{ __html: it }} />
+            ))}
+          </ul>
+        </div>
+      );
+    case "faq":
+      return (
+        <div key={i} className="flex flex-col gap-3">
+          {b.items.map((it, j) => (
+            <div key={j} className="bg-card border border-border rounded-xl p-4">
+              <p className="text-[15px] font-bold text-foreground mb-1.5">{it.q}</p>
+              <p
+                className="text-sm text-muted-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: it.a }}
+              />
+            </div>
+          ))}
+        </div>
+      );
     case "sourceLink":
       return (
         <p key={i} className="text-xs">
@@ -286,7 +316,8 @@ const BlogPost = () => {
         headline: post.title,
         description: post.description,
         datePublished: post.date,
-        dateModified: post.date,
+        dateModified: post.updated ?? post.date,
+        author: post.author,
       });
 
       setBreadcrumbListSchema([
@@ -294,6 +325,11 @@ const BlogPost = () => {
         { position: 2, name: "Blog", item: "https://gstcalculator.me/blog/" },
         { position: 3, name: post.title, item: `https://gstcalculator.me/blog/${post.slug}/` },
       ]);
+
+      const faqBlock = post.body.find((b) => b.type === "faq");
+      if (faqBlock && faqBlock.type === "faq") {
+        setFAQPageSchema(faqBlock.items.map((it) => ({ question: it.q, answer: it.a })));
+      }
     }
   }, [post]);
 
@@ -346,9 +382,23 @@ const BlogPost = () => {
             </span>
             <span>· {post.readTime} read</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-5 text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2 text-foreground">
             {post.title}
           </h1>
+          <div className="text-xs text-muted-foreground mb-5">
+            By {post.author ?? "GST Calculator Team"}
+            {post.updated && post.updated !== post.date && (
+              <>
+                {" "}
+                · Last updated{" "}
+                {new Date(post.updated).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </>
+            )}
+          </div>
           <div className="space-y-4">{post.body.map(renderBlock)}</div>
 
           {/* Related posts */}

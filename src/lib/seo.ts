@@ -145,6 +145,7 @@ interface ArticleSchema {
   description: string;
   datePublished?: string;
   dateModified?: string;
+  author?: string;
 }
 
 export const setArticleSchema = ({
@@ -152,6 +153,7 @@ export const setArticleSchema = ({
   description,
   datePublished,
   dateModified,
+  author,
 }: ArticleSchema) => {
   // Add trailing slash for blog posts to stay consistent with canonical
   const pathname = window.location.pathname;
@@ -169,6 +171,11 @@ export const setArticleSchema = ({
     datePublished,
     dateModified,
     inLanguage: "en-IN",
+    author: {
+      "@type": "Organization",
+      name: author ?? "GST Calculator Team",
+      url: SITE_URL,
+    },
     publisher: {
       "@type": "Organization",
       name: "GST Calculator",
