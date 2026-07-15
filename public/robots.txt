@@ -4,17 +4,26 @@
 User-agent: *
 Allow: /
 
-# AI training crawlers — currently disallowed by default (conservative choice)
-# To appear in AI-generated answers and training data, change Disallow to Allow: /
+# AI search crawlers — allowed so the site can appear in Google AI Overviews,
+# ChatGPT answers, Perplexity, and Claude citations.
+# These crawlers do NOT train models (that is CCBot/Bytespider below).
 
 User-agent: GPTBot
-Disallow: /
+Allow: /
 
 User-agent: Google-Extended
-Disallow: /
+Allow: /
 
 User-agent: anthropic-ai
-Disallow: /
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# AI model-training crawlers — disallowed (content not licensed for training)
 
 User-agent: CCBot
 Disallow: /

@@ -848,8 +848,8 @@ export const POSTS: Post[] = [
   },
   {
     slug: "zoho-vs-tally-gst-calculator",
-    title: "Zoho GST Calculator vs Tally (2026): Which Is Better + a Free No-Login Option",
-    description: "Looking for the Zoho GST calculator? See how it compares with Tally on speed, cost and login friction — and try a 100% free GST calculator that needs no account.",
+    title: "Zoho GST Calculator: Login Required, ₹899/mo — Here's a Free Alternative",
+    description: "Zoho's GST calculator forces a login and upsells Zoho Books (₹899/mo+). See how it compares with Tally — and try a 100% free GST calculator that needs no account.",
     category: "Comparison",
     readTime: "5 min",
     date: "2026-05-03",
@@ -4504,8 +4504,8 @@ export const POSTS: Post[] = [
   },
   {
     slug: "cleartax-vs-zoho-vs-vakilsearch-gst",
-    title: "ClearTax vs Zoho vs VakilSearch for GST Filing (2026): Prices, Pros & Verdict",
-    description: "ClearTax vs Zoho vs VakilSearch for GST filing compared — real prices (₹899/mo to ₹40,000/yr), who each is for, and the free no-login calculator none of them offer.",
+    title: "ClearTax vs Zoho vs VakilSearch: Real GST Filing Costs (2026) + Free Alternative",
+    description: "Real prices exposed: ClearTax (₹899/mo), Zoho Books, VakilSearch (₹40,000/yr) — which is worth it? Plus the free no-login GST calculator none of them offer.",
     category: "Tools & Guides",
     readTime: "10 min",
     date: "2025-05-13",
