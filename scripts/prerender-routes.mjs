@@ -152,9 +152,9 @@ const { render } = await import(pathToFileURL(ssrOutFile).href);
 const routes = [
   {
     path: "/",
-    title: "GST Calculator India 2025 — All Slabs, CGST/SGST/IGST",
+    title: "GST Calculator India — Free Online CGST, SGST & IGST Calculator (No Login)",
     description:
-      "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown.",
+      "Free online GST calculator for India. Instantly add or remove GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown. No login needed.",
     keywords:
       "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator",
     type: "website",

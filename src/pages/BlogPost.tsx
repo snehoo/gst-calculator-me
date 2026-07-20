@@ -198,7 +198,7 @@ const renderBlock = (b: Block, i: number) => {
             to="/"
             className="inline-block bg-primary-foreground text-primary-dark font-bold text-sm px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
           >
-            Open GST Calculator →
+            Open the Free GST Calculator India →
           </Link>
         </div>
       );
