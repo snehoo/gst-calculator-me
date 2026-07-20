@@ -10,11 +10,10 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
 const SLAB_REF = [
-  { pct: "0%", title: "Nil Rate", desc: "Essential food grains, milk, vegetables, fruits, eggs, salt, books, newspapers, sindoor, bangles" },
-  { pct: "5%", title: "Essential Rate", desc: "Packaged foods, sugar, tea, coffee, edible oil, transport services, small restaurants (turnover <1.5 Cr)" },
-  { pct: "12%", title: "Standard Rate I", desc: "Apparel above ₹1000, computers, processed food, mobile phones, business class air travel" },
-  { pct: "18%", title: "Standard Rate II (Most common)", desc: "AC restaurants, electronics, most financial services, IT services, telecom" },
-  { pct: "28%", title: "Luxury Rate", desc: "Luxury cars, tobacco, cement, pan masala, high-end personal care, AC hotels above ₹7500/night" },
+  { pct: "0%", title: "Nil Rate", desc: "Essential food grains, fresh milk, vegetables, fruits, eggs, salt, books, health & life insurance (GST 2.0)" },
+  { pct: "5%", title: "Essential Rate", desc: "Packaged foods, medicines, bicycles, textiles ≤₹2,500, footwear ≤₹1,000, transport services, small restaurants" },
+  { pct: "18%", title: "Standard Rate (Most common)", desc: "Electronics, AC restaurants, most services (IT, telecom, financial), vehicles ≤350cc, small/mid cars, cement" },
+  { pct: "40%", title: "Luxury / Sin Rate (GST 2.0)", desc: "Tobacco, pan masala, caffeinated aerated drinks, high-end SUVs >2500cc, yachts, private aircraft" },
 ];
 
 const Index = () => {
@@ -31,7 +30,7 @@ const Index = () => {
     setPageSeo({
       title: "GST Calculator India — Free Online CGST, SGST & IGST Calculator (No Login)",
       description:
-        "Free online GST calculator for India. Instantly add or remove GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown. No login, no ads in your way.",
+        "Free online GST calculator for India. Instantly add or remove GST for all slabs (5%, 18%, 40% under GST 2.0) with CGST, SGST & IGST breakdown. No login, no ads in your way.",
       path: "/",
       keywords:
         "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator",
@@ -40,7 +39,7 @@ const Index = () => {
     setWebApplicationSchema({
       name: "GST Calculator India",
       description:
-        "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown.",
+        "Free GST calculator for India 2026-27. Instantly compute GST for all slabs (5%, 18%, 40% under GST 2.0) with CGST, SGST & IGST breakdown.",
     });
 
     setFAQPageSchema([
@@ -67,7 +66,7 @@ const Index = () => {
       {
         question: "What are the main GST slabs in India?",
         answer:
-          "India has 5 main GST slabs: 0% (nil rate on essentials), 5% (essential goods/services), 12% (standard rate I), 18% (standard rate II - most common), and 28% (luxury goods). Different products fall into different slabs based on their nature.",
+          "After GST 2.0 (effective September 22, 2025), India has 4 main GST slabs: 0% (nil rate on essentials and insurance), 5% (essential goods and medicines), 18% (standard rate — electronics, services, vehicles), and 40% (luxury and sin goods like tobacco, aerated drinks, and high-end SUVs). The old 12% and 28% slabs have been abolished.",
       },
     ]);
   }, []);
@@ -106,7 +105,7 @@ const Index = () => {
       <header className="bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">GST Calculator India — Free Online CGST, SGST &amp; IGST Calculator</h1>
         <p className="text-primary-mid text-sm mt-1">
-          Instant GST computation for all slabs (5%, 12%, 18%, 28%) — add or remove GST, no login needed
+          Instant GST computation for all slabs (5%, 18%, 40% under GST 2.0) — add or remove GST, no login needed
         </p>
       </header>
 
@@ -183,7 +182,7 @@ const Index = () => {
           <h2 className="text-xl font-bold text-foreground mb-3">What Is This GST Calculator?</h2>
           <p className="mb-3">
             This is a free online GST calculator for India that instantly computes Goods and Services Tax for any
-            amount at any slab — 0%, 5%, 12%, 18%, or 28%. It works both ways: <strong className="text-foreground">add GST</strong> to
+            amount at any slab — 0%, 5%, 18%, or 40% (GST 2.0 rates, effective September 22, 2025). It works both ways: <strong className="text-foreground">add GST</strong> to
             a base price (GST-exclusive) or <strong className="text-foreground">remove GST</strong> from a total (GST-inclusive, also
             called reverse GST calculation). Every result shows the CGST and SGST split for intra-state transactions
             or the single IGST amount for inter-state transactions — exactly as they must appear on a GST invoice.
@@ -232,7 +231,7 @@ const Index = () => {
             </div>
             <div>
               <h3 className="font-semibold text-foreground mb-1">Which GST rate should I use?</h3>
-              <p>Most services and electronics fall under 18%; essentials are 0–5%; luxury and sin goods are 28%. See the slab reference above or the detailed <a href="/blog/gst-rate-slabs-india" className="text-primary-dark underline">GST rate slabs guide</a>.</p>
+              <p>After GST 2.0 (September 2025): essentials are 0–5%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the <a href="/blog/gst-rate-slabs-india" className="text-primary-dark underline">GST rate slabs guide</a>.</p>
             </div>
             <div>
               <h3 className="font-semibold text-foreground mb-1">When do CGST/SGST apply instead of IGST?</h3>

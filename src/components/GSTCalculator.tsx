@@ -5,7 +5,7 @@ import { buildContext, pickTip } from "@/lib/tips-engine";
 import { ContextualTip } from "./ContextualTip";
 import { ShareResult } from "./ShareResult";
 
-const SLABS = [0, 5, 12, 18, 28] as const;
+const SLABS = [0, 5, 18, 40] as const;
 type Slab = (typeof SLABS)[number];
 type Mode = "excl" | "incl";
 type TxType = "intra" | "inter";
@@ -151,7 +151,7 @@ export default function GSTCalculator() {
           <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
             Select GST Slab
           </label>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {SLABS.map((s) => (
               <div key={s} className="relative">
                 <button
