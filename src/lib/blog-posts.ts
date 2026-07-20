@@ -1209,13 +1209,12 @@ export const POSTS: Post[] = [
   },
   {
     slug: "gst-2-0-reforms-india-2025",
-    title: "GST 2.0 Reforms India 2025: New Rate Slabs, What's Cheaper & What Businesses Must Do Now",
-    description:
-      "The most comprehensive guide to India's GST 2.0 reforms effective September 22, 2025 — new 5%, 18% & 40% slabs, what got cheaper, what got expensive, business compliance checklist, and ITC transition rules.",
+    title: "GST 2.0 India: New Tax Slabs (5%, 18%, 40%) Explained",
+    description: "GST 2.0 changed India's tax slabs from September 2025. New rates: 5%, 18%, 40%. Check what moved, what stayed, and calculate your GST instantly.",
     category: "GST News & Updates",
     readTime: "14 min",
     date: "2025-10-01",
-    updated: "2026-06-25",
+    updated: "2026-07-20",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "On September 22, 2025, India's indirect tax system entered its most significant overhaul since GST was first introduced in July 2017. The GST Council's 56th meeting approved sweeping reforms that replaced the 4-slab structure of 5%, 12%, 18%, and 28% with a cleaner 2-slab system of 5% and 18%, plus a new 40% slab for luxury and sin goods." },
@@ -1398,6 +1397,7 @@ export const POSTS: Post[] = [
       { type: "sourceLink", href: "https://pib.gov.in", label: "PIB — 56th GST Council Meeting Press Release" },
       { type: "h2", text: "GST 2.0 Reforms — Frequently Asked Questions" },
       { type: "faq", items: [
+        { q: "What are the new GST 2.0 slabs in India?", a: "GST 2.0 introduced three primary slabs: 5%, 18%, and 40%. The old 12% slab was abolished — items moved to 5% or 18%. The 28% slab was replaced by 40% for luxury and sin goods. The 0% (Nil) category was also expanded. Effective September 22, 2025." },
         { q: "When did the GST 2.0 reforms take effect?", a: "GST 2.0 rate changes are effective from September 22, 2025, except for tobacco and related products, which take effect later pending cess obligations." },
         { q: "Is the 12% GST slab completely gone?", a: "Yes. The 12% slab is effectively abolished, with items previously taxed at 12% moved to either 5% or 18%." },
         { q: "What is the new 40% GST slab for?", a: "The new 40% slab applies to luxury and sin goods such as tobacco, pan masala, caffeinated aerated drinks, high-end SUVs, yachts, and private aircraft." },
