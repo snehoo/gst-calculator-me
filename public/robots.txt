@@ -23,6 +23,12 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 # AI model-training crawlers — disallowed (content not licensed for training)
 
 User-agent: CCBot
