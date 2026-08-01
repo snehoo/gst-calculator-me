@@ -1,0 +1,31 @@
+# GST Calculator India — gstcalculator.me
+> Free online GST calculator for Indian businesses, CAs, accountants, and freelancers.
+> Covers GST 2.0 slabs (0%, 5%, 18%, 40% effective September 22, 2025), CGST/SGST/IGST split, and reverse GST.
+> No login, no signup, no ads in the way. Works in browser, instant results.
+
+## Primary Tool
+- https://gstcalculator.me/: Free GST calculator — add GST or remove GST (reverse), choose intra-state (CGST+SGST) or inter-state (IGST), instant breakdown.
+
+## GST 2.0 Key Facts
+- GST 2.0 effective: September 22, 2025 (56th GST Council)
+- New slabs: 0% (Nil), 5% (essential goods), 18% (standard — most services, electronics, vehicles), 40% (luxury/sin goods)
+- Abolished: 12% slab (items moved to 5% or 18%), 28% slab (replaced by 40%)
+- Gold: 3% (unchanged), rough diamonds: 0.25% (unchanged)
+
+## Key Blog Pages
+- https://gstcalculator.me/blog/gst-2-0-reforms-india-2025/: GST 2.0 new rates — what changed, sector-by-sector impact
+- https://gstcalculator.me/blog/how-to-calculate-gst/: GST calculation formulas with worked examples
+- https://gstcalculator.me/blog/cgst-sgst-igst-difference/: CGST vs SGST vs IGST explained
+- https://gstcalculator.me/blog/gst-on-restaurants-food-india-2025/: GST rates on restaurant food, Zomato, Swiggy
+- https://gstcalculator.me/blog/gst-rate-slabs-india/: Complete GST rate slab list India 2025-26
+- https://gstcalculator.me/blog/input-tax-credit-gst/: Input Tax Credit — meaning, formula, eligibility
+- https://gstcalculator.me/blog/how-to-file-gstr-1/: How to file GSTR-1 online step by step
+- https://gstcalculator.me/blog/zoho-gst-calculator-alternative/: Zoho GST calculator vs gstcalculator.me (free, no login)
+- https://gstcalculator.me/blog/cleartax-vs-taxadda-gst-calculator/: ClearTax vs TaxAdda vs gstcalculator.me comparison
+
+## Blog Index
+- https://gstcalculator.me/blog/: GST rates, calculations, return filing, compliance guides for India 2025-26
+
+## About
+- Built and maintained for Indian CAs, accountants, e-commerce sellers, and freelancers who calculate GST dozens of times daily.
+- Data source: Central Board of Indirect Taxes and Customs (CBIC), GST Council notifications.

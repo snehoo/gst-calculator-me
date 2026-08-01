@@ -231,7 +231,7 @@ const Index = () => {
             </div>
             <div>
               <h3 className="font-semibold text-foreground mb-1">Which GST rate should I use?</h3>
-              <p>After GST 2.0 (September 2025): essentials are 0–5%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the <a href="/blog/gst-rate-slabs-india" className="text-primary-dark underline">GST rate slabs guide</a>.</p>
+              <p>After GST 2.0 (September 22, 2025, per the 56th GST Council): essentials are 0–5%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the <a href="/blog/gst-rate-slabs-india" className="text-primary-dark underline">GST rate slabs guide</a>.</p>
             </div>
             <div>
               <h3 className="font-semibold text-foreground mb-1">When do CGST/SGST apply instead of IGST?</h3>
@@ -250,6 +250,10 @@ const Index = () => {
             <li><a href="/blog/gst-composition-scheme" className="text-primary-dark underline">GST Composition Scheme — who qualifies and how it works</a></li>
             <li><a href="/blog/zoho-gst-calculator-alternative" className="text-primary-dark underline">Zoho GST calculator vs GSTCalculator.me</a></li>
           </ul>
+        </div>
+
+        <div className="text-xs text-muted-foreground/60 border-t border-border pt-4">
+          <p>Data source: <a href="https://www.cbic.gov.in" className="underline" rel="noopener noreferrer" target="_blank">Central Board of Indirect Taxes and Customs (CBIC)</a>, 56th GST Council notification. GST 2.0 rates effective September 22, 2025. Registration thresholds: ₹40 lakh (goods), ₹20 lakh (services) per CBIC 2025-26. Last updated: July 2026.</p>
         </div>
       </section>
 

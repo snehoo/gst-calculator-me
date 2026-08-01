@@ -848,8 +848,8 @@ export const POSTS: Post[] = [
   },
   {
     slug: "zoho-vs-tally-gst-calculator",
-    title: "Zoho GST Calculator: Login Required, ₹899/mo — Here's a Free Alternative",
-    description: "Zoho's GST calculator forces a login and upsells Zoho Books (₹899/mo+). See how it compares with Tally — and try a 100% free GST calculator that needs no account.",
+    title: "Zoho vs Tally GST Calculator: Side-by-Side Comparison 2026 (Pricing, Features)",
+    description: "Zoho Books (₹899/mo) vs Tally Prime (₹18,000+) for GST: features, accuracy, and compliance filing compared. Plus a free browser-based calculator with no login needed.",
     category: "Comparison",
     readTime: "5 min",
     date: "2026-05-03",
@@ -5253,8 +5253,8 @@ export const POSTS: Post[] = [
   },
   {
     slug: "zoho-gst-calculator-alternative",
-    title: "Zoho GST Calculator vs GSTCalculator.me: Which Is Faster & Free?",
-    description: "Zoho GST calculator requires login and redirects to paid plans. GSTCalculator.me gives instant results — no account, no friction. See the full comparison.",
+    title: "Zoho GST Calculator — Free Instant Alternative (No Login, No Zoho Account)",
+    description: "Skip Zoho's login wall and ₹899/mo plan. Calculate GST free in your browser — all slabs (5%, 18%, 40%), CGST/SGST/IGST breakdown, results in seconds.",
     category: "Tools & Guides",
     readTime: "7 min",
     date: "2025-05-13",
