@@ -6,11 +6,11 @@
 ## Primary Tool
 - https://gstcalculator.me/: Free GST calculator — add GST or remove GST (reverse), choose intra-state (CGST+SGST) or inter-state (IGST), instant breakdown.
 
-## GST 2.0 Key Facts
-- GST 2.0 effective: September 22, 2025 (56th GST Council)
-- New slabs: 0% (Nil), 5% (essential goods), 18% (standard — most services, electronics, vehicles), 40% (luxury/sin goods)
+## GST 2.0 Key Facts (effective September 22, 2025 — 56th GST Council)
+- Active slabs: 0% (Nil — essentials, fresh food, books, health/life insurance), 5% (packaged food, medicines, textiles), 18% (standard — electronics, most services, vehicles, cement), 40% (luxury/sin — tobacco, aerated drinks, high-end SUVs)
 - Abolished: 12% slab (items moved to 5% or 18%), 28% slab (replaced by 40%)
 - Gold: 3% (unchanged), rough diamonds: 0.25% (unchanged)
+- CGST + SGST applies intra-state (equal split); IGST applies inter-state (full rate)
 
 ## Key Blog Pages
 - https://gstcalculator.me/blog/gst-2-0-reforms-india-2025/: GST 2.0 new rates — what changed, sector-by-sector impact

@@ -56,7 +56,7 @@ export const POSTS: Post[] = [
         "Adding GST: <strong>GST Amount = (Original Cost × GST Rate) ÷ 100</strong>, then add it to the base to get the invoice total.",
         "Removing GST: <strong>GST Amount = Total Price − [Total Price × 100 ÷ (100 + GST Rate)]</strong> — never simply subtract the percentage.",
         "For intra-state sales, GST splits equally into <strong>CGST + SGST</strong>; for inter-state sales, the full rate applies as <strong>IGST</strong>.",
-        "India has four primary slabs — <strong>5%, 12%, 18%, and 28%</strong> — and the calculation method is identical across all of them.",
+        "Under GST 2.0 (effective September 22, 2025), India has four active slabs — <strong>0%, 5%, 18%, and 40%</strong> — and the calculation method is identical across all of them. The old 12% and 28% slabs have been abolished.",
         "A ₹1,000 product at 18% GST results in a <strong>₹1,180</strong> total invoice value — the most common calculation businesses perform.",
       ]},
       { type: "h2", text: "What Is GST and How Is It Calculated?" },
@@ -89,22 +89,22 @@ export const POSTS: Post[] = [
         { n: "= 18%", l: "Total GST — both routes" },
       ]},
       { type: "h2", text: "Worked Examples at Every GST Rate Slab" },
-      { type: "p", text: "India currently has four primary GST rate slabs. The calculation method is identical for all four — only the rate number changes." },
+      { type: "p", text: "Under GST 2.0 (effective September 22, 2025), India has four active GST rate slabs: 0%, 5%, 18%, and 40%. The old 12% and 28% slabs are abolished. The calculation method is identical for all slabs — only the rate number changes." },
       { type: "example", title: "Example 1 — 5% GST (packaged food, medicines)", lines: [
         "Base amount: ₹500 | GST at 5% = ₹25 | Invoice total = <strong>₹525</strong>",
         "CGST = ₹12.50 | SGST = ₹12.50 (intra-state)",
       ]},
-      { type: "example", title: "Example 2 — 12% GST (processed food, mobile phones)", lines: [
-        "Base amount: ₹2,000 | GST at 12% = ₹240 | Invoice total = <strong>₹2,240</strong>",
-        "CGST = ₹120 | SGST = ₹120 (intra-state)",
+      { type: "example", title: "Example 2 — 0% GST (nil rate — fresh vegetables, grains, books)", lines: [
+        "Base amount: ₹500 | GST at 0% = ₹0 | Invoice total = <strong>₹500</strong>",
+        "No CGST or SGST applicable — exempt supply under GST 2.0",
       ]},
       { type: "example", title: "Example 3 — 18% GST (electronics, restaurants, services)", lines: [
         "Base amount: ₹10,000 | GST at 18% = ₹1,800 | Invoice total = <strong>₹11,800</strong>",
         "CGST = ₹900 | SGST = ₹900 (intra-state)",
       ]},
-      { type: "example", title: "Example 4 — 28% GST (luxury goods, cement, cars)", lines: [
-        "Base amount: ₹50,000 | GST at 28% = ₹14,000 | Invoice total = <strong>₹64,000</strong>",
-        "CGST = ₹7,000 | SGST = ₹7,000 (intra-state)",
+      { type: "example", title: "Example 4 — 40% GST (luxury/sin goods — tobacco, high-end SUVs, aerated drinks)", lines: [
+        "Base amount: ₹50,000 | GST at 40% = ₹20,000 | Invoice total = <strong>₹70,000</strong>",
+        "CGST = ₹10,000 | SGST = ₹10,000 (intra-state)",
       ]},
       { type: "h2", text: "How Do You Calculate GST on a Service Invoice?" },
       { type: "p", text: "Service providers — including freelancers, consultants, and agencies — charge GST at 18% on most services. The calculation works identically to goods. Apply 18% to the fee amount before tax, then add to arrive at the billable total." },
