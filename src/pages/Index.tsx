@@ -44,29 +44,34 @@ const Index = () => {
 
     setFAQPageSchema([
       {
-        question: "What is the GST registration threshold for goods?",
+        question: "How do I calculate 18% GST on a price?",
         answer:
-          "Businesses with an annual turnover of ₹40 lakh or more need to register for GST. Goods suppliers above this threshold must register.",
+          "Multiply the base amount by 0.18 to get the GST amount, then add it to the base. For example, ₹1,000 at 18% GST: GST = ₹180, invoice total = ₹1,180. For intra-state, split as CGST ₹90 + SGST ₹90; for inter-state, apply IGST ₹180.",
       },
       {
-        question: "What is the GST registration threshold for services?",
+        question: "How do I remove GST from a GST-inclusive price (reverse GST)?",
         answer:
-          "Service providers with an annual turnover of ₹20 lakh or more need to register for GST. This is lower than the goods threshold.",
+          "Use: GST Amount = Total Price − [Total Price × 100 ÷ (100 + GST Rate)]. For ₹1,180 at 18% GST: GST Amount = 1,180 − [1,180 × 100 ÷ 118] = ₹180. Never simply subtract the percentage — that gives the wrong answer.",
       },
       {
-        question: "What is the GST Composition Scheme?",
+        question: "What are the current GST slabs in India after GST 2.0?",
         answer:
-          "Businesses with turnover up to ₹1.5 Cr (goods) or ₹75 lakh (services) can opt for the simplified Composition Scheme and pay flat GST rates with quarterly filing instead of monthly, reducing compliance burden.",
+          "After GST 2.0 (effective September 22, 2025), India has 4 active GST slabs: 0% (nil — essentials, fresh food, books, insurance), 5% (packaged food, medicines, textiles), 18% (electronics, most services, vehicles, cement), and 40% (luxury and sin goods — tobacco, aerated drinks, high-end SUVs). The old 12% and 28% slabs have been abolished.",
       },
       {
-        question: "Who needs to file e-invoicing?",
+        question: "When does CGST + SGST apply instead of IGST?",
         answer:
-          "E-invoicing is mandatory for businesses with turnover above ₹5 Cr from FY 2023-24. It integrates directly with the GST portal for better tracking and reduced fraud.",
+          "CGST + SGST applies to intra-state transactions — buyer and seller in the same state. The total GST rate splits equally: 18% GST becomes 9% CGST + 9% SGST. IGST at the full rate applies to inter-state transactions — buyer and seller in different states.",
       },
       {
-        question: "What are the main GST slabs in India?",
+        question: "What is the GST registration threshold for businesses?",
         answer:
-          "After GST 2.0 (effective September 22, 2025), India has 4 main GST slabs: 0% (nil rate on essentials and insurance), 5% (essential goods and medicines), 18% (standard rate — electronics, services, vehicles), and 40% (luxury and sin goods like tobacco, aerated drinks, and high-end SUVs). The old 12% and 28% slabs have been abolished.",
+          "Goods suppliers with annual turnover above ₹40 lakh must register for GST. Service providers must register above ₹20 lakh. Businesses in special category states (North-East) have a lower threshold of ₹20 lakh for goods and ₹10 lakh for services.",
+      },
+      {
+        question: "How do I calculate GST for a ₹1,000 product at 5%?",
+        answer:
+          "GST Amount = (₹1,000 × 5) ÷ 100 = ₹50. Invoice total = ₹1,050. For intra-state: CGST = ₹25 + SGST = ₹25. For inter-state: IGST = ₹50.",
       },
     ]);
   }, []);

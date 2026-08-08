@@ -23,6 +23,25 @@ const Blog = () => {
       { position: 1, name: "Home", item: "https://gstcalculator.me/" },
       { position: 2, name: "Blog", item: "https://gstcalculator.me/blog/" },
     ]);
+
+    const el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.id = "blog-jsonld";
+    el.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: "GST Calculator Blog",
+      description: "Practical GST guides for Indian businesses: how to calculate GST, slabs explained, CGST vs SGST vs IGST, and GST for freelancers.",
+      url: "https://gstcalculator.me/blog/",
+      publisher: {
+        "@type": "Organization",
+        name: "GST Calculator India",
+        url: "https://gstcalculator.me/",
+      },
+    });
+    document.head.appendChild(el);
+
+    return () => { document.getElementById("blog-jsonld")?.remove(); };
   }, []);
 
   return (
