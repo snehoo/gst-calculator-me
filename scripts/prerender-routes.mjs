@@ -185,11 +185,18 @@ const routes = [
     post,
   })),
   {
-    // Rendered from a path guaranteed not to match any real route, so React
-    // Router's catch-all resolves it to <NotFound />. Written to dist/404.html
-    // (see writeRouteHtml) — Cloudflare Pages automatically serves that file,
-    // with a 404 status, for any request that matches no asset or redirect.
-    path: "/__prerender_404__",
+    // Rendered from "/404", which doesn't match any real route, so React
+    // Router's catch-all resolves it to <NotFound />. Written straight to
+    // dist/404.html (see writeRouteHtml/outputFile) — this project deploys
+    // as a Worker with static assets (see wrangler.toml), not classic
+    // Cloudflare Pages, and that platform's `not_found_handling = "404-page"`
+    // config (in [assets]) is what serves this file, with a 404 status, for
+    // any request matching no asset. (Two earlier attempts targeted Pages-
+    // only mechanisms — an automatic-404.html convention and a
+    // functions/_middleware.ts fallback — that this deployment model never
+    // actually invokes at all; confirmed by a debug header that never
+    // appeared on any live response, regardless of what the code did.)
+    path: "/404",
     outputFile: "404.html",
     title: "Page Not Found (404) | GST Calculator",
     description: "This page doesn't exist. Use the free GST calculator or browse the blog for GST guides, rates, and compliance tips.",

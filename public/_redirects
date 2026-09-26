@@ -10,11 +10,10 @@
 /about    /about/    301
 /contact  /contact/  301
 
-# No wildcard fallback needed here: dist/404.html (built by
-# scripts/prerender-routes.mjs) is a real static file at the site root, and
-# Cloudflare Pages automatically serves it with a 404 status for any request
-# that matches no asset and no rule above. (An earlier `/* /index.html 404`
-# rule here looked right but returned an empty body in production — asking
-# Cloudflare to rewrite to "/index.html" collides with its own automatic
-# index.html-to-"/" redirect. Serving a real, differently-named file avoids
-# that entirely and is also Cloudflare's documented convention.)
+# No 404 fallback rule here — _redirects only accepts status
+# 200/301/302/303/307/308 on a rule, so a "404" rule is silently dropped.
+# The fallback is instead `not_found_handling = "404-page"` in wrangler.toml's
+# [assets] block, which serves dist/404.html (built by
+# scripts/prerender-routes.mjs) with a real 404 status for any unmatched
+# request — the correct mechanism for this project's deployment model
+# (Worker with static assets, not classic Cloudflare Pages).
