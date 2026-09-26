@@ -184,6 +184,18 @@ const routes = [
     type: "article",
     post,
   })),
+  {
+    // Rendered from a path guaranteed not to match any real route, so React
+    // Router's catch-all resolves it to <NotFound />. Written to dist/404.html
+    // (see writeRouteHtml) — Cloudflare Pages automatically serves that file,
+    // with a 404 status, for any request that matches no asset or redirect.
+    path: "/__prerender_404__",
+    outputFile: "404.html",
+    title: "Page Not Found (404) | GST Calculator",
+    description: "This page doesn't exist. Use the free GST calculator or browse the blog for GST guides, rates, and compliance tips.",
+    type: "website",
+    noindex: true,
+  },
 ];
 
 const escapeHtml = (value) =>
@@ -214,7 +226,9 @@ const applySeo = (html, route, bodyHtml) => {
   } else if (route.path === "/blog") {
     path = `${route.path}/`;
   }
-  const canonical = `${siteUrl}${path === "/" ? "/" : path}`;
+  // The 404 route is rendered from a fake internal path (see routes above) —
+  // point its canonical at the homepage instead of leaking that path out.
+  const canonical = route.noindex ? `${siteUrl}/` : `${siteUrl}${path === "/" ? "/" : path}`;
   let nextHtml = html;
 
   nextHtml = replaceTag(nextHtml, /<title>.*?<\/title>/s, `<title>${escapeHtml(route.title)}</title>`);
@@ -354,6 +368,14 @@ const applySeo = (html, route, bodyHtml) => {
     nextHtml = nextHtml.replace("</head>", `  ${schemaScripts}\n  </head>`);
   }
 
+  if (route.noindex) {
+    nextHtml = replaceTag(
+      nextHtml,
+      /<meta name="robots"\s+content="[^"]*">/,
+      `<meta name="robots" content="noindex, follow">`,
+    );
+  }
+
   return nextHtml;
 };
 
@@ -370,6 +392,11 @@ const writeRouteHtml = async (route, template) => {
 
   if (route.path === "/") {
     await fs.writeFile(rootHtmlPath, routeHtml, "utf8");
+    return;
+  }
+
+  if (route.outputFile) {
+    await fs.writeFile(path.join(distDir, route.outputFile), routeHtml, "utf8");
     return;
   }
 
