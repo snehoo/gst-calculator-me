@@ -9,3 +9,7 @@
 /privacy  /privacy/  301
 /about    /about/    301
 /contact  /contact/  301
+
+# SPA fallback — any unmatched path renders the React app's NotFound page,
+# with the HTTP status forced to 404 so it isn't indexed as a real page.
+/*  /index.html  404

@@ -45,6 +45,10 @@ const injectJsonLd = (schema: Record<string, unknown>) => {
   document.head.appendChild(script);
 };
 
+export const setNoIndex = () => {
+  upsertNamedMeta("robots", "noindex, follow");
+};
+
 export const clearJsonLdScripts = () => {
   document.querySelectorAll('script[type="application/ld+json"]').forEach((el) => {
     if (el.parentNode) el.parentNode.removeChild(el);
