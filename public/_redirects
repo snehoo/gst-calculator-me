@@ -10,10 +10,10 @@
 /about    /about/    301
 /contact  /contact/  301
 
-# No 404 fallback rule here — Cloudflare Pages' _redirects only accepts
-# status 200/301/302/303/307/308 on a rule; a "404" rule (tried twice before)
-# is silently dropped, and requests fall through to the platform's own bare
-# empty-body 404 instead. The real fallback lives in functions/_middleware.ts,
-# which serves dist/404/index.html (built by scripts/prerender-routes.mjs)
-# through the ASSETS binding when context.next() comes back 404 — that's the
-# documented way to control the 404 response from Cloudflare Pages Functions.
+# No 404 fallback rule here — _redirects only accepts status
+# 200/301/302/303/307/308 on a rule, so a "404" rule is silently dropped.
+# The fallback is instead `not_found_handling = "404-page"` in wrangler.toml's
+# [assets] block, which serves dist/404.html (built by
+# scripts/prerender-routes.mjs) with a real 404 status for any unmatched
+# request — the correct mechanism for this project's deployment model
+# (Worker with static assets, not classic Cloudflare Pages).

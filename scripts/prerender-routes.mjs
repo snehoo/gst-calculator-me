@@ -185,17 +185,19 @@ const routes = [
     post,
   })),
   {
-    // "/404" doesn't match any real route, so React Router's catch-all
-    // resolves it to <NotFound />. Written to dist/404/index.html — same
-    // directory-index convention as every blog post, served at "/404/" via
-    // the explicit _redirects wildcard rule. (Earlier attempt wrote a flat
-    // dist/404.html and relied on Cloudflare Pages' automatic-404.html
-    // convention; that file has a bare ".html" extension, which Cloudflare
-    // Pages' clean-URL normalizer tries to strip even on the internal
-    // fallback path, and the request ends up with the right status but an
-    // empty body. Directory-style output has no extension in the URL at
-    // all, so that normalizer never touches it.)
+    // Rendered from "/404", which doesn't match any real route, so React
+    // Router's catch-all resolves it to <NotFound />. Written straight to
+    // dist/404.html (see writeRouteHtml/outputFile) — this project deploys
+    // as a Worker with static assets (see wrangler.toml), not classic
+    // Cloudflare Pages, and that platform's `not_found_handling = "404-page"`
+    // config (in [assets]) is what serves this file, with a 404 status, for
+    // any request matching no asset. (Two earlier attempts targeted Pages-
+    // only mechanisms — an automatic-404.html convention and a
+    // functions/_middleware.ts fallback — that this deployment model never
+    // actually invokes at all; confirmed by a debug header that never
+    // appeared on any live response, regardless of what the code did.)
     path: "/404",
+    outputFile: "404.html",
     title: "Page Not Found (404) | GST Calculator",
     description: "This page doesn't exist. Use the free GST calculator or browse the blog for GST guides, rates, and compliance tips.",
     type: "website",
