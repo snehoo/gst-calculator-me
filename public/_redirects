@@ -10,11 +10,10 @@
 /about    /about/    301
 /contact  /contact/  301
 
-# No wildcard fallback needed here: dist/404.html (built by
-# scripts/prerender-routes.mjs) is a real static file at the site root, and
-# Cloudflare Pages automatically serves it with a 404 status for any request
-# that matches no asset and no rule above. (An earlier `/* /index.html 404`
-# rule here looked right but returned an empty body in production — asking
-# Cloudflare to rewrite to "/index.html" collides with its own automatic
-# index.html-to-"/" redirect. Serving a real, differently-named file avoids
-# that entirely and is also Cloudflare's documented convention.)
+# No 404 fallback rule here — Cloudflare Pages' _redirects only accepts
+# status 200/301/302/303/307/308 on a rule; a "404" rule (tried twice before)
+# is silently dropped, and requests fall through to the platform's own bare
+# empty-body 404 instead. The real fallback lives in functions/_middleware.ts,
+# which serves dist/404/index.html (built by scripts/prerender-routes.mjs)
+# through the ASSETS binding when context.next() comes back 404 — that's the
+# documented way to control the 404 response from Cloudflare Pages Functions.
