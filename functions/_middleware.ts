@@ -4,19 +4,36 @@ export const onRequest: PagesFunction = async (context) => {
 
   // Pass through: root, already-trailing-slash, and file paths (have a dot in the last segment)
   if (path === "/" || path.endsWith("/") || path.split("/").pop()?.includes(".")) {
-    const response = await context.next();
+    let response: Response;
+    try {
+      response = await context.next();
+    } catch (err) {
+      return new Response(`DEBUG next() threw: ${String(err)}`, {
+        status: 404,
+        headers: { "content-type": "text/plain", "x-debug-404": "next-threw" },
+      });
+    }
 
-    // Nothing matched (no static asset, no _redirects rule) — serve the real
-    // prerendered 404 page instead of the platform's bare empty fallback.
-    // (_redirects can't do this: Cloudflare Pages only accepts 200/301/302/
-    // 303/307/308 as a rule's status, so a 404 rewrite there is silently
-    // dropped. This is the documented way to do it from a Function instead —
-    // ask context.next()'s result whether it 404'd, and if so, fetch the
-    // static 404 page's own bytes via the ASSETS binding and re-wrap them in
-    // a fresh 404 response.)
     if (response.status === 404) {
-      const notFoundAsset = await context.env.ASSETS.fetch(new URL("/404/index.html", url.origin));
-      return new Response(notFoundAsset.body, { status: 404, headers: notFoundAsset.headers });
+      try {
+        const notFoundAsset = await context.env.ASSETS.fetch(new URL("/404/index.html", url.origin));
+        if (!notFoundAsset.ok) {
+          return new Response(`DEBUG asset fetch not ok: ${notFoundAsset.status}`, {
+            status: 404,
+            headers: { "content-type": "text/plain", "x-debug-404": "asset-not-ok" },
+          });
+        }
+        const body = await notFoundAsset.text();
+        return new Response(body, {
+          status: 404,
+          headers: { "content-type": "text/html; charset=utf-8", "x-debug-404": "served" },
+        });
+      } catch (err) {
+        return new Response(`DEBUG asset fetch threw: ${String(err)}`, {
+          status: 404,
+          headers: { "content-type": "text/plain", "x-debug-404": "asset-threw" },
+        });
+      }
     }
 
     return response;
