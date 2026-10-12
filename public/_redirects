@@ -1,6 +1,16 @@
 # Cloudflare Pages _redirects — gstcalculator.me
 # Enforces trailing slash on all URLs
 
+# Retired Statistics pages (2026-10-12, spam-update cleanup) -> closest real page
+/blog/gst-impact-indian-economy-statistics   /blog/what-is-gst-india/  301
+/blog/gst-impact-indian-economy-statistics/  /blog/what-is-gst-india/  301
+/blog/gst-rates-structure-statistics   /blog/new-gst-rate-slab-list-2025-26/  301
+/blog/gst-rates-structure-statistics/  /blog/new-gst-rate-slab-list-2025-26/  301
+/blog/gst-business-compliance-statistics   /blog/gst-return-due-dates-2025/  301
+/blog/gst-business-compliance-statistics/  /blog/gst-return-due-dates-2025/  301
+/blog/gst-impact-consumer-prices-statistics   /blog/gst-2-0-reforms-india-2025/  301
+/blog/gst-impact-consumer-prices-statistics/  /blog/gst-2-0-reforms-india-2025/  301
+
 # Blog posts
 /blog/:slug  /blog/:slug/  301
 

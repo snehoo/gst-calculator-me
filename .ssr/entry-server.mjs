@@ -678,7 +678,7 @@ function ShareResult(props) {
 
 // src/components/GSTCalculator.tsx
 import { Fragment, jsx as jsx7, jsxs as jsxs4 } from "react/jsx-runtime";
-var SLABS = [0, 5, 12, 18, 28];
+var SLABS = [0, 5, 18, 40];
 var STORAGE_KEY = "gst-calc-state-v1";
 var TOOLTIP_18_KEY = "gst-tip-18-seen";
 var DEFAULT_STATE = {
@@ -787,7 +787,7 @@ function GSTCalculator() {
       ] }),
       /* @__PURE__ */ jsxs4("div", { children: [
         /* @__PURE__ */ jsx7("label", { className: "text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2", children: "Select GST Slab" }),
-        /* @__PURE__ */ jsx7("div", { className: "grid grid-cols-5 gap-2", children: SLABS.map((s) => /* @__PURE__ */ jsxs4("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx7("div", { className: "grid grid-cols-4 gap-2", children: SLABS.map((s) => /* @__PURE__ */ jsxs4("div", { className: "relative", children: [
           /* @__PURE__ */ jsxs4(
             "button",
             {
@@ -970,6 +970,9 @@ var injectJsonLd = (schema) => {
   script.textContent = JSON.stringify(schema);
   document.head.appendChild(script);
 };
+var setNoIndex = () => {
+  upsertNamedMeta("robots", "noindex, follow");
+};
 var clearJsonLdScripts = () => {
   document.querySelectorAll('script[type="application/ld+json"]').forEach((el) => {
     if (el.parentNode) el.parentNode.removeChild(el);
@@ -1108,11 +1111,10 @@ var SiteFooter_default = SiteFooter;
 // src/pages/Index.tsx
 import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
 var SLAB_REF = [
-  { pct: "0%", title: "Nil Rate", desc: "Essential food grains, milk, vegetables, fruits, eggs, salt, books, newspapers, sindoor, bangles" },
-  { pct: "5%", title: "Essential Rate", desc: "Packaged foods, sugar, tea, coffee, edible oil, transport services, small restaurants (turnover <1.5 Cr)" },
-  { pct: "12%", title: "Standard Rate I", desc: "Apparel above \u20B91000, computers, processed food, mobile phones, business class air travel" },
-  { pct: "18%", title: "Standard Rate II (Most common)", desc: "AC restaurants, electronics, most financial services, IT services, telecom" },
-  { pct: "28%", title: "Luxury Rate", desc: "Luxury cars, tobacco, cement, pan masala, high-end personal care, AC hotels above \u20B97500/night" }
+  { pct: "0%", title: "Nil Rate", desc: "Essential food grains, fresh milk, vegetables, fruits, eggs, salt, books, health & life insurance (GST 2.0)" },
+  { pct: "5%", title: "Essential Rate", desc: "Packaged foods, medicines, bicycles, textiles \u2264\u20B92,500, footwear \u2264\u20B91,000, transport services, small restaurants" },
+  { pct: "18%", title: "Standard Rate (Most common)", desc: "Electronics, AC restaurants, most services (IT, telecom, financial), vehicles \u2264350cc, small/mid cars, cement" },
+  { pct: "40%", title: "Luxury / Sin Rate (GST 2.0)", desc: "Tobacco, pan masala, caffeinated aerated drinks, high-end SUVs >2500cc, yachts, private aircraft" }
 ];
 var Index = () => {
   const [tip, setTip] = useState5("");
@@ -1124,34 +1126,38 @@ var Index = () => {
     clearJsonLdScripts();
     setPageSeo({
       title: "GST Calculator India \u2014 Free Online CGST, SGST & IGST Calculator (No Login)",
-      description: "Free online GST calculator for India. Instantly add or remove GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown. No login, no ads in your way.",
+      description: "Free online GST calculator for India. Instantly add or remove GST for all slabs (5%, 18%, 40% under GST 2.0) with CGST, SGST & IGST breakdown. No login, no ads in your way.",
       path: "/",
       keywords: "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator"
     });
     setWebApplicationSchema({
       name: "GST Calculator India",
-      description: "Free GST calculator for India 2025. Instantly compute GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown."
+      description: "Free GST calculator for India 2026-27. Instantly compute GST for all slabs (5%, 18%, 40% under GST 2.0) with CGST, SGST & IGST breakdown."
     });
     setFAQPageSchema([
       {
-        question: "What is the GST registration threshold for goods?",
-        answer: "Businesses with an annual turnover of \u20B940 lakh or more need to register for GST. Goods suppliers above this threshold must register."
+        question: "How do I calculate 18% GST on a price?",
+        answer: "Multiply the base amount by 0.18 to get the GST amount, then add it to the base. For example, \u20B91,000 at 18% GST: GST = \u20B9180, invoice total = \u20B91,180. For intra-state, split as CGST \u20B990 + SGST \u20B990; for inter-state, apply IGST \u20B9180."
       },
       {
-        question: "What is the GST registration threshold for services?",
-        answer: "Service providers with an annual turnover of \u20B920 lakh or more need to register for GST. This is lower than the goods threshold."
+        question: "How do I remove GST from a GST-inclusive price (reverse GST)?",
+        answer: "Use: GST Amount = Total Price \u2212 [Total Price \xD7 100 \xF7 (100 + GST Rate)]. For \u20B91,180 at 18% GST: GST Amount = 1,180 \u2212 [1,180 \xD7 100 \xF7 118] = \u20B9180. Never simply subtract the percentage \u2014 that gives the wrong answer."
       },
       {
-        question: "What is the GST Composition Scheme?",
-        answer: "Businesses with turnover up to \u20B91.5 Cr (goods) or \u20B975 lakh (services) can opt for the simplified Composition Scheme and pay flat GST rates with quarterly filing instead of monthly, reducing compliance burden."
+        question: "What are the current GST slabs in India after GST 2.0?",
+        answer: "After GST 2.0 (effective September 22, 2025), India has 4 active GST slabs: 0% (nil \u2014 essentials, fresh food, books, insurance), 5% (packaged food, medicines, textiles), 18% (electronics, most services, vehicles, cement), and 40% (luxury and sin goods \u2014 tobacco, aerated drinks, high-end SUVs). The old 12% and 28% slabs have been abolished."
       },
       {
-        question: "Who needs to file e-invoicing?",
-        answer: "E-invoicing is mandatory for businesses with turnover above \u20B95 Cr from FY 2023-24. It integrates directly with the GST portal for better tracking and reduced fraud."
+        question: "When does CGST + SGST apply instead of IGST?",
+        answer: "CGST + SGST applies to intra-state transactions \u2014 buyer and seller in the same state. The total GST rate splits equally: 18% GST becomes 9% CGST + 9% SGST. IGST at the full rate applies to inter-state transactions \u2014 buyer and seller in different states."
       },
       {
-        question: "What are the main GST slabs in India?",
-        answer: "India has 5 main GST slabs: 0% (nil rate on essentials), 5% (essential goods/services), 12% (standard rate I), 18% (standard rate II - most common), and 28% (luxury goods). Different products fall into different slabs based on their nature."
+        question: "What is the GST registration threshold for businesses?",
+        answer: "Goods suppliers with annual turnover above \u20B940 lakh must register for GST. Service providers must register above \u20B920 lakh. Businesses in special category states (North-East) have a lower threshold of \u20B920 lakh for goods and \u20B910 lakh for services."
+      },
+      {
+        question: "How do I calculate GST for a \u20B91,000 product at 5%?",
+        answer: "GST Amount = (\u20B91,000 \xD7 5) \xF7 100 = \u20B950. Invoice total = \u20B91,050. For intra-state: CGST = \u20B925 + SGST = \u20B925. For inter-state: IGST = \u20B950."
       }
     ]);
   }, []);
@@ -1178,7 +1184,7 @@ var Index = () => {
     /* @__PURE__ */ jsx10(SiteHeader_default, { showUpdatedLabel: true, hideWordmark: true }),
     /* @__PURE__ */ jsxs7("header", { className: "bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground", children: [
       /* @__PURE__ */ jsx10("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "GST Calculator India \u2014 Free Online CGST, SGST & IGST Calculator" }),
-      /* @__PURE__ */ jsx10("p", { className: "text-primary-mid text-sm mt-1", children: "Instant GST computation for all slabs (5%, 12%, 18%, 28%) \u2014 add or remove GST, no login needed" })
+      /* @__PURE__ */ jsx10("p", { className: "text-primary-mid text-sm mt-1", children: "Instant GST computation for all slabs (5%, 18%, 40% under GST 2.0) \u2014 add or remove GST, no login needed" })
     ] }),
     /* @__PURE__ */ jsxs7("main", { className: "max-w-3xl mx-auto px-6 sm:px-8 py-6 flex flex-col gap-5", children: [
       /* @__PURE__ */ jsx10(GSTCalculator, {}),
@@ -1237,7 +1243,7 @@ var Index = () => {
       /* @__PURE__ */ jsxs7("div", { children: [
         /* @__PURE__ */ jsx10("h2", { className: "text-xl font-bold text-foreground mb-3", children: "What Is This GST Calculator?" }),
         /* @__PURE__ */ jsxs7("p", { className: "mb-3", children: [
-          "This is a free online GST calculator for India that instantly computes Goods and Services Tax for any amount at any slab \u2014 0%, 5%, 12%, 18%, or 28%. It works both ways: ",
+          "This is a free online GST calculator for India that instantly computes Goods and Services Tax for any amount at any slab \u2014 0%, 5%, 18%, or 40% (GST 2.0 rates, effective September 22, 2025). It works both ways: ",
           /* @__PURE__ */ jsx10("strong", { className: "text-foreground", children: "add GST" }),
           " to a base price (GST-exclusive) or ",
           /* @__PURE__ */ jsx10("strong", { className: "text-foreground", children: "remove GST" }),
@@ -1284,7 +1290,7 @@ var Index = () => {
           /* @__PURE__ */ jsxs7("div", { children: [
             /* @__PURE__ */ jsx10("h3", { className: "font-semibold text-foreground mb-1", children: "Which GST rate should I use?" }),
             /* @__PURE__ */ jsxs7("p", { children: [
-              "Most services and electronics fall under 18%; essentials are 0\u20135%; luxury and sin goods are 28%. See the slab reference above or the detailed ",
+              "After GST 2.0 (September 22, 2025, per the 56th GST Council): essentials are 0\u20135%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the ",
               /* @__PURE__ */ jsx10("a", { href: "/blog/gst-rate-slabs-india", className: "text-primary-dark underline", children: "GST rate slabs guide" }),
               "."
             ] })
@@ -1305,7 +1311,12 @@ var Index = () => {
           /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/gst-composition-scheme", className: "text-primary-dark underline", children: "GST Composition Scheme \u2014 who qualifies and how it works" }) }),
           /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/zoho-gst-calculator-alternative", className: "text-primary-dark underline", children: "Zoho GST calculator vs GSTCalculator.me" }) })
         ] })
-      ] })
+      ] }),
+      /* @__PURE__ */ jsx10("div", { className: "text-xs text-muted-foreground/60 border-t border-border pt-4", children: /* @__PURE__ */ jsxs7("p", { children: [
+        "Data source: ",
+        /* @__PURE__ */ jsx10("a", { href: "https://www.cbic.gov.in", className: "underline", rel: "noopener noreferrer", target: "_blank", children: "Central Board of Indirect Taxes and Customs (CBIC)" }),
+        ", 56th GST Council notification. GST 2.0 rates effective September 22, 2025. Registration thresholds: \u20B940 lakh (goods), \u20B920 lakh (services) per CBIC 2025-26. Last updated: July 2026."
+      ] }) })
     ] }),
     /* @__PURE__ */ jsx10(SiteFooter_default, {})
   ] });
@@ -1313,25 +1324,98 @@ var Index = () => {
 var Index_default = Index;
 
 // src/pages/NotFound.tsx
-import { useLocation } from "react-router-dom";
 import { useEffect as useEffect5 } from "react";
-import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Link as Link3, useLocation } from "react-router-dom";
+import { Calculator, BookOpen } from "lucide-react";
+
+// src/components/ui/button.tsx
+import * as React4 from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva as cva2 } from "class-variance-authority";
+import { jsx as jsx11 } from "react/jsx-runtime";
+var buttonVariants = cva2(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline"
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default"
+    }
+  }
+);
+var Button = React4.forwardRef(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return /* @__PURE__ */ jsx11(Comp, { className: cn(buttonVariants({ variant, size, className })), ref, ...props });
+  }
+);
+Button.displayName = "Button";
+
+// src/pages/NotFound.tsx
+import { jsx as jsx12, jsxs as jsxs8 } from "react/jsx-runtime";
 var NotFound = () => {
   const location = useLocation();
   useEffect5(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    clearJsonLdScripts();
+    setPageSeo({
+      title: "Page Not Found (404) | GST Calculator",
+      description: "This page doesn't exist. Use the free GST calculator or browse the blog for GST guides, rates, and compliance tips.",
+      path: location.pathname
+    });
+    setNoIndex();
   }, [location.pathname]);
-  return /* @__PURE__ */ jsx11("div", { className: "flex min-h-screen items-center justify-center bg-muted", children: /* @__PURE__ */ jsxs8("div", { className: "text-center", children: [
-    /* @__PURE__ */ jsx11("h1", { className: "mb-4 text-4xl font-bold", children: "404" }),
-    /* @__PURE__ */ jsx11("p", { className: "mb-4 text-xl text-muted-foreground", children: "Oops! Page not found" }),
-    /* @__PURE__ */ jsx11("a", { href: "/", className: "text-primary underline hover:text-primary/90", children: "Return to Home" })
-  ] }) });
+  return /* @__PURE__ */ jsxs8("div", { className: "min-h-screen bg-background flex flex-col", children: [
+    /* @__PURE__ */ jsx12(SiteHeader_default, {}),
+    /* @__PURE__ */ jsx12("main", { className: "flex-1 flex items-center justify-center px-6 py-16 sm:py-24", children: /* @__PURE__ */ jsxs8("div", { className: "w-full max-w-sm text-center", children: [
+      /* @__PURE__ */ jsxs8("div", { className: "flex items-center justify-center gap-2 text-[0.7rem] font-semibold tracking-widest text-muted-foreground uppercase mb-6", children: [
+        /* @__PURE__ */ jsx12("span", { children: "Error 404" }),
+        /* @__PURE__ */ jsx12("span", { className: "text-border", children: "\xB7" }),
+        /* @__PURE__ */ jsx12("span", { children: "Page Not Found" })
+      ] }),
+      /* @__PURE__ */ jsxs8("div", { className: "bg-primary-dark text-primary-foreground rounded-2xl p-8 shadow-lg", children: [
+        /* @__PURE__ */ jsx12("div", { className: "text-6xl sm:text-7xl font-bold text-destructive tracking-tight", children: "\u2212100%" }),
+        /* @__PURE__ */ jsx12("p", { className: "mt-3 text-sm text-primary-mid leading-relaxed", children: "Pages that don't exist get 100% fewer visits than the rest of the site." }),
+        /* @__PURE__ */ jsxs8("div", { className: "mt-6 pt-4 border-t border-primary-mid/20 flex items-center justify-between text-[0.7rem] text-primary-mid", children: [
+          /* @__PURE__ */ jsx12("span", { children: "Confirmed 404" }),
+          /* @__PURE__ */ jsx12("span", { children: "this URL vs. every real one" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx12("p", { className: "mt-8 text-sm text-muted-foreground leading-relaxed", children: "This page doesn't exist, or it's moved. Everything else on the site is exactly where you left it." }),
+      /* @__PURE__ */ jsxs8("div", { className: "mt-6 flex flex-col sm:flex-row gap-3 justify-center", children: [
+        /* @__PURE__ */ jsx12(Button, { asChild: true, size: "lg", children: /* @__PURE__ */ jsxs8(Link3, { to: "/", children: [
+          /* @__PURE__ */ jsx12(Calculator, { className: "h-4 w-4" }),
+          "Open the GST Calculator"
+        ] }) }),
+        /* @__PURE__ */ jsx12(Button, { asChild: true, variant: "outline", size: "lg", children: /* @__PURE__ */ jsxs8(Link3, { to: "/blog", children: [
+          /* @__PURE__ */ jsx12(BookOpen, { className: "h-4 w-4" }),
+          "Browse the blog"
+        ] }) })
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsx12(SiteFooter_default, {})
+  ] });
 };
 var NotFound_default = NotFound;
 
 // src/pages/Blog.tsx
 import { useEffect as useEffect6 } from "react";
-import { Link as Link3 } from "react-router-dom";
+import { Link as Link4 } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
 // src/lib/blog-posts.ts
@@ -1343,7 +1427,7 @@ var POSTS = [
     category: "How-to",
     readTime: "6 min",
     date: "2026-04-20",
-    updated: "2026-06-25",
+    updated: "2026-08-18",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "GST calculation looks complicated at first. However, it follows two simple formulas that never change. Furthermore, once you understand the difference between GST-exclusive and GST-inclusive amounts, every calculation becomes straightforward." },
@@ -1352,7 +1436,7 @@ var POSTS = [
         "Adding GST: <strong>GST Amount = (Original Cost \xD7 GST Rate) \xF7 100</strong>, then add it to the base to get the invoice total.",
         "Removing GST: <strong>GST Amount = Total Price \u2212 [Total Price \xD7 100 \xF7 (100 + GST Rate)]</strong> \u2014 never simply subtract the percentage.",
         "For intra-state sales, GST splits equally into <strong>CGST + SGST</strong>; for inter-state sales, the full rate applies as <strong>IGST</strong>.",
-        "India has four primary slabs \u2014 <strong>5%, 12%, 18%, and 28%</strong> \u2014 and the calculation method is identical across all of them.",
+        "Under GST 2.0 (effective September 22, 2025), India has four active slabs \u2014 <strong>0%, 5%, 18%, and 40%</strong> \u2014 and the calculation method is identical across all of them. The old 12% and 28% slabs have been abolished.",
         "A \u20B91,000 product at 18% GST results in a <strong>\u20B91,180</strong> total invoice value \u2014 the most common calculation businesses perform."
       ] },
       { type: "h2", text: "What Is GST and How Is It Calculated?" },
@@ -1385,22 +1469,22 @@ var POSTS = [
         { n: "= 18%", l: "Total GST \u2014 both routes" }
       ] },
       { type: "h2", text: "Worked Examples at Every GST Rate Slab" },
-      { type: "p", text: "India currently has four primary GST rate slabs. The calculation method is identical for all four \u2014 only the rate number changes." },
+      { type: "p", text: "Under GST 2.0 (effective September 22, 2025), India has four active GST rate slabs: 0%, 5%, 18%, and 40%. The old 12% and 28% slabs are abolished. The calculation method is identical for all slabs \u2014 only the rate number changes." },
       { type: "example", title: "Example 1 \u2014 5% GST (packaged food, medicines)", lines: [
         "Base amount: \u20B9500 | GST at 5% = \u20B925 | Invoice total = <strong>\u20B9525</strong>",
         "CGST = \u20B912.50 | SGST = \u20B912.50 (intra-state)"
       ] },
-      { type: "example", title: "Example 2 \u2014 12% GST (processed food, mobile phones)", lines: [
-        "Base amount: \u20B92,000 | GST at 12% = \u20B9240 | Invoice total = <strong>\u20B92,240</strong>",
-        "CGST = \u20B9120 | SGST = \u20B9120 (intra-state)"
+      { type: "example", title: "Example 2 \u2014 0% GST (nil rate \u2014 fresh vegetables, grains, books)", lines: [
+        "Base amount: \u20B9500 | GST at 0% = \u20B90 | Invoice total = <strong>\u20B9500</strong>",
+        "No CGST or SGST applicable \u2014 exempt supply under GST 2.0"
       ] },
       { type: "example", title: "Example 3 \u2014 18% GST (electronics, restaurants, services)", lines: [
         "Base amount: \u20B910,000 | GST at 18% = \u20B91,800 | Invoice total = <strong>\u20B911,800</strong>",
         "CGST = \u20B9900 | SGST = \u20B9900 (intra-state)"
       ] },
-      { type: "example", title: "Example 4 \u2014 28% GST (luxury goods, cement, cars)", lines: [
-        "Base amount: \u20B950,000 | GST at 28% = \u20B914,000 | Invoice total = <strong>\u20B964,000</strong>",
-        "CGST = \u20B97,000 | SGST = \u20B97,000 (intra-state)"
+      { type: "example", title: "Example 4 \u2014 40% GST (luxury/sin goods \u2014 tobacco, high-end SUVs, aerated drinks)", lines: [
+        "Base amount: \u20B950,000 | GST at 40% = \u20B920,000 | Invoice total = <strong>\u20B970,000</strong>",
+        "CGST = \u20B910,000 | SGST = \u20B910,000 (intra-state)"
       ] },
       { type: "h2", text: "How Do You Calculate GST on a Service Invoice?" },
       { type: "p", text: "Service providers \u2014 including freelancers, consultants, and agencies \u2014 charge GST at 18% on most services. The calculation works identically to goods. Apply 18% to the fee amount before tax, then add to arrive at the billable total." },
@@ -1408,14 +1492,14 @@ var POSTS = [
       { type: "h2", text: "Why Is Manual GST Calculation Error-Prone?" },
       { type: "p", text: "Even experienced accountants make mistakes when calculating GST manually. The reverse GST formula \u2014 in particular \u2014 is frequently applied incorrectly, with many people simply subtracting the percentage rather than using the correct divisor." },
       { type: "p", text: "For example, removing 18% GST from \u20B91,180 by calculating 18% of 1,180 (= \u20B9212.40) produces the wrong answer. The correct reverse calculation gives \u20B9180." },
-      { type: "p", text: 'For a full explanation of the different GST rate categories, see our guide on <a href="/blog/gst-rate-slabs-india">GST rate slabs in India</a>. Additionally, if you need to understand how CGST and IGST differ in practice, read our detailed article on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>.' },
+      { type: "p", text: 'For a full explanation of the different GST rate categories, see our guide on <a href="/blog/gst-rate-slabs-india">GST rate slabs in India</a>. Additionally, if you need to understand how CGST and IGST differ in practice, read our detailed article on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>. If you want the background on why these rates changed, our <a href="/blog/gst-2-0-reforms-india-2025">GST 2.0 reforms guide</a> covers the September 2025 restructuring in full.' },
       { type: "sourceLink", href: "https://www.cbic.gov.in/", label: "CBIC \u2014 GST rate notifications" },
       { type: "h2", text: "How to Calculate GST \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
         { q: "What is the formula to add GST to a price?", a: "GST Amount = (Original Cost \xD7 GST Rate) \xF7 100, then Net Price = Original Cost + GST Amount. For example, \u20B91,000 at 18% GST gives \u20B9180 GST and a \u20B91,180 total." },
         { q: "How do you remove GST from a total price?", a: "Use GST Amount = Total Price \u2212 [Total Price \xD7 100 \xF7 (100 + GST Rate)]. Simply subtracting the percentage from the total gives the wrong answer." },
         { q: "When does CGST + SGST apply instead of IGST?", a: "CGST + SGST applies to intra-state transactions (buyer and seller in the same state), splitting the rate equally. IGST applies at the full rate for inter-state transactions." },
-        { q: "What are the current GST rate slabs in India?", a: "The four primary slabs are 5%, 12%, 18%, and 28%, applied to different categories of goods and services." },
+        { q: "What are the current GST rate slabs in India?", a: "Under GST 2.0 (effective September 22, 2025), the current slabs are 0%, 5%, 18%, and 40%. The old 12% and 28% slabs were abolished \u2014 most 12% items moved to 5%, and most 28% items moved to 18%." },
         { q: "Does the GST calculation method change for services?", a: "No. Services are calculated the same way as goods \u2014 apply the applicable rate (commonly 18%) to the fee amount and add it to get the billable total." }
       ] },
       { type: "cta", title: "Calculate GST instantly \u2014 free", text: "Enter any amount and select your GST rate. Get instant CGST, SGST, and IGST breakdowns \u2014 no sign-up required." }
@@ -1428,7 +1512,7 @@ var POSTS = [
     category: "Basics",
     readTime: "5 min",
     date: "2026-04-20",
-    updated: "2026-06-25",
+    updated: "2026-08-18",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "GST \u2014 Goods and Services Tax \u2014 is India's unified indirect tax on almost every product and service bought or sold in the country. It replaced a confusing web of 17 different central and state taxes when it launched on 1 July 2017." },
@@ -1438,7 +1522,7 @@ var POSTS = [
         "India uses <strong>four types of GST</strong> \u2014 CGST, SGST, IGST, and UTGST \u2014 depending on whether a sale is intra-state or inter-state.",
         "GST registration is mandatory above <strong>\u20B940 lakh turnover for goods</strong> or <strong>\u20B920 lakh for services</strong> (\u20B920 lakh / \u20B910 lakh in special category states).",
         "Every registered business gets a <strong>15-digit GSTIN</strong> that must appear on all tax invoices.",
-        "Goods and services fall into <strong>six rate slabs</strong>: 0%, 3%, 5%, 12%, 18%, and 28%."
+        "Goods and services fall into <strong>four rate slabs under GST 2.0</strong>: 0%, 5%, 18%, and 40% \u2014 the old 12% and 28% slabs were abolished in September 2025."
       ] },
       { type: "p", text: `India's tax system before GST was, frankly, a mess. Businesses had to navigate VAT, service tax, excise duty, octroi, and several other levies \u2014 each with its own filing system, rate structure, and compliance requirement. GST's "One Nation, One Tax" framework was one of the most significant economic reforms in independent India's history.` },
       { type: "stat", num: "1 July 2017", label: "Date GST replaced VAT, service tax, excise duty, and 14 other indirect taxes across India" },
@@ -1468,16 +1552,14 @@ var POSTS = [
       { type: "p", text: "Certain businesses must register regardless of turnover: inter-state suppliers, e-commerce operators and their sellers, businesses under reverse charge mechanism, and anyone supplying through an e-commerce aggregator." },
       { type: "h3", text: "What is a GSTIN?" },
       { type: "p", text: "Upon registration, every business receives a <strong>GSTIN</strong> \u2014 Goods and Services Tax Identification Number. It is a 15-digit alphanumeric code: 2-digit state code + 10-digit PAN + 1-digit entity number + 1-digit check digit. The GSTIN must appear on every tax invoice." },
-      { type: "h2", text: "GST Rate Slabs \u2014 The Quick Reference" },
+      { type: "h2", text: "GST Rate Slabs \u2014 The Quick Reference (GST 2.0)" },
       { type: "slabGrid", items: [
         { r: "0%", l: "Essentials \u2014 fresh food, milk, eggs, books" },
-        { r: "5%", l: "Necessities \u2014 packaged food, medicines, transport" },
-        { r: "12%", l: "Standard \u2014 processed food, mobile phones, textiles" },
-        { r: "18%", l: "Most goods and services \u2014 electronics, restaurants" },
-        { r: "28%", l: "Luxury and sin goods \u2014 cars, tobacco, cement" },
-        { r: "3%", l: "Gold, silver, and precious metals" }
+        { r: "5%", l: "Necessities \u2014 packaged food, medicines, transport, mobile phones, textiles" },
+        { r: "18%", l: "Most goods and services \u2014 electronics, restaurants, cement" },
+        { r: "40%", l: "Luxury and sin goods \u2014 high-end cars, tobacco" }
       ] },
-      { type: "p", text: 'For a complete breakdown of which products fall under each slab, read our detailed guide on <a href="/blog/gst-rate-slabs-india">GST rate slabs in India 2024</a>. To understand how CGST and IGST differ in actual transactions, see our article on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>.' },
+      { type: "p", text: 'For a complete breakdown of which products fall under each slab, read our detailed guide on <a href="/blog/gst-rate-slabs-india">GST 2.0 rate slabs in India</a>. To understand how CGST and IGST differ in actual transactions, see our article on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST</a>. For the full story of the September 2025 rate reform itself, see our <a href="/blog/gst-2-0-reforms-india-2025">GST 2.0 reforms guide</a>.' },
       { type: "quote", text: "GST is not merely a tax reform. It is an economic union of states. \u2014 Arun Jaitley, Finance Minister, at the GST launch ceremony, 30 June 2017" },
       { type: "sourceLink", href: "https://www.gst.gov.in/", label: "Official GST Portal \u2014 Government of India" },
       { type: "sourceLink", href: "https://www.cbic.gov.in/", label: "CBIC \u2014 Central Board of Indirect Taxes and Customs" },
@@ -1493,33 +1575,31 @@ var POSTS = [
   },
   {
     slug: "gst-rate-slabs-india",
-    title: "GST Rate Slabs in India 2024 \u2014 Which Rate Applies to You?",
-    description: "Complete guide to GST rate slabs in India \u2014 0%, 5%, 12%, 18%, 28% \u2014 with product examples, HSN codes, and how to find the right rate.",
+    title: "GST Rate Slabs in India 2026 \u2014 GST 2.0: 0%, 5%, 18%, 40% Explained",
+    description: "Complete guide to GST 2.0 rate slabs in India \u2014 0%, 5%, 18%, 40% \u2014 with product examples, HSN codes, and how to find the right rate after the September 2025 reform.",
     category: "Tax Rates",
     readTime: "6 min",
     date: "2026-04-20",
-    updated: "2026-06-25",
+    updated: "2026-08-18",
     author: "GST Calculator Team",
     body: [
-      { type: "lead", text: "India's GST framework places every product and service into one of six rate categories. Knowing which slab applies to your transaction is the single most important step in any GST calculation." },
+      { type: "lead", text: "Since GST 2.0 took effect on September 22, 2025, India's GST framework places every product and service into one of four rate categories instead of the old six. Knowing which slab applies to your transaction is the single most important step in any GST calculation." },
       { type: "tldr", items: [
-        "India has <strong>six GST rate slabs</strong>: 0%, 3%, 5%, 12%, 18%, and 28% \u2014 plus special rates of 0.25% and 1.5% for diamonds.",
+        "India now has <strong>four GST rate slabs under GST 2.0</strong>: 0%, 5%, 18%, and 40% \u2014 plus special rates of 0.25% and 1.5% for diamonds.",
+        "The <strong>12% and 28% slabs were abolished</strong> effective September 22, 2025 \u2014 most goods that sat there moved to 5% or 18%.",
         "The <strong>18% slab</strong> is the default rate and covers most goods and services where no special rate is prescribed.",
         "<strong>0% GST</strong> applies to essentials like fresh produce, milk, eggs, books, and education and healthcare services.",
-        "The <strong>28% slab</strong> covers luxury and demerit goods such as cars and tobacco, often with an additional GST Cess.",
-        "Every product's rate is determined by its <strong>HSN code</strong>, and every service by its <strong>SAC code</strong> \u2014 not by the product's common name.",
-        "Businesses above <strong>\u20B95 crore turnover</strong> must show the full 8-digit HSN code on invoices."
+        "The new <strong>40% slab</strong> covers luxury and sin goods such as tobacco, pan masala, and high-end cars \u2014 replacing the old 28% + cess structure.",
+        "Every product's rate is determined by its <strong>HSN code</strong>, and every service by its <strong>SAC code</strong> \u2014 not by the product's common name."
       ] },
-      { type: "p", text: "This guide breaks down every GST rate slab with real-world product examples, so you can identify the correct rate quickly. It also explains how HSN and SAC codes connect products and services to their applicable rates." },
-      { type: "h2", text: "What Are the GST Rate Slabs in India?" },
-      { type: "p", text: "India's GST Council established six standard rate bands: 0%, 3%, 5%, 12%, 18%, and 28%. A small number of goods attract special rates of 0.25% (rough diamonds) and 1.5% (cut and polished diamonds). The majority of everyday goods and most services fall under the 5%, 12%, or 18% slabs." },
+      { type: "p", text: "This guide breaks down every GST 2.0 rate slab with real-world product examples, so you can identify the correct rate quickly. It also explains how HSN and SAC codes connect products and services to their applicable rates." },
+      { type: "h2", text: "What Are the GST Rate Slabs in India Under GST 2.0?" },
+      { type: "p", text: "The GST Council's 56th meeting replaced India's old 5%/12%/18%/28% structure with a simplified system effective September 22, 2025: 0%, 5%, 18%, and a new 40% slab for luxury and sin goods. A small number of goods still attract special rates of 0.25% (rough diamonds) and 1.5% (cut and polished diamonds). The majority of everyday goods and most services now fall under the 5% or 18% slabs." },
       { type: "slabGrid", items: [
         { r: "0%", l: "Essential goods \u2014 nil rated" },
-        { r: "3%", l: "Gold, silver, precious stones" },
-        { r: "5%", l: "Merit goods \u2014 necessities" },
-        { r: "12%", l: "Standard goods \u2014 processed" },
-        { r: "18%", l: "Most goods and services" },
-        { r: "28%", l: "Luxury and demerit goods" }
+        { r: "5%", l: "Merit goods \u2014 necessities (absorbed most of old 12%)" },
+        { r: "18%", l: "Most goods and services (absorbed most of old 28%)" },
+        { r: "40%", l: "Luxury and sin goods (new slab, replaces 28%+cess)" }
       ] },
       { type: "h2", text: "0% GST \u2014 Zero-Rated and Exempt Goods" },
       { type: "p", text: "The 0% slab covers essential items that the government wants to keep affordable. There is an important distinction between <strong>zero-rated</strong> and <strong>exempt</strong> goods \u2014 one that matters significantly for input tax credit claims." },
@@ -1528,51 +1608,44 @@ var POSTS = [
         "Fresh fruits and vegetables, milk and dairy (unprocessed), eggs, meat and fish (unprocessed), cereals and pulses (unbranded), salt, water (non-bottled), fresh bread, books and newspapers, educational services, healthcare services."
       ] },
       { type: "h2", text: "5% GST Slab \u2014 Merit Goods and Basic Necessities" },
-      { type: "p", text: "The 5% slab covers goods and services that are widely used but not considered bare essentials. Many agricultural inputs fall here to support the farming sector." },
-      { type: "example", title: "Common 5% GST items", lines: [
-        "<strong>Food:</strong> Packaged and branded food items, edible oils, sugar, tea, coffee, frozen vegetables, fish (processed).",
+      { type: "p", text: "The 5% slab covers goods and services that are widely used but not considered bare essentials. Since GST 2.0, it also absorbed most items that previously sat in the abolished 12% slab \u2014 so a wider range of processed and packaged goods now qualify for 5% instead of 12%." },
+      { type: "example", title: "Common 5% GST items (including former 12% items now at 5%)", lines: [
+        "<strong>Food:</strong> Packaged and branded food items, edible oils, sugar, tea, coffee, frozen vegetables, fish (processed), ghee, butter, cheese, frozen meat products, fruit juices, namkeen and snacks.",
         "<strong>Medicines:</strong> Life-saving drugs, basic medicines, vaccines.",
         "<strong>Services:</strong> Railways (AC class), economy class air travel, small restaurants (without AC).",
         "<strong>Other:</strong> Coal, fertilisers, agro machinery, renewable energy devices."
       ] },
-      { type: "h2", text: "12% GST Slab \u2014 Processed and Standard Goods" },
-      { type: "p", text: "The 12% slab covers a wide range of processed goods and some services. Many manufactured goods that have been through significant processing fall here." },
-      { type: "example", title: "Common 12% GST items", lines: [
-        "<strong>Food:</strong> Ghee, butter, cheese, frozen meat products, fruit juices, namkeen and snacks.",
-        "<strong>Electronics:</strong> Mobile phones (verify current rates \u2014 revised periodically).",
-        "<strong>Textiles:</strong> Apparel above \u20B91,000, readymade garments.",
-        "<strong>Services:</strong> Work contracts for non-residential construction, business class air travel."
-      ] },
       { type: "h2", text: "18% GST Slab \u2014 The Most Common Rate" },
-      { type: "p", text: "The 18% slab is the most widely applicable rate in India. The majority of manufactured goods, most professional services, and most consumer products fall here. It is the default rate for services where no specific rate is prescribed." },
-      { type: "example", title: "Common 18% GST items", lines: [
+      { type: "p", text: "The 18% slab is the most widely applicable rate in India. The majority of manufactured goods, most professional services, and most consumer products fall here. It is the default rate for services where no specific rate is prescribed \u2014 and since GST 2.0, it also absorbed most items that previously sat in the abolished 28% slab." },
+      { type: "example", title: "Common 18% GST items (including former 28% items now at 18%)", lines: [
         "<strong>Electronics:</strong> Computers, laptops, televisions, refrigerators, washing machines, air conditioners.",
         "<strong>Services:</strong> IT services, financial services, telecom, insurance, consulting, marketing, restaurants (with AC).",
         "<strong>Building materials:</strong> Cement, steel, paint, tiles, plywood.",
+        "<strong>Textiles:</strong> Apparel above \u20B91,000, readymade garments, mobile phones.",
         "<strong>Other:</strong> FMCG products (shampoo, toothpaste, soap), packaged drinking water above 20 litres, cameras."
       ] },
-      { type: "h2", text: "28% GST Slab \u2014 Luxury and Demerit Goods" },
-      { type: "p", text: "The 28% slab is reserved for luxury items and goods the government specifically wishes to discourage through taxation. Many items in this slab also attract an additional <strong>GST Cess</strong> on top of the 28% rate. The effective tax rate on premium cars and tobacco products can exceed 40%." },
-      { type: "example", title: "Common 28% GST items", lines: [
-        "<strong>Vehicles:</strong> Passenger cars (with additional cess of 1\u201322% depending on engine size and type).",
-        "<strong>Tobacco:</strong> Cigarettes, cigars, pan masala, gutka (with additional cess).",
+      { type: "h2", text: "40% GST Slab \u2014 Luxury and Sin Goods (New Under GST 2.0)" },
+      { type: "p", text: "The 40% slab is new as of GST 2.0, replacing the old 28% + Cess structure with a single flat rate for luxury items and goods the government specifically wishes to discourage. There is no separate Cess layered on top \u2014 40% is the full effective rate." },
+      { type: "example", title: "Common 40% GST items", lines: [
+        "<strong>Vehicles:</strong> High-end passenger cars and SUVs above the luxury threshold.",
+        "<strong>Tobacco:</strong> Cigarettes, cigars, pan masala, gutka.",
         "<strong>Luxury goods:</strong> Premium cosmetics (above a certain price), aircrafts for personal use.",
-        "<strong>Construction:</strong> Premium residential construction projects in certain categories."
+        "<strong>Aerated drinks:</strong> Carbonated beverages and other sin-good categories."
       ] },
       { type: "h2", text: "How to Find the GST Rate for Any Product \u2014 HSN and SAC Codes" },
       { type: "p", text: "Every product in India has an <strong>HSN (Harmonised System of Nomenclature) code</strong> \u2014 an internationally recognised classification number. The GST rate for any product is determined by its HSN code, not its common name." },
       { type: "p", text: "Similarly, every service has a <strong>SAC (Services Accounting Code)</strong>. Businesses with turnover above \u20B95 crore must include the full 8-digit HSN code on all invoices. Businesses below this threshold may use 4-digit codes." },
       { type: "h3", text: "How do you quickly look up an HSN code?" },
       { type: "p", text: "The official GST portal at gst.gov.in provides a comprehensive HSN code search tool. The CBIC website maintains the master GST rate schedule. Most GST accounting software packages include built-in HSN lookup functionality." },
-      { type: "p", text: 'For the calculation method at each of these slabs, see our step-by-step guide on <a href="/blog/how-to-calculate-gst">how to calculate GST in India</a>. If you are unsure whether to use CGST/SGST or IGST, read our article on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST differences</a>.' },
+      { type: "p", text: 'For the calculation method at each of these slabs, see our step-by-step guide on <a href="/blog/how-to-calculate-gst">how to calculate GST in India</a>. If you are unsure whether to use CGST/SGST or IGST, read our article on <a href="/blog/cgst-sgst-igst-difference">CGST vs SGST vs IGST differences</a>. For the full history of how the GST Council restructured these slabs \u2014 including which products moved and why \u2014 see our <a href="/blog/gst-2-0-reforms-india-2025">GST 2.0 reforms explainer</a>.' },
       { type: "sourceLink", href: "https://www.gst.gov.in/", label: "GST Portal \u2014 HSN/SAC code and rate search" },
       { type: "sourceLink", href: "https://www.cbic.gov.in/", label: "CBIC \u2014 GST rate schedule notifications" },
       { type: "h2", text: "GST Rate Slabs \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
-        { q: "How many GST rate slabs are there in India?", a: "India has six standard GST rate slabs \u2014 0%, 3%, 5%, 12%, 18%, and 28% \u2014 plus two special rates of 0.25% and 1.5% that apply only to diamonds." },
-        { q: "Which GST slab applies to most goods and services?", a: "The 18% slab is the most widely applicable rate and is the default for services and goods where no specific rate has been prescribed." },
+        { q: "How many GST rate slabs are there in India?", a: "Since GST 2.0 (effective September 22, 2025), India has four standard GST rate slabs \u2014 0%, 5%, 18%, and 40% \u2014 plus two special rates of 0.25% and 1.5% that apply only to diamonds. The old 12% and 28% slabs were abolished." },
+        { q: "Which GST slab applies to most goods and services?", a: "The 18% slab is the most widely applicable rate and is the default for services and goods where no specific rate has been prescribed. It also absorbed most items that used to sit in the abolished 28% slab." },
         { q: "How do I find the GST rate for a specific product?", a: "Look up the product's HSN code (for goods) or SAC code (for services) on the GST portal or CBIC rate schedule \u2014 the rate is tied to this code, not the product's common name." },
-        { q: "Is the 28% GST slab the highest tax a product can attract?", a: "28% is the highest standard slab, but luxury and sin goods like premium cars, cigarettes, and pan masala can attract an additional GST Cess on top of 28%, pushing the effective rate above 40%." }
+        { q: "Is the 40% GST slab the highest tax a product can attract?", a: "Yes \u2014 40% is now the highest GST slab under GST 2.0, replacing the old 28% + Cess structure. It applies as a single flat rate to luxury and sin goods like premium cars, cigarettes, and pan masala, with no separate Cess layered on top." }
       ] },
       { type: "cta", title: "Know your rate? Calculate GST instantly", text: "Enter your amount and select the applicable slab \u2014 instant CGST, SGST, and IGST breakdown for any rate." }
     ]
@@ -2079,64 +2152,20 @@ var POSTS = [
     ]
   },
   {
-    slug: "gst-impact-indian-economy-statistics",
-    title: "How GST Impacts the Indian Economy Statistics (2025): 52+ Data Points on Revenue, Growth, and GDP Contribution",
-    description: "52+ data points on how GST impacts India's economy \u2014 monthly collections, GDP contribution, growth rate, and sector-wise revenue.",
-    category: "Statistics",
-    readTime: "7 min",
-    date: "2026-05-03",
-    updated: "2026-06-25",
-    author: "GST Calculator Team",
-    body: [{ "type": "lead", "text": "India's GST collections crossed \u20B91.87 lakh crore in April 2024\u2014the highest ever monthly collection (Ministry of Finance, GST Revenue Data 2024)." }, { "type": "tldr", "items": ["<strong>\u20B91.87 lakh crore is the highest GST collection ever</strong> (Ministry of Finance 2024).", "Average monthly GST collections exceed <strong>\u20B91.6 lakh crore</strong> (CBIC 2024).", "GST contributes <strong>30%+ of indirect tax revenue</strong> (Economic Survey 2024).", "GST collections grew <strong>12% CAGR since 2018</strong> (CBIC 2024).", "Indirect taxes contribute <strong>~11\u201312% of GDP</strong> (Economic Survey 2024).", "Over <strong>1.4 crore taxpayers are registered under GST</strong> (GSTN 2024)."] }, { "type": "p", "text": "That single figure reflects a tax system that now contributes over 30% of India's indirect tax revenue base. Meanwhile, GST collections have grown at a compound annual rate exceeding 12% since 2018 (CBIC Annual Report 2024). At the macro level, indirect taxes including GST contribute roughly 11\u201312% of India's GDP (Economic Survey of India 2024). We aggregated data from Ministry of Finance, CBIC, RBI, World Bank, and OECD along with primary datasets. GST is no longer just a tax reform\u2014it is a structural backbone of India's economic system." }, { "type": "h2", "text": "What Is GST's Impact on the Indian Economy?" }, { "type": "p", "text": "GST has shifted from a one-time tax reform to an ongoing structural driver of India's economy \u2014 boosting monthly revenue collections, improving tax buoyancy, contributing 11\u201312% of GDP through indirect taxes, and reducing logistics costs by over 20% since replacing 17+ legacy taxes in 2017." }, { "type": "h2", "text": "Key Takeaways" }, { "type": "ul", "items": ["GST reduced logistics costs by <strong>20%+</strong> (World Bank 2023).", "Compliance improved steadily due to digital filing (OECD 2024).", "GST replaced 17+ taxes under a unified system.", "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me"] }, { "type": "divider" }, { "type": "h2", "text": "1. Monthly GST Revenue Trends" }, { "type": "p", "text": "<strong>Monthly GST collections now consistently exceed \u20B91.5 lakh crore</strong>, signaling strong compliance and consumption demand. The pattern shows seasonal spikes\u2014April and December dominate due to year-end adjustments and festive demand." }, { "type": "image", "src": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80", "alt": "gst revenue trends india" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Highest GST collection month", "\u20B91.87 lakh crore (April 2024)", "Ministry of Finance 2024"], ["Average monthly GST", "\u20B91.6 lakh crore", "CBIC 2024"], ["YoY growth rate", "~10\u201312%", "RBI 2024"], ["Pre-GST indirect tax (2016)", "\u20B98.5 lakh crore annually", "Economic Survey 2017"], ["GST annual collections (2024)", "\u20B920 lakh crore+", "CBIC 2024"]] }, { "type": "p", "text": "Calculate GST instantly here \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.cbic.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "2. GST Contribution to GDP" }, { "type": "p", "text": "GST's role has shifted from tax reform to economic stabilizer. Its predictability strengthens fiscal planning and improves tax buoyancy." }, { "type": "image", "src": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80", "alt": "india gdp growth" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Indirect tax share of GDP", "11\u201312%", "Economic Survey 2024"], ["GST share in indirect taxes", "~30\u201335%", "RBI 2024"], ["Tax buoyancy (GST)", "1.2\u20131.3", "OECD 2024"], ["GDP growth correlation", "Positive post-2018", "World Bank 2023"]] }, { "type": "p", "text": "Try this GST calculator for accurate results \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.indiabudget.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "3. GST Growth Rate India" }, { "type": "p", "text": "GST growth has outpaced GDP growth in several years, indicating expanding compliance rather than just economic expansion." }, { "type": "image", "src": "https://images.unsplash.com/photo-1508385082359-f38ae991e8f2?auto=format&fit=crop&w=1600&q=80", "alt": "growth chart" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["GST CAGR (2018\u20132024)", "~12%", "CBIC 2024"], ["GDP growth (same period)", "~6\u20137%", "World Bank 2024"], ["Compliance-driven growth", "+5\u20136%", "OECD 2024"], ["Digital filing increase", "+40%", "GSTN 2024"]] }, { "type": "p", "text": "Calculate GST instantly here \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://data.worldbank.org" }, { "type": "divider" }, { "type": "h2", "text": "4. GST vs Pre-GST Tax System" }, { "type": "p", "text": "GST simplified a fragmented system of indirect taxes, reducing cascading tax effects." }, { "type": "image", "src": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80", "alt": "tax comparison" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Taxes replaced", "17+", "Ministry of Finance"], ["Logistics cost reduction", "20%", "World Bank 2023"], ["Tax cascading eliminated", "Yes", "OECD 2024"], ["Ease of doing business improvement", "+30 ranks", "World Bank"]] }, { "type": "p", "text": "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.worldbank.org" }, { "type": "divider" }, { "type": "h2", "text": "5. Sector-wise GST Contribution" }, { "type": "p", "text": "Consumption-heavy sectors dominate GST collections, reflecting India's demand-driven economy." }, { "type": "image", "src": "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1600&q=80", "alt": "retail economy" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Services sector share", "~45%", "CBIC 2024"], ["Manufacturing", "30%", "CBIC 2024"], ["Retail & FMCG", "15%", "Statista 2024"], ["E-commerce GST growth", "+25%", "MeitY 2024"]] }, { "type": "sourceLink", "href": "https://www.meity.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "Summary Table" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Highest GST month", "\u20B91.87L Cr", "MoF"], ["Annual GST", "\u20B920L Cr+", "CBIC"], ["GDP contribution", "~12%", "Economic Survey"], ["CAGR", "12%", "CBIC"], ["Taxpayers", "1.4 Cr+", "GSTN"]] }, { "type": "divider" }, { "type": "h2", "text": "Methodology and Sources" }, { "type": "p", "text": "Primary government datasets and international financial institutions were prioritized. Cross-referencing ensured consistency and recency." }, { "type": "ul", "items": ["Ministry of Finance \u2014 GST Revenue Data", "CBIC \u2014 Annual Reports", "RBI \u2014 Economic Data", "World Bank \u2014 Economic Indicators", "OECD \u2014 Tax Statistics"] }, { "type": "p", "text": "<strong>Last updated: June 2026</strong>" }, { "type": "divider" }, { "type": "h2", "text": "GST and the Indian Economy \u2014 Frequently Asked Questions" }, { "type": "faq", "items": [{ "q": "What was India's highest-ever monthly GST collection?", "a": "\u20B91.87 lakh crore in April 2024, the highest monthly GST collection on record, according to Ministry of Finance GST Revenue Data." }, { "q": "How much does GST contribute to India's GDP?", "a": "Indirect taxes including GST contribute roughly 11\u201312% of India's GDP, per the Economic Survey of India 2024." }, { "q": "How fast have GST collections grown since launch?", "a": "GST collections have grown at a compound annual growth rate exceeding 12% since 2018, according to the CBIC Annual Report 2024." }, { "q": "How many taxpayers are registered under GST?", "a": "Over 1.4 crore taxpayers are registered under GST as of 2024, per GSTN data." }] }, { "type": "divider" }, { "type": "p", "text": 'Calculate GST instantly here \u2192 <a href="https://gstcalculator.me">https://gstcalculator.me</a>' }]
-  },
-  {
-    slug: "gst-rates-structure-statistics",
-    title: "How GST Rates Are Structured and Applied Statistics (2025): 50+ Data Points on Slabs, Categories, and Tax Distribution",
-    description: "50+ data points on India's GST rate structure \u2014 slab distribution, revenue contribution, rate revisions, and category-wise tax burden.",
-    category: "Statistics",
-    readTime: "7 min",
-    date: "2026-05-03",
-    updated: "2026-06-25",
-    author: "GST Calculator Team",
-    body: [{ "type": "lead", "text": "India operates a four-tier GST system with rates of 5%, 12%, 18%, and 28%, covering over 95% of goods and services (GST Council Report 2024)." }, { "type": "tldr", "items": ["<strong>18% slab generates ~60% of GST revenue</strong> (CBIC 2024).", "5% slab covers most essential goods (MoF 2024).", "28% slab applies to luxury and sin goods.", "Over 95% of goods fall within 4 slabs.", "GST Council has revised rates 50+ times since 2017.", "Tax rationalization reduced items in 28% slab by 70%."] }, { "type": "p", "text": "The 18% slab alone accounts for the majority of taxable transactions, contributing nearly 60% of GST revenue (CBIC Data 2024). Meanwhile, over 50% of essential goods fall under the 5% or zero-tax bracket (Ministry of Finance 2024). We aggregated data from GST Council, CBIC, Ministry of Finance, OECD, and World Bank. GST rate structure is not just taxation\u2014it defines consumption patterns, affordability, and economic distribution." }, { "type": "h2", "text": "What Is India's GST Rate Structure?" }, { "type": "p", "text": "India's GST rate structure is a four-tier system of 5%, 12%, 18%, and 28% (plus a 0% exempt band), covering over 95% of goods and services, with the 18% slab generating around 60% of total GST revenue." }, { "type": "h2", "text": "Key Takeaways" }, { "type": "ul", "items": ["GST replaced multi-layer VAT and excise taxes.", "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me"] }, { "type": "divider" }, { "type": "h2", "text": "1. GST Slab Distribution in India" }, { "type": "p", "text": "<strong>The 18% slab dominates the tax system</strong>, reflecting a balance between revenue generation and affordability." }, { "type": "image", "src": "https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=1600&q=80", "alt": "gst slabs" }, { "type": "table", "headers": ["GST Slab", "Share of Goods", "Source"], "rows": [["0%", "~10%", "MoF 2024"], ["5%", "~40%", "GST Council 2024"], ["12%", "~15%", "CBIC 2024"], ["18%", "~30%", "CBIC 2024"], ["28%", "~5%", "GST Council 2024"]] }, { "type": "p", "text": "Calculate GST instantly here \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://gstcouncil.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "2. Revenue Contribution by GST Slabs" }, { "type": "p", "text": "Higher slabs contribute disproportionately to revenue despite covering fewer goods." }, { "type": "image", "src": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80", "alt": "tax revenue chart" }, { "type": "table", "headers": ["Slab", "Revenue Share", "Source"], "rows": [["5%", "~20%", "CBIC 2024"], ["12%", "~10%", "CBIC 2024"], ["18%", "~60%", "CBIC 2024"], ["28%", "~10%", "CBIC 2024"]] }, { "type": "p", "text": "Try this GST calculator for accurate results \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.cbic.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "3. GST Rate Changes Over Time" }, { "type": "p", "text": "GST rates have been gradually rationalized to reduce tax burden and simplify compliance." }, { "type": "image", "src": "https://images.unsplash.com/photo-1508385082359-f38ae991e8f2?auto=format&fit=crop&w=1600&q=80", "alt": "tax changes" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Items removed from 28% slab", "-70%", "MoF 2024"], ["Total GST revisions", "50+", "GST Council"], ["Average rate reduction", "~3\u20135%", "RBI 2024"], ["Compliance improvement", "+25%", "OECD 2024"]] }, { "type": "p", "text": "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://rbi.org.in" }, { "type": "divider" }, { "type": "h2", "text": "4. GST vs VAT System Comparison" }, { "type": "p", "text": "GST eliminated cascading taxes and unified multiple indirect tax layers." }, { "type": "image", "src": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80", "alt": "vat vs gst" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Taxes replaced", "17+", "MoF"], ["VAT average rate", "12\u201314%", "OECD"], ["GST average effective rate", "11.6%", "RBI 2024"], ["Tax cascading", "Removed", "OECD"]] }, { "type": "sourceLink", "href": "https://www.oecd.org" }, { "type": "divider" }, { "type": "h2", "text": "5. Tax Burden by Category" }, { "type": "p", "text": "Luxury and sin goods carry the highest tax burden, while essentials are lightly taxed." }, { "type": "image", "src": "https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1600&q=80", "alt": "consumer goods" }, { "type": "table", "headers": ["Category", "GST Rate", "Source"], "rows": [["Essential food", "0\u20135%", "MoF"], ["Household goods", "12\u201318%", "CBIC"], ["Electronics", "18%", "CBIC"], ["Luxury cars", "28% + cess", "GST Council"]] }, { "type": "sourceLink", "href": "https://gstcouncil.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "Summary Table" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["18% slab share", "60%", "CBIC"], ["5% goods share", "40%", "MoF"], ["28% goods share", "5%", "GST Council"], ["Revisions", "50+", "GST Council"]] }, { "type": "divider" }, { "type": "h2", "text": "Methodology and Sources" }, { "type": "p", "text": "Primary government datasets and international comparisons were used to ensure accuracy and recency." }, { "type": "ul", "items": ["GST Council Reports", "CBIC Data", "Ministry of Finance", "RBI Reports", "OECD Tax Data"] }, { "type": "p", "text": "<strong>Last updated: June 2026</strong>" }, { "type": "divider" }, { "type": "h2", "text": "GST Rate Structure \u2014 Frequently Asked Questions" }, { "type": "faq", "items": [{ "q": "How many GST rate slabs does India have?", "a": "India operates a four-tier GST system with rates of 5%, 12%, 18%, and 28%, plus a 0% exempt band, covering over 95% of goods and services per GST Council reporting." }, { "q": "Which GST slab generates the most revenue?", "a": "The 18% slab generates around 60% of total GST revenue despite covering roughly 30% of goods, according to CBIC data." }, { "q": "How often does the GST Council revise rates?", "a": "The GST Council has revised rates more than 50 times since 2017 as part of ongoing rate rationalization." }, { "q": "Has the 28% slab shrunk over time?", "a": "Yes. Tax rationalization has reduced the number of items in the 28% slab by around 70% since GST's introduction, according to Ministry of Finance data." }] }, { "type": "divider" }, { "type": "p", "text": 'Calculate GST instantly here \u2192 <a href="https://gstcalculator.me">https://gstcalculator.me</a>' }]
-  },
-  {
-    slug: "gst-business-compliance-statistics",
-    title: "47 GST Compliance Statistics Every Indian Business Owner Must Know (2025)",
-    description: "47 essential GST compliance statistics for 2025 \u2014 taxpayer growth, filing trends, compliance rates, and MSME data. Stay compliant with the latest numbers.",
-    category: "Statistics",
-    readTime: "7 min",
-    date: "2026-05-03",
-    updated: "2026-06-25",
-    author: "GST Calculator Team",
-    body: [{ "type": "lead", "text": "India has over 1.4 crore registered GST taxpayers as of 2024 (GSTN Annual Report 2024)." }, { "type": "tldr", "items": ["<strong>1.4 crore+ businesses are registered under GST</strong> (GSTN 2024).", "Monthly GST filings exceed <strong>1.1 crore returns</strong> (CBIC 2024).", "Compliance rate reached <strong>85%+</strong> (CBIC 2024).", "MSMEs contribute <strong>60%+ of GST registrations</strong> (MSME Ministry 2024).", "Digital filing adoption exceeds <strong>95%</strong> (GSTN 2024)."] }, { "type": "p", "text": "Monthly GST return filings consistently exceed 1.1 crore submissions, reflecting one of the largest digital tax ecosystems globally. At the same time, GST compliance rates have improved to over 85% in recent years due to automation and stricter enforcement (CBIC Compliance Report 2024). Meanwhile, MSMEs account for more than 60% of GST-registered entities (Ministry of MSME 2024). We aggregated data from GSTN, CBIC, Ministry of Finance, RBI, and OECD. GST is not just a tax system\u2014it is India's largest digital compliance infrastructure." }, { "type": "h2", "text": "What Do GST Compliance Statistics Show About Indian Businesses?" }, { "type": "p", "text": "GST compliance statistics show a tax system with over 1.4 crore registered taxpayers, an 85%+ filing compliance rate, and more than 95% digital adoption \u2014 driven largely by automation, e-invoicing, and stricter enforcement since 2017." }, { "type": "h2", "text": "What Are the 47 Essential GST Compliance Statistics?" }, { "type": "ul", "items": ["GSTR-3B is the most filed return type.", "Late filing penalties significantly improved compliance.", "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me"] }, { "type": "divider" }, { "type": "h2", "text": "1. GST Registered Taxpayers Data" }, { "type": "p", "text": "<strong>GST has formalized millions of businesses</strong>, especially small enterprises that were previously outside the tax net." }, { "type": "image", "src": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1600&q=80", "alt": "business registration" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Total GST registered taxpayers", "1.4 crore+", "GSTN 2024"], ["Growth since 2017", "+85%", "CBIC 2024"], ["MSME share", "60%", "MSME Ministry 2024"], ["New registrations annually", "10\u201312 lakh", "GSTN 2024"], ["Composition scheme taxpayers", "~20 lakh", "CBIC 2024"]] }, { "type": "p", "text": "Calculate GST instantly here \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.gstn.org.in" }, { "type": "divider" }, { "type": "h2", "text": "2. GST Return Filing Trends" }, { "type": "p", "text": "Filing frequency and consistency reflect system maturity and compliance efficiency." }, { "type": "image", "src": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80", "alt": "tax filing" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Monthly GSTR-3B filings", "1.1 crore+", "CBIC 2024"], ["Monthly GSTR-1 filings", "90 lakh+", "GSTN 2024"], ["Annual returns filed", "80%+", "CBIC 2024"], ["Digital filing share", "95%+", "GSTN 2024"], ["Late filing reduction", "-30%", "OECD 2024"]] }, { "type": "p", "text": "Try this GST calculator for accurate results \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.cbic.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "3. GST Compliance Rate and Penalties" }, { "type": "p", "text": "<strong>Compliance improvements are driven by enforcement and automation</strong>, including e-invoicing and matching systems." }, { "type": "image", "src": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1600&q=80", "alt": "compliance stats" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Compliance rate", "85%+", "CBIC 2024"], ["Penalty for late filing", "\u20B950/day", "GST Rules"], ["E-invoicing adoption", "70% large firms", "GSTN 2024"], ["Fake invoice detection increase", "+40%", "CBIC 2024"]] }, { "type": "p", "text": "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.cbic.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "4. MSME Participation in GST" }, { "type": "p", "text": "GST has significantly expanded MSME participation in formal taxation." }, { "type": "image", "src": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1600&q=80", "alt": "small business india" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["MSME GST share", "60%", "MSME Ministry 2024"], ["MSME contribution to GDP", "30%", "MSME Ministry"], ["GST adoption growth MSMEs", "+50%", "RBI 2024"], ["Digital invoice adoption MSMEs", "65%", "GSTN 2024"]] }, { "type": "sourceLink", "href": "https://msme.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "5. GST Digital Infrastructure Growth" }, { "type": "p", "text": "<strong>GST is one of the largest digital tax platforms globally</strong>, handling millions of filings monthly." }, { "type": "image", "src": "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=1600&q=80", "alt": "digital infrastructure" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Annual filings processed", "12+ crore", "GSTN 2024"], ["Portal uptime", "99.9%", "GSTN"], ["E-invoice volume", "1 billion+", "GSTN 2024"], ["API-based filings", "40%", "GSTN 2024"]] }, { "type": "sourceLink", "href": "https://www.gstn.org.in" }, { "type": "divider" }, { "type": "h2", "text": "Summary Table" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["GST taxpayers", "1.4 Cr+", "GSTN"], ["Monthly filings", "1.1 Cr+", "CBIC"], ["Compliance rate", "85%", "CBIC"], ["MSME share", "60%", "MSME"], ["Digital filings", "95%", "GSTN"]] }, { "type": "divider" }, { "type": "h2", "text": "Methodology and Sources" }, { "type": "p", "text": "Primary government datasets and institutional reports were prioritized. Cross-referencing ensured accuracy and recency." }, { "type": "ul", "items": ["GSTN \u2014 Annual Reports", "CBIC \u2014 Compliance Data", "Ministry of MSME", "RBI Reports", "OECD \u2014 Tax Compliance"] }, { "type": "p", "text": "<strong>Last updated: May 2026</strong>" }, { "type": "sourceLink", "href": "https://www.gst.gov.in/", "label": "GST Portal \u2014 official compliance and filing statistics" }, { "type": "sourceLink", "href": "https://www.cbic.gov.in/", "label": "CBIC \u2014 compliance and enforcement reports" }, { "type": "divider" }, { "type": "h2", "text": "GST Compliance \u2014 Frequently Asked Questions" }, { "type": "faq", "items": [{ "q": "How many businesses are registered under GST in India?", "a": "Over 1.4 crore businesses are registered under GST as of 2024, according to the GSTN Annual Report 2024." }, { "q": "What is India's current GST compliance rate?", "a": "The GST compliance rate has improved to over 85% in recent years, driven by automation and stricter enforcement, per the CBIC Compliance Report 2024." }, { "q": "What share of GST registrations come from MSMEs?", "a": "MSMEs account for more than 60% of GST-registered entities, according to the Ministry of MSME 2024." }, { "q": "How many GST returns are filed monthly in India?", "a": "Monthly GST return filings consistently exceed 1.1 crore submissions across GSTR-3B and GSTR-1, according to CBIC and GSTN data." }, { "q": "How widespread is digital filing under GST?", "a": "Digital filing adoption exceeds 95%, making GST one of the largest digital tax compliance ecosystems globally, per GSTN 2024 data." }] }, { "type": "divider" }, { "type": "p", "text": 'Calculate GST instantly here \u2192 <a href="https://gstcalculator.me">https://gstcalculator.me</a>' }]
-  },
-  {
     slug: "gst-vs-vat-global-comparison-statistics",
-    title: "GST vs VAT Global Comparison Statistics (2025): 55+ Data Points on Tax Rates, Adoption, and Revenue Share",
-    description: "55+ data points comparing India's GST with global VAT systems \u2014 adoption, country rates, tax structure, and revenue share.",
-    category: "Statistics",
-    readTime: "7 min",
+    title: "GST vs VAT Rates by Country: India vs the World (2026)",
+    description: "GST and VAT rates by country in 2026, each linked to its tax authority: India 5/18/40%, UK 20%, Australia 10%, Singapore 9%, and the highest rate.",
+    category: "GST Rates",
+    readTime: "5 min",
     date: "2026-05-03",
-    updated: "2026-06-25",
+    updated: "2026-10-12",
     author: "GST Calculator Team",
-    body: [{ "type": "lead", "text": "Over 170 countries globally use VAT or GST systems, making consumption tax the dominant indirect taxation model (OECD Consumption Tax Trends 2024)." }, { "type": "tldr", "items": ["<strong>170+ countries use VAT/GST systems globally</strong> (OECD 2024).", "Global average VAT rate is <strong>15\u201316%</strong> (OECD 2024).", "India's effective GST rate is <strong>~11.6%</strong> (RBI 2024).", "Indirect taxes contribute <strong>30%+ of revenue globally</strong> (OECD 2024).", "India's multi-slab GST system is among the most complex globally."] }, { "type": "p", "text": "India's GST system\u2014with multiple slabs\u2014differs from the global norm where most countries use a single or dual VAT rate. The global average VAT rate stands at approximately 15\u201316%, compared to India's effective GST rate of ~11.6% (OECD 2024; RBI 2024). Meanwhile, indirect taxes contribute over 30% of total government revenue in many OECD countries (OECD 2024). We aggregated data from OECD, World Bank, IMF, RBI, and global tax authorities. India's GST system is unique\u2014both in scale and structural complexity." }, { "type": "h2", "text": "How Does India's GST Compare to Global VAT Systems?" }, { "type": "p", "text": "India's GST is a multi-slab consumption tax with an effective rate of ~11.6%, lower than the global VAT average of 15\u201316%, but structurally more complex than the single or dual-rate VAT systems used by most of the 170+ countries with consumption taxes." }, { "type": "h2", "text": "What Else Should You Know?" }, { "type": "ul", "items": ["EU countries typically use single or dual VAT rates.", "Developing economies rely more on indirect taxes.", "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me"] }, { "type": "divider" }, { "type": "h2", "text": "1. Global VAT and GST Adoption" }, { "type": "p", "text": "<strong>Consumption taxes dominate global tax systems</strong>, especially in emerging economies where income tax collection is harder to enforce." }, { "type": "image", "src": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=1600&q=80", "alt": "global tax systems map" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Countries using VAT/GST", "170+", "OECD 2024"], ["Countries without VAT", "~20", "World Bank 2024"], ["Adoption rate globally", "90%+", "IMF 2024"], ["First VAT introduced", "France (1954)", "OECD"]] }, { "type": "p", "text": "Calculate GST instantly here \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.oecd.org/tax/consumption/" }, { "type": "divider" }, { "type": "h2", "text": "2. Indirect Tax Rates by Country" }, { "type": "p", "text": "India's GST rates are relatively moderate compared to many developed nations." }, { "type": "image", "src": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80", "alt": "tax rate comparison" }, { "type": "table", "headers": ["Country", "VAT/GST Rate", "Source"], "rows": [["India (effective)", "~11.6%", "RBI 2024"], ["Germany", "19%", "OECD 2024"], ["UK", "20%", "HMRC 2024"], ["Australia", "10%", "ATO 2024"], ["Japan", "10%", "OECD 2024"], ["Brazil", "17\u201325%", "World Bank 2024"]] }, { "type": "p", "text": "Try this GST calculator for accurate results \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://data.oecd.org/tax/" }, { "type": "divider" }, { "type": "h2", "text": "3. How Does India's Tax Structure Differ From Global Systems?" }, { "type": "p", "text": "<strong>India's multi-slab GST is an exception</strong>\u2014most countries operate simpler structures with fewer rates." }, { "type": "image", "src": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80", "alt": "tax structure comparison" }, { "type": "table", "headers": ["Metric", "India", "Global Avg", "Source"], "rows": [["Number of slabs", "4\u20135", "1\u20132", "OECD 2024"], ["Average rate", "11.6%", "15\u201316%", "OECD"], ["Complexity ranking", "High", "Moderate", "IMF"], ["Tax cascading", "Removed", "Removed", "OECD"]] }, { "type": "p", "text": "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.imf.org" }, { "type": "divider" }, { "type": "h2", "text": "4. Indirect Tax Share of Revenue" }, { "type": "p", "text": "Indirect taxes play a larger role in developing economies compared to developed nations." }, { "type": "image", "src": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80", "alt": "tax revenue chart" }, { "type": "table", "headers": ["Region", "Indirect Tax Share", "Source"], "rows": [["India", "~30\u201335%", "RBI 2024"], ["OECD average", "~32%", "OECD 2024"], ["EU", "~28%", "Eurostat 2024"], ["Africa", "~40%", "World Bank 2024"]] }, { "type": "sourceLink", "href": "https://ec.europa.eu/eurostat" }, { "type": "divider" }, { "type": "h2", "text": "5. Global Consumption Tax Trends" }, { "type": "p", "text": "<strong>Governments are increasingly relying on consumption taxes</strong> due to ease of collection and economic neutrality." }, { "type": "image", "src": "https://images.unsplash.com/photo-1518182170546-07661fd94144?auto=format&fit=crop&w=1600&q=80", "alt": "global economy" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["VAT revenue growth globally", "+5\u20137% annually", "OECD 2024"], ["Digital tax compliance increase", "+35%", "IMF 2024"], ["E-invoicing adoption countries", "80+", "World Bank 2024"], ["Shift toward indirect taxes", "Increasing", "OECD 2024"]] }, { "type": "sourceLink", "href": "https://www.worldbank.org" }, { "type": "divider" }, { "type": "h2", "text": "Summary Table" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Countries using VAT", "170+", "OECD"], ["Global avg VAT", "15\u201316%", "OECD"], ["India GST rate", "11.6%", "RBI"], ["Indirect tax share India", "30\u201335%", "RBI"], ["Global adoption rate", "90%", "IMF"]] }, { "type": "divider" }, { "type": "h2", "text": "Methodology and Sources" }, { "type": "p", "text": "Primary international datasets and government reports were used. Cross-referencing ensured accuracy and comparability." }, { "type": "ul", "items": ["OECD \u2014 Consumption Tax Trends", "IMF \u2014 Fiscal Monitor", "World Bank \u2014 Tax Data", "RBI \u2014 Indian Economy Reports", "Eurostat \u2014 EU Tax Data"] }, { "type": "p", "text": "<strong>Last updated: May 2026</strong>" }, { "type": "sourceLink", "href": "https://www.rbi.org.in/", "label": "RBI \u2014 Indian economy and effective tax rate data" }, { "type": "sourceLink", "href": "https://www.mospi.gov.in/", "label": "MoSPI \u2014 official Indian statistics" }, { "type": "divider" }, { "type": "h2", "text": "GST vs Global VAT \u2014 Frequently Asked Questions" }, { "type": "faq", "items": [{ "q": "How many countries use VAT or GST systems?", "a": "Over 170 countries globally use VAT or GST systems, making consumption tax the dominant model of indirect taxation, per OECD Consumption Tax Trends 2024." }, { "q": "Is India's GST rate higher or lower than the global VAT average?", "a": "India's effective GST rate of ~11.6% is lower than the global average VAT rate of 15\u201316%, according to RBI and OECD 2024 data." }, { "q": "Why is India's GST considered more complex than most VAT systems?", "a": "Most countries use a single or dual VAT rate, while India operates a multi-slab GST system with 4\u20135 rate tiers, making it structurally more complex per OECD and IMF analysis." }, { "q": "Do indirect taxes contribute more to government revenue in developing economies?", "a": "Yes. Indirect taxes play a larger role in developing economies compared to developed nations, with regions like Africa seeing indirect tax shares around 40% versus the OECD average of ~32%." }] }, { "type": "divider" }, { "type": "p", "text": 'Calculate GST instantly here \u2192 <a href="https://gstcalculator.me">https://gstcalculator.me</a>' }]
-  },
-  {
-    slug: "gst-impact-consumer-prices-statistics",
-    title: "GST Impact on Consumer Prices Statistics (2025): 52+ Data Points on Inflation, FMCG, and Cost of Living",
-    description: "52+ data points on how GST has affected consumer prices in India \u2014 inflation, FMCG, real estate, restaurants, and consumer spending.",
-    category: "Statistics",
-    readTime: "7 min",
-    date: "2026-05-03",
-    updated: "2026-06-25",
-    author: "GST Calculator Team",
-    body: [{ "type": "lead", "text": "GST initially reduced prices for over 80% of consumer goods by eliminating cascading taxes (Economic Survey of India 2018 \u2013 most recent available)." }, { "type": "tldr", "items": ["<strong>80% of goods saw price reductions post-GST</strong> (Economic Survey).", "Inflation remained stable at <strong>4\u20136%</strong> (RBI 2024).", "Logistics costs dropped <strong>15\u201320%</strong> (World Bank).", "FMCG prices decreased due to tax efficiency.", "Real estate prices increased due to input tax changes."] }, { "type": "p", "text": "However, price effects vary widely across sectors, with some categories seeing increases due to higher effective tax rates. Inflation remained stable post-GST, averaging 4\u20136% in subsequent years (RBI Inflation Report 2024). Meanwhile, sectors like FMCG and logistics saw cost reductions of up to 15\u201320% due to improved supply chains (World Bank 2023). We aggregated data from RBI, Ministry of Finance, Economic Survey, World Bank, and industry reports. GST doesn't uniformly raise or lower prices\u2014it redistributes cost structures across the economy." }, { "type": "h2", "text": "How Has GST Affected Consumer Prices in India?" }, { "type": "p", "text": "GST has had a mixed effect on consumer prices \u2014 reducing prices on roughly 80% of goods by eliminating cascading taxes, keeping inflation stable at 4\u20136%, and cutting FMCG and logistics costs by up to 20%, while select categories like real estate saw price increases due to input tax credit changes." }, { "type": "h2", "text": "What Else Should You Know?" }, { "type": "ul", "items": ["Restaurant taxes simplified but input credit removed.", "Consumer savings vary by GST slab.", "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me"] }, { "type": "divider" }, { "type": "h2", "text": "1. GST Impact on Inflation in India" }, { "type": "p", "text": "<strong>GST had a neutral-to-moderate effect on inflation</strong>, with short-term adjustments but long-term stabilization." }, { "type": "image", "src": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1600&q=80", "alt": "inflation chart india" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Inflation range post-GST", "4\u20136%", "RBI 2024"], ["Initial inflation spike", "+0.3\u20130.5%", "IMF 2019 (most recent available)"], ["Long-term inflation impact", "Neutral", "RBI 2024"], ["Supply chain efficiency gain", "+10\u201315%", "World Bank 2023"]] }, { "type": "p", "text": "Calculate GST instantly here \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.rbi.org.in" }, { "type": "divider" }, { "type": "h2", "text": "2. GST Impact on FMCG Prices" }, { "type": "p", "text": "FMCG products benefited from reduced cascading taxes and logistics efficiencies." }, { "type": "image", "src": "https://images.unsplash.com/photo-1604719312566-8912e9c8a213?auto=format&fit=crop&w=1600&q=80", "alt": "fmcg products" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Price reduction FMCG", "5\u201310%", "Nielsen India 2023"], ["Supply chain savings", "10\u201315%", "World Bank 2023"], ["Warehouse consolidation", "-30%", "Industry Reports"], ["GST rate FMCG avg", "12\u201318%", "CBIC"]] }, { "type": "p", "text": "Try this GST calculator for accurate results \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://www.nielsen.com" }, { "type": "divider" }, { "type": "h2", "text": "3. GST Effect on Real Estate Prices" }, { "type": "p", "text": "<strong>Real estate experienced mixed pricing effects</strong>, largely due to removal of input tax credits in some segments." }, { "type": "image", "src": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80", "alt": "real estate india" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["GST on under-construction property", "5%", "MoF"], ["Affordable housing GST", "1%", "MoF"], ["Price increase (select segments)", "5\u20138%", "RERA Reports 2023"], ["Input credit removal impact", "Moderate", "Industry Analysis"]] }, { "type": "p", "text": "Use our GST calculator to apply this rate \u2192 https://gstcalculator.me" }, { "type": "sourceLink", "href": "https://rera.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "4. Restaurant and Service Pricing Impact" }, { "type": "p", "text": "GST simplified restaurant taxation but removed input tax credits, affecting margins and pricing." }, { "type": "image", "src": "https://images.unsplash.com/photo-1555992336-03a23c7b20ee?auto=format&fit=crop&w=1600&q=80", "alt": "restaurant india" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Restaurant GST rate", "5%", "GST Council"], ["Earlier service tax + VAT", "~18\u201320%", "Pre-GST"], ["Input credit availability", "Removed", "GST Council"], ["Menu price change", "Mixed impact", "Industry Reports"]] }, { "type": "sourceLink", "href": "https://gstcouncil.gov.in" }, { "type": "divider" }, { "type": "h2", "text": "5. Consumer Spending Trends After GST" }, { "type": "p", "text": "<strong>Consumption patterns shifted toward organized sectors</strong>, reflecting improved compliance and transparency." }, { "type": "image", "src": "https://images.unsplash.com/photo-1515168833906-d2a3b82b302a?auto=format&fit=crop&w=1600&q=80", "alt": "consumer shopping" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Organized retail growth", "+20%", "Statista 2024"], ["E-commerce growth post-GST", "+25%", "MeitY 2024"], ["Consumer spending increase", "+8\u201310%", "RBI 2024"], ["Tax compliance impact on pricing", "Positive", "OECD 2024"]] }, { "type": "sourceLink", "href": "https://datareportal.com" }, { "type": "divider" }, { "type": "h2", "text": "Summary Table" }, { "type": "table", "headers": ["Metric", "Value", "Source"], "rows": [["Goods price reduction", "80%", "Economic Survey"], ["Inflation range", "4\u20136%", "RBI"], ["FMCG price drop", "5\u201310%", "Nielsen"], ["Real estate increase", "5\u20138%", "RERA"], ["Retail growth", "20%", "Statista"]] }, { "type": "divider" }, { "type": "h2", "text": "Methodology and Sources" }, { "type": "p", "text": "We prioritized government reports, central bank data, and industry research. Cross-referencing ensured accuracy and consistency." }, { "type": "ul", "items": ["RBI \u2014 Inflation Reports", "Ministry of Finance", "Economic Survey of India", "World Bank \u2014 Logistics Data", "Nielsen \u2014 FMCG Reports", "Statista \u2014 Retail Data", "OECD \u2014 Tax Impact Studies"] }, { "type": "p", "text": "<strong>Last updated: May 2026</strong>" }, { "type": "sourceLink", "href": "https://www.rbi.org.in/", "label": "RBI \u2014 inflation and price data" }, { "type": "sourceLink", "href": "https://www.mospi.gov.in/", "label": "MoSPI \u2014 Economic Survey of India" }, { "type": "divider" }, { "type": "h2", "text": "GST and Consumer Prices \u2014 Frequently Asked Questions" }, { "type": "faq", "items": [{ "q": "Did GST make consumer goods cheaper or more expensive overall?", "a": "GST initially reduced prices for over 80% of consumer goods by eliminating cascading taxes, according to the Economic Survey of India, though effects varied by sector." }, { "q": "How did GST affect inflation in India?", "a": "Inflation remained largely stable post-GST, averaging 4\u20136% in subsequent years, per RBI Inflation Reports, with only a minor short-term spike of 0.3\u20130.5% at rollout." }, { "q": "Did GST increase real estate prices?", "a": "Yes, in select segments. Real estate saw mixed pricing effects, with price increases of 5\u20138% in some segments largely due to the removal of input tax credits, according to RERA Reports 2023." }, { "q": "How did GST affect restaurant pricing?", "a": "GST simplified restaurant taxation to a flat 5% rate but removed input tax credit eligibility, which had a mixed impact on menu pricing depending on the restaurant's cost structure." }] }, { "type": "divider" }, { "type": "p", "text": 'Calculate GST instantly here \u2192 <a href="https://gstcalculator.me">https://gstcalculator.me</a>' }]
+    body: [{ "type": "lead", "text": "GST and VAT are the same kind of tax: a tax on consumption, collected at each stage of the supply chain, with businesses claiming credit for the tax they paid on inputs. Most of the world calls it VAT; India, Australia, New Zealand, Singapore and Canada call it GST. What differs is the rate, and how many rates a country uses." }, { "type": "tldr", "items": ["<strong>GST and VAT work the same way.</strong> The name is mostly a local choice.", "India's GST since 22 September 2025 has <strong>two main rates, 5% and 18%</strong>, plus 40% on sin and luxury goods. The old 12% and 28% slabs are gone.", "Standard VAT rates in the OECD average about <strong>19%</strong>; Hungary's 27% is the highest in the world.", "The United States has no national VAT or GST; states charge their own sales taxes."] }, { "type": "h2", "text": "Is GST the same as VAT?" }, { "type": "p", "text": `Yes, in how it works. Both tax the value added at each step, and both let a registered business deduct the tax it paid on purchases (in India, that's <a href="/blog/input-tax-credit-gst/">input tax credit</a>). India's version has one twist: tax on a sale within a state is split into CGST and SGST, and a sale between states attracts IGST. See <a href="/blog/cgst-sgst-igst-difference/">CGST vs SGST vs IGST</a> for how that split works.` }, { "type": "h2", "text": "GST and VAT rates by country (2026)" }, { "type": "p", "text": "Standard rates, with the main reduced rates where they matter. Each row links to the tax authority or official source." }, { "type": "table", "headers": ["Country", "Tax", "Standard rate", "Source"], "rows": [["India", "GST", "5% / 18% (40% on sin and luxury goods)", '<a href="https://gstcouncil.gov.in/" target="_blank" rel="noopener noreferrer">GST Council (56th meeting, Sept 2025)</a>'], ["United Kingdom", "VAT", "20% (5% and 0% reduced rates)", '<a href="https://www.gov.uk/vat-rates" target="_blank" rel="noopener noreferrer">GOV.UK</a>'], ["Germany", "VAT", "19% (7% reduced)", '<a href="https://taxation-customs.ec.europa.eu/taxation/vat_en" target="_blank" rel="noopener noreferrer">European Commission</a>'], ["France", "VAT", "20% (10%, 5.5%, 2.1% reduced)", '<a href="https://taxation-customs.ec.europa.eu/taxation/vat_en" target="_blank" rel="noopener noreferrer">European Commission</a>'], ["Hungary", "VAT", "27%, the highest standard rate in the world", '<a href="https://taxation-customs.ec.europa.eu/taxation/vat_en" target="_blank" rel="noopener noreferrer">European Commission</a>'], ["Australia", "GST", "10%", '<a href="https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst" target="_blank" rel="noopener noreferrer">Australian Taxation Office</a>'], ["New Zealand", "GST", "15%", '<a href="https://www.ird.govt.nz/gst" target="_blank" rel="noopener noreferrer">Inland Revenue NZ</a>'], ["Singapore", "GST", "9% (since 1 Jan 2024)", '<a href="https://www.iras.gov.sg/taxes/goods-services-tax-(gst)" target="_blank" rel="noopener noreferrer">IRAS</a>'], ["Canada", "GST / HST", "5% GST; 13\u201315% HST in some provinces", '<a href="https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate/calculator.html" target="_blank" rel="noopener noreferrer">Canada Revenue Agency</a>'], ["Japan", "Consumption tax", "10% (8% on food)", '<a href="https://www.nta.go.jp/english/taxes/consumption_tax/index.htm" target="_blank" rel="noopener noreferrer">National Tax Agency Japan</a>'], ["UAE", "VAT", "5%", '<a href="https://tax.gov.ae/en/taxes/Vat.aspx" target="_blank" rel="noopener noreferrer">UAE Federal Tax Authority</a>'], ["United States", "None nationally", "State sales taxes instead", "\u2014"]] }, { "type": "p", "text": "Rates checked October 2026. Countries change rates, so confirm with the linked source before relying on a figure for a filing." }, { "type": "h2", "text": "How India's GST changed in September 2025" }, { "type": "p", "text": `The GST Council's 56th meeting (3 September 2025) replaced India's four main slabs of 5%, 12%, 18% and 28% with two: 5% for essentials and 18% as the standard rate. A separate 40% rate applies to a short list of sin and luxury goods such as tobacco and high-end cars. The new rates took effect on 22 September 2025. Our <a href="/blog/new-gst-rate-slab-list-2025-26/">GST rate slab list</a> covers which goods moved where.` }, { "type": "p", "text": "That brings India closer to the global pattern. Most VAT countries run one standard rate and one or two reduced rates; India now does the same, with one extra rate for demerit goods." }, { "type": "h2", "text": "Which country has the highest GST or VAT?" }, { "type": "p", "text": "Hungary, with a 27% standard VAT rate. Several Nordic countries follow at 25%. At the other end, the UAE charges 5% and Canada's federal GST is 5%, though provinces that use HST bring the combined rate to 13\u201315%." }, { "type": "sourceLink", "href": "https://www.oecd.org/en/publications/consumption-tax-trends-2024_dcd4dd36-en", "label": "OECD Consumption Tax Trends 2024" }, { "type": "h2", "text": "Which countries don't have GST or VAT?" }, { "type": "p", "text": "The United States is the largest economy without one; it relies on state and local sales taxes, which are charged only at the final sale. Malaysia is a notable switch in the other direction: it introduced GST in 2015 and replaced it with a sales and services tax in 2018." }, { "type": "faq", "items": [{ "q": "Is GST the same as VAT?", "a": "In how it works, yes. Both tax value added at each stage and allow credit for tax paid on inputs. India, Australia, New Zealand, Singapore and Canada call it GST; most other countries call it VAT." }, { "q": "What are India's GST rates now?", "a": "Since 22 September 2025, 5% and 18%, plus 40% on sin and luxury goods. The 12% and 28% slabs were removed by the GST Council's 56th meeting." }, { "q": "Which country has the highest VAT rate?", "a": "Hungary, at 27%." }, { "q": "How does India's GST compare with the UK's VAT?", "a": "The UK has a single 20% standard rate with 5% and 0% reduced rates. India's standard rate is lower at 18%, with 5% for essentials and 40% for a short list of demerit goods." }] }]
   },
   {
     slug: "zoho-vs-tally-gst-calculator",
-    title: "Zoho GST Calculator vs Tally (2026): Which Is Better + a Free No-Login Option",
-    description: "Looking for the Zoho GST calculator? See how it compares with Tally on speed, cost and login friction \u2014 and try a 100% free GST calculator that needs no account.",
+    title: "Zoho vs Tally GST Calculator: Side-by-Side Comparison 2026 (Pricing, Features)",
+    description: "Zoho Books (\u20B9899/mo) vs Tally Prime (\u20B918,000+) for GST: features, accuracy, and compliance filing compared. Plus a free browser-based calculator with no login needed.",
     category: "Comparison",
     readTime: "5 min",
     date: "2026-05-03",
@@ -2187,7 +2216,6 @@ var POSTS = [
       { type: "image", src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f", alt: "Small business team" },
       { type: "p", text: "Small businesses need speed and accuracy. Therefore, the right tool depends on business size." },
       { type: "p", text: "Freelancers prefer Zoho. It is simple and accessible anywhere. However, SMEs with accounting teams often prefer Tally." },
-      { type: "p", text: 'Additionally, many businesses use standalone tools. For instance, <a href="/blog/gst-impact-indian-economy-statistics">how GST impacts the Indian economy</a> explains why accurate calculations matter.' },
       { type: "p", text: 'You can also explore <a href="/blog/how-to-calculate-gst">GST calculation guide</a> and <a href="/blog/input-tax-credit-gst">input tax credit explained</a> for deeper understanding.' },
       { type: "h2", text: "Zoho GST Calculator vs Tally GST Calculator: Which is more accurate?" },
       { type: "p", text: "Both tools are accurate when configured correctly. However, user input matters." },
@@ -2198,6 +2226,7 @@ var POSTS = [
       { type: "p", text: "The choice depends on your business needs. Zoho is ideal for simplicity. Tally is best for full accounting control." },
       { type: "p", text: "However, if your goal is quick GST calculation, standalone tools are better. They eliminate complexity and save time." },
       { type: "p", text: "Therefore, many businesses combine both approaches. They use accounting software and quick calculators together." },
+      { type: "p", text: `Before settling on Zoho or Tally, it helps to understand exactly where Zoho's login walls kick in \u2014 our guide on <a href="/blog/zoho-books-gst-calculator-login-required">when Zoho GST calculator requires login</a> maps this precisely. If you're still evaluating whether Zoho's free tier is genuinely free, see <a href="/blog/is-zoho-gst-calculator-free">is Zoho GST calculator free</a> for the full tier breakdown. And if TaxAdda is also on your shortlist, the <a href="/blog/cleartax-vs-taxadda-gst-calculator/">ClearTax vs TaxAdda comparison</a> covers the free-alternative angle.` },
       { type: "h2", text: "Zoho vs Tally for GST \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
         { q: "Which is easier to set up, Zoho or Tally for GST?", a: "Zoho is easier to set up \u2014 it's cloud-based and requires minimal configuration, while Tally requires installation and a learning curve." },
@@ -2209,12 +2238,12 @@ var POSTS = [
   },
   {
     slug: "cleartax-vs-zoho-gst-calculator",
-    title: "ClearTax vs Zoho for GST Calculations: Honest 2025 Verdict",
-    description: "ClearTax vs Zoho for GST in 2025 \u2014 honest comparison of pricing, features, and ease of use. See why many businesses prefer the free alternative.",
+    title: "ClearTax vs Zoho GST Calculator 2026: Which Is Free? (Honest Comparison)",
+    description: "ClearTax vs Zoho for GST in 2026. Both have limits. gstcalculator.me is 100% free, no account needed. Full comparison with current features.",
     category: "Comparison",
     readTime: "5 min",
     date: "2026-05-03",
-    updated: "2026-06-25",
+    updated: "2026-07-17",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "Indian businesses often compare ClearTax and Zoho for GST calculations. Both tools are popular. However, their use cases differ more than most people realise." },
@@ -2261,7 +2290,6 @@ var POSTS = [
       { type: "p", text: "Small businesses need efficiency and accuracy. Therefore, tool choice depends on workflow complexity." },
       { type: "p", text: "Freelancers often prefer ClearTax. It is quick and easy. However, SMEs with accounting teams prefer Zoho." },
       { type: "p", text: 'Additionally, understanding GST fundamentals helps. For example, read <a href="/blog/how-to-calculate-gst">GST calculation guide</a> and <a href="/blog/input-tax-credit-gst">input tax credit explained</a>.' },
-      { type: "p", text: 'You can also explore <a href="/blog/gst-impact-indian-economy-statistics">how GST impacts the Indian economy</a> for broader context.' },
       { type: "h2", text: "ClearTax GST Calculator vs Zoho GST Calculator: Accuracy and reliability" },
       { type: "p", text: "Both tools are reliable when used correctly. However, input accuracy is critical." },
       { type: "p", text: "ClearTax minimizes complexity. Therefore, it reduces errors. Zoho depends on proper configuration." },
@@ -2271,12 +2299,15 @@ var POSTS = [
       { type: "p", text: "The best tool depends on your needs. ClearTax is perfect for quick calculations. Zoho is better for full accounting workflows." },
       { type: "p", text: "However, many businesses use both approaches. They combine accounting software with quick calculators." },
       { type: "p", text: "Therefore, choosing flexibility often works best. Use the right tool for the right task." },
+      { type: "p", text: `If you're evaluating Zoho specifically, our deep-dive on <a href="/blog/zoho-books-gst-calculator-login-required">when Zoho GST calculator requires login</a> maps out exactly where the free experience ends and the account walls start. And if TaxAdda is also in your shortlist, the <a href="/blog/cleartax-vs-taxadda-gst-calculator/">ClearTax vs TaxAdda comparison</a> covers the free-tier differences in detail.` },
       { type: "h2", text: "ClearTax vs Zoho for GST \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
         { q: "Do I need to log in to use ClearTax's GST calculator?", a: "No. ClearTax's GST calculator works without login or setup, making it ideal for quick, one-off calculations." },
         { q: "Does Zoho update GST rates automatically?", a: "Yes. Zoho automatically updates GST rates within Zoho Books, reducing manual maintenance." },
         { q: "Which tool is better for freelancers?", a: "Freelancers often prefer ClearTax for its speed and simplicity, since it requires no setup and delivers instant results." },
-        { q: "Is there a faster alternative for instant GST values?", a: "Yes. Standalone tools like gstcalculator.me provide instant and accurate GST results without any account setup." }
+        { q: "Is there a faster alternative for instant GST values?", a: "Yes. Standalone tools like gstcalculator.me provide instant and accurate GST results without any account setup." },
+        { q: "Is ClearTax GST calculator really free in 2026?", a: "Yes \u2014 ClearTax's standalone calculator requires no login and no payment. Both ClearTax and gstcalculator.me are fully free for calculation. Zoho's free tier caps out at \u20B925 lakh revenue and requires account setup." },
+        { q: "Does Zoho GST calculator work without creating an account?", a: `The basic three-field calculator on Zoho's website works without login. However, saving results, generating invoices, or validating GSTINs requires a Zoho Books account. See our <a href="/blog/zoho-books-gst-calculator-login-required">full guide on Zoho login requirements</a> for the complete breakdown.` }
       ] }
     ]
   },
@@ -2331,7 +2362,6 @@ var POSTS = [
       { type: "image", src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f", alt: "Freelancers working" },
       { type: "p", text: "Freelancers prefer simplicity. Therefore, ClearTax works well for them. SMEs often need accounting features, so Tally becomes useful." },
       { type: "p", text: 'Additionally, understanding GST basics is important. For example, read <a href="/blog/how-to-calculate-gst">GST calculation guide</a> and <a href="/blog/input-tax-credit-gst">input tax credit explained</a>.' },
-      { type: "p", text: 'You can also explore <a href="/blog/gst-impact-indian-economy-statistics">how GST impacts the Indian economy</a> for broader insights.' },
       { type: "h2", text: "Tally GST Calculator vs ClearTax GST Calculator: Accuracy and reliability" },
       { type: "p", text: "Both tools provide accurate GST values. However, correct input is essential." },
       { type: "p", text: "ClearTax reduces complexity. Therefore, it minimizes errors. Tally depends on correct configuration." },
@@ -2400,7 +2430,6 @@ var POSTS = [
       { type: "image", src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f", alt: "Freelancers working" },
       { type: "p", text: "Freelancers need quick results. Therefore, gstcalculator.net is often preferred. SMEs, however, may want more features." },
       { type: "p", text: 'Additionally, understanding GST basics is important. For example, check <a href="/blog/how-to-calculate-gst">GST calculation guide</a> and <a href="/blog/input-tax-credit-gst">input tax credit explained</a>.' },
-      { type: "p", text: 'You can also read <a href="/blog/gst-impact-indian-economy-statistics">how GST impacts the Indian economy</a> for broader insights.' },
       { type: "h2", text: "gstcalculator.net vs gstcalculator.app: Which tool should you choose?" },
       { type: "p", text: "The choice depends on your workflow. If you want speed, choose gstcalculator.net. However, if you need features, gstcalculator.app is useful." },
       { type: "p", text: "Additionally, many users combine tools. They use one for speed and another for flexibility." },
@@ -2421,12 +2450,12 @@ var POSTS = [
   },
   {
     slug: "cleartax-vs-taxadda-gst-calculator",
-    title: "ClearTax vs TaxAdda for Small Business GST: Which Actually Saves Time?",
-    description: "ClearTax vs TaxAdda for small business GST compliance \u2014 which tool actually saves you time? Honest comparison for SMEs and freelancers.",
+    title: "TaxAdda GST Calculator \u2014 Free, Instant, No Login (vs ClearTax 2026)",
+    description: "Free GST calculator like TaxAdda \u2014 instant CGST/SGST/IGST, all slabs, no account. Plus: full TaxAdda vs ClearTax head-to-head so you know which tool fits your needs.",
     category: "Comparison",
     readTime: "5 min",
     date: "2026-05-03",
-    updated: "2026-06-25",
+    updated: "2026-08-05",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "Understanding CGST and SGST breakdown is essential for GST compliance. Many tools promise accuracy. However, not all calculators present results equally clearly." },
@@ -2469,7 +2498,7 @@ var POSTS = [
       { type: "image", src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f", alt: "Indian professionals" },
       { type: "p", text: "Professionals need both accuracy and clarity. Therefore, ClearTax is often preferred by accountants. SMEs, however, may prefer simpler tools." },
       { type: "p", text: 'Additionally, understanding GST concepts is important. For example, read <a href="/blog/how-to-calculate-gst">GST calculation guide</a> and <a href="/blog/input-tax-credit-gst">input tax credit explained</a>.' },
-      { type: "p", text: 'You can also explore <a href="/blog/gst-impact-indian-economy-statistics">how GST impacts the Indian economy</a> for broader insights.' },
+      { type: "p", text: `Need a deeper look at TaxAdda alone? Our <a href="/blog/gst-taxadda-calculator-alternative">TaxAdda GST calculator alternative guide</a> covers the full feature breakdown. And if you're comparing Zoho as well, see <a href="/blog/zoho-gst-calculator-alternative">the Zoho GST calculator comparison</a>.` },
       { type: "h2", text: "ClearTax GST Calculator vs TaxAdda GST Calculator: Accuracy and reliability" },
       { type: "p", text: "Both tools use standard GST formulas. Therefore, accuracy is consistent across both platforms." },
       { type: "p", text: "However, user experience impacts usability. ClearTax reduces confusion with better layout. TaxAdda keeps things straightforward." },
@@ -2479,23 +2508,25 @@ var POSTS = [
       { type: "p", text: "Both tools are reliable for GST calculations. ClearTax offers better presentation. TaxAdda focuses on simplicity." },
       { type: "p", text: "However, your choice depends on your needs. Therefore, professionals may prefer ClearTax, while freelancers may prefer TaxAdda." },
       { type: "p", text: "Ultimately, combining tools often gives the best results for Indian businesses." },
+      { type: "p", text: `If you're curious how India's multi-slab GST system compares to the single-rate VAT used in most other countries, our <a href="/blog/gst-vs-vat-global-comparison-statistics">GST vs VAT global statistics comparison</a> has 55+ data points from OECD, IMF, and RBI sources.` },
       { type: "h2", text: "ClearTax vs TaxAdda for GST \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
-        { q: "Which tool shows a clearer CGST/SGST breakdown, ClearTax or TaxAdda?", a: "ClearTax displays the CGST/SGST breakdown with a more structured, polished layout, while TaxAdda presents it in a simpler, more minimal format." },
-        { q: "Is TaxAdda faster than ClearTax?", a: "TaxAdda is extremely lightweight and loads quickly, while ClearTax offers a more polished but slightly heavier experience." },
-        { q: "Are ClearTax and TaxAdda equally accurate?", a: "Yes. Both tools use standard GST formulas, so accuracy is consistent across both platforms when inputs are correct." },
-        { q: "Which tool do professionals prefer?", a: "Accountants and professionals often prefer ClearTax for its clearer presentation, while freelancers may prefer TaxAdda's simplicity." }
+        { q: "Is TaxAdda GST calculator free?", a: "TaxAdda's basic GST calculator is free with no login required. Advanced features like GSTR filing and bulk exports require a paid plan. For pure calculation with no account at all, gstcalculator.me is a faster alternative." },
+        { q: "Which is better for calculating TaxAdda GST \u2014 TaxAdda itself or ClearTax?", a: "Both calculate CGST, SGST, and IGST correctly. ClearTax has a more polished layout; TaxAdda loads faster for basic use. gstcalculator.me is the fastest option with no login required." },
+        { q: "What is a good free alternative to TaxAdda GST calculator?", a: "gstcalculator.me \u2014 no account, no plan, works for all current GST slabs including the GST 2.0 rates (5%, 18%, 40%) effective September 2025. Instant CGST/SGST/IGST split." },
+        { q: "Does TaxAdda support the new GST 2.0 slabs (5%, 18%, 40%)?", a: "TaxAdda has updated its calculator for GST 2.0. For the latest official rates, verify at cbic.gov.in before filing." },
+        { q: "Which tool shows a clearer CGST/SGST breakdown, ClearTax or TaxAdda?", a: "ClearTax displays the CGST/SGST breakdown with a more structured, polished layout, while TaxAdda presents it in a simpler, more minimal format." }
       ] }
     ]
   },
   {
     slug: "gst-2-0-reforms-india-2025",
-    title: "GST 2.0 Reforms India 2025: New Rate Slabs, What's Cheaper & What Businesses Must Do Now",
-    description: "The most comprehensive guide to India's GST 2.0 reforms effective September 22, 2025 \u2014 new 5%, 18% & 40% slabs, what got cheaper, what got expensive, business compliance checklist, and ITC transition rules.",
+    title: "GST 2.0 India: New Tax Slabs (5%, 18%, 40%) Explained",
+    description: "GST 2.0 changed India's tax slabs from September 2025. New rates: 5%, 18%, 40%. Check what moved, what stayed, and calculate your GST instantly.",
     category: "GST News & Updates",
     readTime: "14 min",
     date: "2025-10-01",
-    updated: "2026-06-25",
+    updated: "2026-07-20",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "On September 22, 2025, India's indirect tax system entered its most significant overhaul since GST was first introduced in July 2017. The GST Council's 56th meeting approved sweeping reforms that replaced the 4-slab structure of 5%, 12%, 18%, and 28% with a cleaner 2-slab system of 5% and 18%, plus a new 40% slab for luxury and sin goods." },
@@ -2678,6 +2709,7 @@ var POSTS = [
       { type: "sourceLink", href: "https://pib.gov.in", label: "PIB \u2014 56th GST Council Meeting Press Release" },
       { type: "h2", text: "GST 2.0 Reforms \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
+        { q: "What are the new GST 2.0 slabs in India?", a: "GST 2.0 introduced three primary slabs: 5%, 18%, and 40%. The old 12% slab was abolished \u2014 items moved to 5% or 18%. The 28% slab was replaced by 40% for luxury and sin goods. The 0% (Nil) category was also expanded. Effective September 22, 2025." },
         { q: "When did the GST 2.0 reforms take effect?", a: "GST 2.0 rate changes are effective from September 22, 2025, except for tobacco and related products, which take effect later pending cess obligations." },
         { q: "Is the 12% GST slab completely gone?", a: "Yes. The 12% slab is effectively abolished, with items previously taxed at 12% moved to either 5% or 18%." },
         { q: "What is the new 40% GST slab for?", a: "The new 40% slab applies to luxury and sin goods such as tobacco, pan masala, caffeinated aerated drinks, high-end SUVs, yachts, and private aircraft." },
@@ -2900,6 +2932,7 @@ var POSTS = [
         "Total invoice value: \u20B910,500"
       ] },
       { type: "highlight", html: 'Skip the manual maths \u2014 <a href="https://gstcalculator.me">gstcalculator.me</a> handles the entire calculation instantly, with the correct CGST/SGST/IGST split for any amount and rate.' },
+      { type: "p", text: 'This item-wise list reflects the rates set by the 56th GST Council meeting. For the full policy background \u2014 why the Council restructured the slabs, what problem it was solving, and the complete timeline \u2014 see our <a href="/blog/gst-2-0-reforms-india-2025">GST 2.0 reforms guide</a>.' },
       { type: "h2", text: "Frequently Asked Questions on New GST Rates" },
       { type: "faq", items: [
         { q: "Is the 12% GST slab completely abolished?", a: "Yes. From September 22, 2025, no goods or services should be invoiced at 12%. All items previously at 12% have moved to either 5% or 18%." },
@@ -3856,12 +3889,12 @@ var POSTS = [
   },
   {
     slug: "gst-on-restaurants-food-india-2025",
-    title: "GST on Restaurants & Food India 2025: Rates for Dine-In, Takeaway, Zomato & Swiggy",
-    description: "Complete guide to GST on restaurant food in India 2025 \u2014 5% vs 18% dine-in rates, ITC rules, how Zomato and Swiggy collect GST, delivery charge taxation, cloud kitchens, and GSTR-3B reporting.",
+    title: "GST on Restaurant Food in India 2026: Dine-In, Zomato & Swiggy Rates Explained",
+    description: "5% GST on restaurant food in India for most dine-in and takeaway. 18% on delivery fees (Zomato/Swiggy), hotel restaurants above \u20B97,500/night. Full compliance guide for owners.",
     category: "Sector-Specific GST",
     readTime: "11 min",
     date: "2025-11-03",
-    updated: "2026-06-25",
+    updated: "2026-07-17",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=75&auto=format&fit=crop", alt: "Restaurant interior with food being served to customers" },
@@ -4021,8 +4054,10 @@ var POSTS = [
         "Service charge is separate and discretionary \u2014 GST is mandatory"
       ] },
       { type: "p", text: 'Related: <a href="/blog/gst-2-0-reforms-india-2025">GST 2.0 Reforms India 2025</a> \xB7 <a href="/blog/gst-for-amazon-flipkart-sellers">GST for Amazon &amp; Flipkart Sellers</a> \xB7 <a href="/blog/gst-on-ecommerce-india">GST on E-commerce India</a> \xB7 <a href="/blog/how-to-file-gstr-3b">How to File GSTR-3B</a>' },
+      { type: "p", text: `For a broader look at how GST 2.0 restructured rates across all sectors \u2014 not just food \u2014 see the <a href="/blog/gst-2-0-reforms-india-2025">GST 2.0 reforms overview</a>. To calculate the exact CGST/SGST split on your restaurant bill (whether 5% or 18%), use the <a href="https://gstcalculator.me">free GST calculator</a> \u2014 no login required. And if you're wondering how India's GST compares to VAT systems in countries where your suppliers or customers are based, our <a href="/blog/gst-vs-vat-global-comparison-statistics">GST vs VAT global comparison</a> covers the key differences in rate structure and compliance burden.` },
       { type: "h2", text: "GST on Restaurants \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
+        { q: "What is the GST on restaurant food in India?", a: "GST on restaurant food in India is 5% for most standalone restaurants, takeaways, cloud kitchens, and food court orders \u2014 regardless of air conditioning. 18% applies to hotel restaurants (where room tariff exceeds \u20B97,500/night), outdoor catering, 5-star restaurants, and business-class airline food." },
         { q: "What GST rate do most restaurants charge?", a: "Most standalone restaurants, takeaways, and cloud kitchens charge 5% GST without Input Tax Credit, regardless of whether the seating is air-conditioned." },
         { q: "Does GST apply differently on Zomato or Swiggy orders?", a: "Yes. The platform itself collects and remits 5% GST on the food value on the restaurant's behalf, and since September 22, 2025, separately charges 18% GST on the delivery/platform fee." },
         { q: "Can restaurants claim ITC if they charge 5% GST?", a: "No, restaurants on the 5% scheme cannot claim ITC on food ingredients, packaging, rent, or utilities \u2014 except for ITC on the 18% GST charged by aggregator platforms on their commission." },
@@ -5782,8 +5817,8 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
   },
   {
     slug: "cleartax-vs-zoho-vs-vakilsearch-gst",
-    title: "ClearTax vs Zoho vs VakilSearch for GST Filing (2026): Prices, Pros & Verdict",
-    description: "ClearTax vs Zoho vs VakilSearch for GST filing compared \u2014 real prices (\u20B9899/mo to \u20B940,000/yr), who each is for, and the free no-login calculator none of them offer.",
+    title: "ClearTax vs Zoho vs VakilSearch: Real GST Filing Costs (2026) + Free Alternative",
+    description: "Real prices exposed: ClearTax (\u20B9899/mo), Zoho Books, VakilSearch (\u20B940,000/yr) \u2014 which is worth it? Plus the free no-login GST calculator none of them offer.",
     category: "Tools & Guides",
     readTime: "10 min",
     date: "2025-05-13",
@@ -5872,6 +5907,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
         { q: "Do ClearTax, Zoho, and VakilSearch calculate GST accurately?", a: "Yes, all three apply the same CGST/SGST/IGST rules correctly. The real differences are in workflow \u2014 bulk filing, real-time invoice tax calculation, or assisted service \u2014 not calculation accuracy." },
         { q: "Why doesn't any of the three platforms suit quick daily GST calculations?", a: "All three are built around compliance workflows (filing, accounting, or legal services), not instant arithmetic. A dedicated tool like GSTCalculator.me gives CGST, SGST, and IGST results in seconds with no login." }
       ] },
+      { type: "p", text: `For a head-to-head between just ClearTax and Zoho without VakiSearch, see our <a href="/blog/cleartax-vs-zoho-gst-calculator">ClearTax vs Zoho GST calculator comparison</a>. If TaxAdda is part of your evaluation, the <a href="/blog/gst-taxadda-calculator-alternative">TaxAdda GST calculator review</a> covers what it does better than the big three. And if you're specifically trying to understand Zoho's login friction before committing, our <a href="/blog/zoho-books-gst-calculator-login-required">Zoho login requirements guide</a> maps every wall exactly.` },
       { type: "cta", title: "Need GST Calculated Right Now?", text: "No signup. No subscription. Just instant CGST + SGST + IGST for any amount and slab." }
     ]
   },
@@ -6018,12 +6054,12 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
   },
   {
     slug: "is-zoho-gst-calculator-free",
-    title: "Is Zoho's GST Calculator Really Free? Limits Explained + Better Alternative",
-    description: "Zoho's GST calculator is free \u2014 but only for basic use. Here are the exact limits, what triggers a login or paywall, and a better zero-friction alternative.",
+    title: "Is Zoho GST Calculator Free? (2026 \u2014 Exact Limits Explained)",
+    description: "Zoho's GST calculator is free for 3 fields only. Everything beyond needs login or a \u20B9899/month plan. Full breakdown of every tier \u2014 plus a truly free alternative.",
     category: "Tools & Guides",
     readTime: "7 min",
     date: "2025-05-13",
-    updated: "2026-06-25",
+    updated: "2026-07-17",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: `Yes, Zoho offers a free GST calculator \u2014 but "free" does a lot of heavy lifting in that sentence. Depending on what you actually need it to do, you may hit a login wall, a plan paywall, or a feature gap much sooner than you'd expect. Here's exactly where the free ends.` },
@@ -6045,7 +6081,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
         "Inclusive and exclusive toggle",
         "CGST + SGST / IGST display",
         "Pre-tax and post-tax amounts",
-        "All standard GST slabs (5/12/18/28%)"
+        "All current GST slabs (0%, 5%, 18%, 40% under GST 2.0)"
       ] },
       { type: "h3", text: "What You Can't Do Without Logging In" },
       { type: "ul", items: [
@@ -6095,7 +6131,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
         ["No revenue cap", "\u2717 \u20B925L limit", "\u2713 No limit"],
         ["Unlimited calculations", "1,000 invoices/yr cap", "\u2713 Unlimited"],
         ["CGST + SGST + IGST split", "\u2713 Yes", "\u2713 Yes"],
-        ["All GST slabs (0\u201328%)", "\u2713 Yes", "\u2713 Yes"],
+        ["All current GST slabs (5%, 18%, 40% \u2014 GST 2.0)", "\u2713 Yes", "\u2713 Yes"],
         ["GST-compliant invoicing", "\u2713 Yes", "\u2717 Not included"],
         ["GSTR filing support", "\u2717 Paid plan only", "\u2717 Not included"],
         ["Best for\u2026", "Early-stage businesses managing books", "Anyone who just needs instant GST numbers"]
@@ -6104,7 +6140,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
       { type: "p", text: "Zoho Books is an excellent product \u2014 but for the right use case. If your primary need is pure GST calculation, signing up adds complexity without benefit. However, there are clear situations where Zoho Books is exactly the right tool." },
       { type: "p", text: "Consider creating a Zoho Books account if your annual revenue is growing toward \u20B925 lakh and you want to set up structured invoicing before hitting the threshold. Furthermore, if you're already using Zoho CRM, Zoho Inventory, or other Zoho products, the Books integration creates a seamless end-to-end workflow. Additionally, businesses operating in two or more states benefit from Zoho's automatic CGST/SGST vs. IGST selection based on buyer location \u2014 which eliminates a common error in multi-state invoicing." },
       { type: "highlight", html: '<strong>The practical rule:</strong> Use Zoho Books if you need accounting software. Use <a href="https://gstcalculator.me">GSTCalculator.me</a> if you need GST calculated. These are complementary tools, not competing ones \u2014 and thousands of Indian businesses use both in their daily workflow.' },
-      { type: "p", text: `For a broader look at all free options with zero login requirements, see our guide on <a href="/blog/free-gst-calculator-no-login-india">5 free GST calculators in India with no login</a>. If you're a freelancer specifically, <a href="/blog/best-gst-tool-freelancers-india">the best GST tool for Indian freelancers</a> covers what matters most for service-based income. And for a full three-way comparison, our <a href="/blog/cleartax-vs-zoho-vs-vakilsearch-gst">ClearTax vs Zoho vs VakilSearch comparison</a> goes deeper on the compliance software question.` },
+      { type: "p", text: `For a broader look at all free options with zero login requirements, see our guide on <a href="/blog/free-gst-calculator-no-login-india">5 free GST calculators in India with no login</a>. If you're a freelancer specifically, <a href="/blog/best-gst-tool-freelancers-india">the best GST tool for Indian freelancers</a> covers what matters most for service-based income. And for a full three-way comparison, our <a href="/blog/cleartax-vs-zoho-vs-vakilsearch-gst">ClearTax vs Zoho vs VakiSearch comparison</a> goes deeper on the compliance software question. If you specifically want to understand when Zoho asks for login and when it doesn't, see our <a href="/blog/zoho-books-gst-calculator-login-required">Zoho GST calculator login guide</a>.` },
       { type: "sourceLink", href: "https://www.gst.gov.in/", label: "Official GST Portal (gst.gov.in)" },
       { type: "h2", text: "Is Zoho GST Calculator Free \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
@@ -6384,12 +6420,12 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
   },
   {
     slug: "gst-taxadda-calculator-alternative",
-    title: "TaxAdda GST Calculator Review (2026): Features, Limits & a Faster Free Alternative",
-    description: "TaxAdda GST calculator is free and surprisingly capable. But it has real limits. Here's the full feature breakdown \u2014 and when a faster alternative makes more sense.",
+    title: "TaxAdda GST Calculator: Free, No Login \u2014 All GST 2.0 Slabs (2026)",
+    description: "Need a TaxAdda-style GST calculator? gstcalculator.me is faster, no login needed, all GST 2.0 slabs (5%, 18%, 40%), instant CGST/SGST/IGST. Free forever.",
     category: "Tools & Guides",
     readTime: "10 min",
     date: "2025-05-13",
-    updated: "2026-07-11",
+    updated: "2026-08-05",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "TaxAdda has quietly built one of the most comprehensive free GST calculator suites in India \u2014 and most users only know about the basic one. Here's the full picture: what it does well, where it falls short, and when a purpose-built alternative serves you better." },
@@ -6444,25 +6480,27 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
       { type: "p", text: "The primary issue is page weight and load time. TaxAdda's calculator subdomain is part of a content-heavy platform. Even though the calculator itself is functional, getting to a result takes noticeably longer than a tool-first interface. On a slow mobile connection \u2014 common in tier-2 and tier-3 Indian cities \u2014 this matters." },
       { type: "p", text: "Additionally, the basic calculator UI feels dated compared to modern alternatives. The three-input design is smart, but the visual presentation requires more cognitive load than a clean two-field interface. For a CA doing twenty calculations per day, this friction compounds." },
       { type: "highlight", html: `<strong>Bottom line:</strong> TaxAdda is one of India's most underrated free GST tool suites. Its ITC optimiser and ecom calculator are genuinely excellent. For pure calculation speed on mobile, <a href="https://gstcalculator.me">GSTCalculator.me</a> is the faster daily driver \u2014 and the two tools complement each other perfectly.` },
+      { type: "p", text: `If you're comparing TaxAdda against paid platforms like ClearTax, see our <a href="/blog/cleartax-vs-taxadda-gst-calculator">ClearTax vs TaxAdda comparison</a>. For a broader look across Zoho, ClearTax, and standalone tools, the <a href="/blog/zoho-gst-calculator-alternative">Zoho GST calculator alternative guide</a> is a good starting point.` },
       { type: "sourceLink", href: "https://www.gst.gov.in/", label: "Official GST Portal (gst.gov.in)" },
       { type: "h2", text: "TaxAdda GST Calculator Alternative \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
         { q: "Does TaxAdda's calculator suite require login?", a: "No \u2014 none of TaxAdda's six calculators, including the ITC optimiser and GSTIN validator, require an account or login." },
         { q: "What does TaxAdda's ITC optimiser do that a basic calculator doesn't?", a: "It applies the legally correct set-off sequence under Section 49A, 49B, and Rule 88A \u2014 IGST credit first, then CGST and SGST separately \u2014 minimising cash outflow for businesses with accumulated credit." },
         { q: "Why is TaxAdda slower than GSTCalculator.me on mobile?", a: "TaxAdda's calculator is part of a content-heavy platform rather than a tool-first interface, which adds load time, particularly on slower tier-2/3 city connections." },
-        { q: "Can I use both TaxAdda and GSTCalculator.me together?", a: "Yes \u2014 they're designed to be complementary. Use GSTCalculator.me for fast daily arithmetic and TaxAdda for ITC optimisation, composition scheme, or ecom profit calculations." }
+        { q: "Can I use both TaxAdda and GSTCalculator.me together?", a: "Yes \u2014 they're designed to be complementary. Use GSTCalculator.me for fast daily arithmetic and TaxAdda for ITC optimisation, composition scheme, or ecom profit calculations." },
+        { q: "Has TaxAdda updated for GST 2.0 new slabs (5%, 18%, 40%)?", a: "TaxAdda has updated for the new GST 2.0 rate structure effective September 22, 2025. Always verify your specific item's rate at cbic.gov.in before filing." }
       ] },
       { type: "cta", title: "The Fastest Way to Calculate GST \u2014 No Account, No Friction", text: "While TaxAdda excels at depth, GSTCalculator.me excels at speed. Get your CGST, SGST, and IGST split in under two seconds \u2014 free, on any device, forever." }
     ]
   },
   {
     slug: "zoho-books-gst-calculator-login-required",
-    title: "Does Zoho GST Calculator Require Login? (And 3 That Don't)",
-    description: "Does Zoho's GST calculator require login? Short answer: yes, for anything beyond basic. Here's exactly what's gated \u2014 and 3 free alternatives with zero login.",
+    title: "Zoho GST Calculator Login Required? Free No-Login Alternative (2026)",
+    description: "Zoho's GST calculator needs login for anything useful. gstcalculator.me is 100% free \u2014 no account, no OTP, instant CGST/SGST/IGST for all current slabs.",
     category: "Tools & Guides",
     readTime: "8 min",
     date: "2025-05-13",
-    updated: "2026-06-25",
+    updated: "2026-07-17",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "The short answer is: Zoho's basic three-field calculator doesn't require login. But virtually everything useful beyond it does \u2014 and the login requirement is baked into Zoho's product design by intention, not oversight. Here's the complete picture, plus three tools that never ask for an account." },
@@ -6493,8 +6531,8 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
       { type: "warn", html: "<strong>\u26A0\uFE0F The friction compounds over time.</strong> Even after setting up a Zoho Books account, sessions expire regularly. Users on mobile report being re-prompted for OTP every few days. Each re-login takes 2\u20135 minutes \u2014 small individually, but significant across a typical month of daily GST use." },
       { type: "h2", text: "3 GST Calculators That Don't Require Login \u2014 Ever" },
       { type: "p", text: "If you want to calculate GST without creating an account, entering your email, or receiving an OTP, these three tools deliver precisely that. None of them will ever ask for a login, for any feature." },
-      { type: "p", text: "<strong>#1 GSTCalculator.me \u2014 Fastest, No Account, No Friction</strong> Purpose-built for instant GST calculation with zero overhead. Enter your amount, pick your slab \u2014 CGST + SGST or IGST result in under two seconds. No account, no email, no OTP, no setup. Works identically on desktop and mobile. Supports all standard slabs (0%, 5%, 12%, 18%, 28%) with both inclusive and exclusive modes." },
-      { type: "p", text: "<strong>#2 TaxAdda Calculator Suite \u2014 No Login, Deeper Tools</strong> TaxAdda's entire calculator subdomain is completely free and requires no account for any tool \u2014 including the basic GST calculator, ITC optimiser, composition scheme calculator, GSTIN validator, and Amazon/Flipkart profit calculator." },
+      { type: "p", text: `<strong>#1 GSTCalculator.me \u2014 Fastest, No Account, No Friction</strong> Purpose-built for instant GST calculation with zero overhead. Enter your amount, pick your slab \u2014 CGST + SGST or IGST result in under two seconds. No account, no email, no OTP, no setup. Works identically on desktop and mobile. Supports all current GST 2.0 slabs (0%, 5%, 18%, 40%) with both inclusive and exclusive modes. For a full comparison of why Zoho's free tier still falls short, see our <a href="/blog/is-zoho-gst-calculator-free">Is Zoho GST calculator free?</a> breakdown.` },
+      { type: "p", text: `<strong>#2 TaxAdda Calculator Suite \u2014 No Login, Deeper Tools</strong> TaxAdda's entire calculator subdomain is completely free and requires no account for any tool \u2014 including the basic GST calculator, ITC optimiser, composition scheme calculator, GSTIN validator, and Amazon/Flipkart profit calculator. See our <a href="/blog/gst-taxadda-calculator-alternative">TaxAdda GST calculator alternative guide</a> for the full feature comparison.` },
       { type: "p", text: "<strong>#3 Tally Solutions GST Calculator \u2014 No Login, Clean UI</strong> Tally's free online GST calculator handles standard calculations cleanly with no account required. Includes a well-explained ITC mechanics guide and formula reference. Best used by businesses already familiar with TallyPrime who want a web-based calculator from a trusted brand." },
       { type: "h2", text: "Zoho GST Calculator Login Required vs No-Login Tools: Feature Comparison" },
       { type: "p", text: "For users who want to see exactly how the login-required experience compares to no-login alternatives across specific features, this table captures the full picture." },
@@ -6521,12 +6559,12 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
   },
   {
     slug: "zoho-gst-calculator-alternative",
-    title: "Zoho GST Calculator vs GSTCalculator.me: Which Is Faster & Free?",
-    description: "Zoho GST calculator requires login and redirects to paid plans. GSTCalculator.me gives instant results \u2014 no account, no friction. See the full comparison.",
+    title: "Zoho GST Calculator \u2014 Free Instant Alternative (No Login, No Zoho Account)",
+    description: "Skip Zoho's login wall and \u20B9899/mo plan. Calculate GST free in your browser \u2014 all slabs (5%, 18%, 40%), CGST/SGST/IGST breakdown, results in seconds.",
     category: "Tools & Guides",
     readTime: "7 min",
     date: "2025-05-13",
-    updated: "2026-06-25",
+    updated: "2026-08-18",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "You opened Zoho's GST calculator for a quick tax figure. Suddenly you're staring at a login prompt and a pitch for Zoho Books. Sound familiar? For millions of Indian accountants, freelancers, and ecom sellers, that single moment of friction is one moment too many." },
@@ -6550,7 +6588,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
         ["Login required", "Yes (for full use)", "No \u2014 ever"],
         ["CGST / SGST split", "\u2713 Yes", "\u2713 Yes"],
         ["IGST (inter-state)", "\u2713 Yes", "\u2713 Yes"],
-        ["All GST slabs (0/5/12/18/28%)", "\u2713 Yes", "\u2713 Yes"],
+        ["All GST 2.0 slabs (0/5/18/40%)", "\u2713 Yes", "\u2713 Yes"],
         ["Instant results (no reload)", "Partial", "\u2713 Instant"],
         ["Upsell / ad interruptions", "Frequent upsell", "None"],
         ["Mobile experience", "Moderate", "\u2713 Optimised"],
@@ -6564,7 +6602,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
       { type: "statGrid", items: [
         { n: "\u20B90", l: "Cost to use GSTCalculator.me \u2014 forever, all features" },
         { n: "0", l: "Fields you need to fill before calculating \u2014 no account required" },
-        { n: "5", l: "GST slabs supported: 0%, 5%, 12%, 18%, 28%" },
+        { n: "4", l: "GST 2.0 slabs supported: 0%, 5%, 18%, 40%" },
         { n: "<2s", l: "Average time to get a full CGST + SGST + IGST result" }
       ] },
       { type: "h2", text: "Which Zoho GST Calculator Alternative Is Best for Indian Accountants & Freelancers?" },
@@ -6580,6 +6618,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
       { type: "p", text: "Nevertheless, if your need is purely to calculate GST for a quote, invoice check, or margin calculation, you're using a sports car to go to the local grocery store. It works. But it's overkill \u2014 and the parking process takes longer than the drive." },
       { type: "highlight", html: '<strong>Bottom line:</strong> Use Zoho Books if you need GST accounting software. Use <a href="https://gstcalculator.me">GSTCalculator.me</a> if you just need to calculate GST \u2014 fast, free, and without creating an account or wading through a sales funnel.' },
       { type: "sourceLink", href: "https://www.gst.gov.in/", label: "Official GST Portal (gst.gov.in)" },
+      { type: "p", text: `For a deeper breakdown of exactly where Zoho's login walls kick in, see our <a href="/blog/zoho-books-gst-calculator-login-required">Zoho GST calculator login requirements guide</a>. If you want to understand whether the Zoho free tier is genuinely useful for your business size, <a href="/blog/is-zoho-gst-calculator-free">is Zoho GST calculator free</a> covers every tier in detail. And if you're running a restaurant or food business and need quick GST figures for billing, our <a href="/blog/gst-on-restaurants-food-india-2025/">GST on restaurant food guide</a> has the rate breakdown you need. For broader context on how India's multi-slab GST compares to single-rate VAT systems used in most other countries, see our <a href="/blog/gst-vs-vat-global-comparison-statistics">GST vs VAT global comparison</a> \u2014 55+ data points from OECD, IMF, and RBI. And if you want the background on the 0/5/18/40% slabs both calculators now use, our <a href="/blog/gst-2-0-reforms-india-2025">GST 2.0 reforms guide</a> covers the September 2025 rate restructuring in full.` },
       { type: "h2", text: "Zoho GST Calculator Alternative \u2014 Frequently Asked Questions" },
       { type: "faq", items: [
         { q: "Does Zoho's GST calculator require login?", a: "Only for full use \u2014 the basic three-field calculator works without login, but invoicing, GSTIN validation, and filing all require a Zoho account." },
@@ -6594,7 +6633,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
 var getPost = (slug) => POSTS.find((p) => p.slug === slug);
 
 // src/pages/Blog.tsx
-import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs9 } from "react/jsx-runtime";
 var Blog = () => {
   useEffect6(() => {
     clearJsonLdScripts();
@@ -6608,54 +6647,73 @@ var Blog = () => {
       { position: 1, name: "Home", item: "https://gstcalculator.me/" },
       { position: 2, name: "Blog", item: "https://gstcalculator.me/blog/" }
     ]);
+    const el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.id = "blog-jsonld";
+    el.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: "GST Calculator Blog",
+      description: "Practical GST guides for Indian businesses: how to calculate GST, slabs explained, CGST vs SGST vs IGST, and GST for freelancers.",
+      url: "https://gstcalculator.me/blog/",
+      publisher: {
+        "@type": "Organization",
+        name: "GST Calculator India",
+        url: "https://gstcalculator.me/"
+      }
+    });
+    document.head.appendChild(el);
+    return () => {
+      document.getElementById("blog-jsonld")?.remove();
+    };
   }, []);
   return /* @__PURE__ */ jsxs9("div", { className: "min-h-screen bg-background", children: [
-    /* @__PURE__ */ jsx12(SiteHeader_default, { active: "blog" }),
+    /* @__PURE__ */ jsx13(SiteHeader_default, { active: "blog" }),
     /* @__PURE__ */ jsxs9("header", { className: "bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground", children: [
-      /* @__PURE__ */ jsxs9(Link3, { to: "/", className: "inline-flex items-center gap-1.5 text-primary-mid text-xs hover:text-primary-foreground mb-3", children: [
-        /* @__PURE__ */ jsx12(ArrowLeft, { className: "h-3.5 w-3.5" }),
+      /* @__PURE__ */ jsxs9(Link4, { to: "/", className: "inline-flex items-center gap-1.5 text-primary-mid text-xs hover:text-primary-foreground mb-3", children: [
+        /* @__PURE__ */ jsx13(ArrowLeft, { className: "h-3.5 w-3.5" }),
         " Back to calculator"
       ] }),
-      /* @__PURE__ */ jsx12("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "GST Blog" }),
-      /* @__PURE__ */ jsx12("p", { className: "text-primary-mid text-sm mt-1", children: "Guides, rate references and compliance tips for Indian businesses" })
+      /* @__PURE__ */ jsx13("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "GST Blog" }),
+      /* @__PURE__ */ jsx13("p", { className: "text-primary-mid text-sm mt-1", children: "Guides, rate references and compliance tips for Indian businesses" })
     ] }),
-    /* @__PURE__ */ jsx12("main", { className: "max-w-4xl mx-auto px-6 sm:px-8 py-8 grid gap-4", children: POSTS.map((p) => /* @__PURE__ */ jsxs9(
-      Link3,
+    /* @__PURE__ */ jsx13("main", { className: "max-w-4xl mx-auto px-6 sm:px-8 py-8 grid gap-4", children: POSTS.map((p) => /* @__PURE__ */ jsxs9(
+      Link4,
       {
         to: `/blog/${p.slug}`,
         className: "block bg-card rounded-2xl border border-border p-5 hover:border-primary-mid hover:shadow-md transition-all group",
         children: [
           /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 text-[0.7rem] text-muted-foreground mb-2", children: [
-            /* @__PURE__ */ jsx12("span", { className: "bg-primary-light text-primary-dark px-2 py-0.5 rounded-full font-semibold", children: p.category }),
+            /* @__PURE__ */ jsx13("span", { className: "bg-primary-light text-primary-dark px-2 py-0.5 rounded-full font-semibold", children: p.category }),
             /* @__PURE__ */ jsxs9("span", { className: "inline-flex items-center gap-1", children: [
-              /* @__PURE__ */ jsx12(Calendar, { className: "h-3 w-3" }),
+              /* @__PURE__ */ jsx13(Calendar, { className: "h-3 w-3" }),
               new Date(p.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
             ] }),
             /* @__PURE__ */ jsxs9("span", { className: "inline-flex items-center gap-1", children: [
-              /* @__PURE__ */ jsx12(Clock, { className: "h-3 w-3" }),
+              /* @__PURE__ */ jsx13(Clock, { className: "h-3 w-3" }),
               p.readTime
             ] })
           ] }),
-          /* @__PURE__ */ jsx12("h2", { className: "text-lg font-bold text-foreground group-hover:text-primary-dark transition-colors", children: p.title }),
-          /* @__PURE__ */ jsx12("p", { className: "text-sm text-muted-foreground mt-1.5 leading-relaxed", children: p.description })
+          /* @__PURE__ */ jsx13("h2", { className: "text-lg font-bold text-foreground group-hover:text-primary-dark transition-colors", children: p.title }),
+          /* @__PURE__ */ jsx13("p", { className: "text-sm text-muted-foreground mt-1.5 leading-relaxed", children: p.description })
         ]
       },
       p.slug
     )) }),
-    /* @__PURE__ */ jsx12(SiteFooter_default, {})
+    /* @__PURE__ */ jsx13(SiteFooter_default, {})
   ] });
 };
 var Blog_default = Blog;
 
 // src/pages/BlogPost.tsx
 import { useEffect as useEffect7 } from "react";
-import { Link as Link4, useParams } from "react-router-dom";
+import { Link as Link5, useParams } from "react-router-dom";
 import { ArrowLeft as ArrowLeft2, Home } from "lucide-react";
-import { Fragment as Fragment2, jsx as jsx13, jsxs as jsxs10 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx14, jsxs as jsxs10 } from "react/jsx-runtime";
 var renderBlock = (b, i) => {
   switch (b.type) {
     case "lead":
-      return /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14(
         "p",
         {
           className: "text-base sm:text-lg text-primary-dark italic border-l-[3px] border-primary-mid bg-primary-light/40 rounded-r-lg px-4 py-3 leading-relaxed",
@@ -6664,7 +6722,7 @@ var renderBlock = (b, i) => {
         i
       );
     case "p":
-      return /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14(
         "p",
         {
           className: "text-[15px] text-foreground leading-relaxed [&_a]:text-primary-dark [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-primary-mid",
@@ -6673,7 +6731,7 @@ var renderBlock = (b, i) => {
         i
       );
     case "h2":
-      return /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14(
         "h2",
         {
           className: "text-xl sm:text-2xl font-bold text-foreground mt-8 pt-4 border-t border-border",
@@ -6682,50 +6740,50 @@ var renderBlock = (b, i) => {
         i
       );
     case "h3":
-      return /* @__PURE__ */ jsx13("h3", { className: "text-base sm:text-lg font-bold text-primary-dark mt-5", children: b.text }, i);
+      return /* @__PURE__ */ jsx14("h3", { className: "text-base sm:text-lg font-bold text-primary-dark mt-5", children: b.text }, i);
     case "stat":
       return /* @__PURE__ */ jsxs10(
         "div",
         {
           className: "bg-card border-l-4 border-primary-mid rounded-r-xl px-5 py-4 shadow-sm",
           children: [
-            /* @__PURE__ */ jsx13("div", { className: "text-3xl font-bold text-primary-dark font-serif", children: b.num }),
-            /* @__PURE__ */ jsx13("div", { className: "text-xs text-muted-foreground mt-1", children: b.label })
+            /* @__PURE__ */ jsx14("div", { className: "text-3xl font-bold text-primary-dark font-serif", children: b.num }),
+            /* @__PURE__ */ jsx14("div", { className: "text-xs text-muted-foreground mt-1", children: b.label })
           ]
         },
         i
       );
     case "statGrid":
-      return /* @__PURE__ */ jsx13("div", { className: "grid grid-cols-2 gap-3", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
+      return /* @__PURE__ */ jsx14("div", { className: "grid grid-cols-2 gap-3", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
         "div",
         {
           className: "bg-card border border-border rounded-xl p-4 text-center",
           children: [
-            /* @__PURE__ */ jsx13("div", { className: "text-lg font-bold text-primary-dark", children: it.n }),
-            /* @__PURE__ */ jsx13("div", { className: "text-[11px] text-muted-foreground uppercase tracking-wider mt-1 leading-snug", children: it.l })
+            /* @__PURE__ */ jsx14("div", { className: "text-lg font-bold text-primary-dark", children: it.n }),
+            /* @__PURE__ */ jsx14("div", { className: "text-[11px] text-muted-foreground uppercase tracking-wider mt-1 leading-snug", children: it.l })
           ]
         },
         j
       )) }, i);
     case "slabGrid":
-      return /* @__PURE__ */ jsx13("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-2.5", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
+      return /* @__PURE__ */ jsx14("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-2.5", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
         "div",
         {
           className: "bg-card border border-border rounded-lg p-3 text-center",
           children: [
-            /* @__PURE__ */ jsx13("div", { className: "text-xl font-bold text-primary-dark", children: it.r }),
-            /* @__PURE__ */ jsx13("div", { className: "text-[10px] text-muted-foreground uppercase tracking-wide mt-1 leading-snug", children: it.l })
+            /* @__PURE__ */ jsx14("div", { className: "text-xl font-bold text-primary-dark", children: it.r }),
+            /* @__PURE__ */ jsx14("div", { className: "text-[10px] text-muted-foreground uppercase tracking-wide mt-1 leading-snug", children: it.l })
           ]
         },
         j
       )) }, i);
     case "formula":
       return /* @__PURE__ */ jsxs10("div", { className: "bg-card border border-border rounded-xl p-5", children: [
-        /* @__PURE__ */ jsx13("div", { className: "text-sm font-bold text-foreground mb-2", children: b.title }),
-        /* @__PURE__ */ jsx13("pre", { className: "text-[13px] text-muted-foreground bg-primary-light/40 rounded-md p-3 whitespace-pre-wrap font-mono leading-relaxed", children: b.code })
+        /* @__PURE__ */ jsx14("div", { className: "text-sm font-bold text-foreground mb-2", children: b.title }),
+        /* @__PURE__ */ jsx14("pre", { className: "text-[13px] text-muted-foreground bg-primary-light/40 rounded-md p-3 whitespace-pre-wrap font-mono leading-relaxed", children: b.code })
       ] }, i);
     case "highlight":
-      return /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14(
         "div",
         {
           className: "bg-primary-light/60 border-l-[3px] border-primary-mid rounded-r-lg px-5 py-4 text-sm text-primary-dark leading-relaxed",
@@ -6734,7 +6792,7 @@ var renderBlock = (b, i) => {
         i
       );
     case "warn":
-      return /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14(
         "div",
         {
           className: "bg-yellow-50 border-l-[3px] border-yellow-500 rounded-r-lg px-5 py-4 text-sm text-yellow-900 leading-relaxed",
@@ -6743,13 +6801,13 @@ var renderBlock = (b, i) => {
         i
       );
     case "checklist":
-      return /* @__PURE__ */ jsx13("div", { className: "flex flex-col gap-2.5", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
+      return /* @__PURE__ */ jsx14("div", { className: "flex flex-col gap-2.5", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
         "div",
         {
           className: "flex gap-3 items-start bg-card border border-border rounded-xl px-4 py-3",
           children: [
-            /* @__PURE__ */ jsx13("span", { className: "text-primary-dark font-bold text-sm flex-shrink-0 mt-0.5 min-w-[1rem]", children: it.mark ?? "\u2022" }),
-            /* @__PURE__ */ jsx13(
+            /* @__PURE__ */ jsx14("span", { className: "text-primary-dark font-bold text-sm flex-shrink-0 mt-0.5 min-w-[1rem]", children: it.mark ?? "\u2022" }),
+            /* @__PURE__ */ jsx14(
               "p",
               {
                 className: "text-[15px] text-foreground leading-relaxed flex-1 [&_a]:text-primary-dark [&_a]:underline",
@@ -6761,15 +6819,15 @@ var renderBlock = (b, i) => {
         j
       )) }, i);
     case "invoiceFields":
-      return /* @__PURE__ */ jsx13("div", { className: "flex flex-col", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
+      return /* @__PURE__ */ jsx14("div", { className: "flex flex-col", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10(
         "div",
         {
           className: "flex gap-3 items-start py-3 border-b border-border last:border-b-0",
           children: [
-            /* @__PURE__ */ jsx13("div", { className: "bg-primary-dark text-primary-foreground text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5", children: j + 1 }),
+            /* @__PURE__ */ jsx14("div", { className: "bg-primary-dark text-primary-foreground text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5", children: j + 1 }),
             /* @__PURE__ */ jsxs10("div", { className: "flex-1", children: [
-              /* @__PURE__ */ jsx13("div", { className: "text-sm font-bold text-foreground mb-1", children: it.title }),
-              /* @__PURE__ */ jsx13("p", { className: "text-[14px] text-muted-foreground leading-relaxed", children: it.text })
+              /* @__PURE__ */ jsx14("div", { className: "text-sm font-bold text-foreground mb-1", children: it.title }),
+              /* @__PURE__ */ jsx14("p", { className: "text-[14px] text-muted-foreground leading-relaxed", children: it.text })
             ] })
           ]
         },
@@ -6777,8 +6835,8 @@ var renderBlock = (b, i) => {
       )) }, i);
     case "example":
       return /* @__PURE__ */ jsxs10("div", { className: "bg-card border border-border rounded-xl p-5", children: [
-        /* @__PURE__ */ jsx13("div", { className: "text-[11px] font-bold text-primary-dark uppercase tracking-wider mb-2", children: b.title }),
-        /* @__PURE__ */ jsx13("div", { className: "space-y-1.5", children: b.lines.map((l, j) => /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx14("div", { className: "text-[11px] font-bold text-primary-dark uppercase tracking-wider mb-2", children: b.title }),
+        /* @__PURE__ */ jsx14("div", { className: "space-y-1.5", children: b.lines.map((l, j) => /* @__PURE__ */ jsx14(
           "p",
           {
             className: "text-sm text-foreground leading-relaxed",
@@ -6788,7 +6846,7 @@ var renderBlock = (b, i) => {
         )) })
       ] }, i);
     case "quote":
-      return /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14(
         "blockquote",
         {
           className: "border-l-[3px] border-primary-mid pl-4 py-2 italic text-primary-dark bg-primary-light/30 rounded-r-md",
@@ -6797,9 +6855,9 @@ var renderBlock = (b, i) => {
         i
       );
     case "steps":
-      return /* @__PURE__ */ jsx13("div", { className: "space-y-3", children: b.items.map((s, j) => /* @__PURE__ */ jsxs10("div", { className: "flex gap-3 items-start", children: [
-        /* @__PURE__ */ jsx13("div", { className: "bg-primary-dark text-primary-foreground text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5", children: j + 1 }),
-        /* @__PURE__ */ jsx13("p", { className: "text-[15px] text-foreground leading-relaxed flex-1", dangerouslySetInnerHTML: { __html: s } })
+      return /* @__PURE__ */ jsx14("div", { className: "space-y-3", children: b.items.map((s, j) => /* @__PURE__ */ jsxs10("div", { className: "flex gap-3 items-start", children: [
+        /* @__PURE__ */ jsx14("div", { className: "bg-primary-dark text-primary-foreground text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5", children: j + 1 }),
+        /* @__PURE__ */ jsx14("p", { className: "text-[15px] text-foreground leading-relaxed flex-1", dangerouslySetInnerHTML: { __html: s } })
       ] }, j)) }, i);
     case "cta":
       return /* @__PURE__ */ jsxs10(
@@ -6807,10 +6865,10 @@ var renderBlock = (b, i) => {
         {
           className: "bg-primary-dark rounded-2xl p-6 sm:p-8 text-center my-4",
           children: [
-            /* @__PURE__ */ jsx13("h3", { className: "text-lg sm:text-xl font-bold text-primary-foreground mb-2", children: b.title }),
-            /* @__PURE__ */ jsx13("p", { className: "text-sm text-primary-mid mb-5", children: b.text }),
-            /* @__PURE__ */ jsx13(
-              Link4,
+            /* @__PURE__ */ jsx14("h3", { className: "text-lg sm:text-xl font-bold text-primary-foreground mb-2", children: b.title }),
+            /* @__PURE__ */ jsx14("p", { className: "text-sm text-primary-mid mb-5", children: b.text }),
+            /* @__PURE__ */ jsx14(
+              Link5,
               {
                 to: "/",
                 className: "inline-block bg-primary-foreground text-primary-dark font-bold text-sm px-6 py-3 rounded-full hover:opacity-90 transition-opacity",
@@ -6822,7 +6880,7 @@ var renderBlock = (b, i) => {
         i
       );
     case "image":
-      return /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14(
         "img",
         {
           src: b.src,
@@ -6833,9 +6891,9 @@ var renderBlock = (b, i) => {
         i
       );
     case "table":
-      return /* @__PURE__ */ jsx13("div", { className: "overflow-x-auto rounded-xl border border-border", children: /* @__PURE__ */ jsxs10("table", { className: "w-full text-sm", children: [
-        /* @__PURE__ */ jsx13("thead", { className: "bg-primary-light/40", children: /* @__PURE__ */ jsx13("tr", { children: b.headers.map((h, j) => /* @__PURE__ */ jsx13("th", { className: "text-left font-bold text-primary-dark px-3 py-2 border-b border-border", children: h }, j)) }) }),
-        /* @__PURE__ */ jsx13("tbody", { children: b.rows.map((row, r) => /* @__PURE__ */ jsx13("tr", { className: "odd:bg-card even:bg-background", children: row.map((cell, c) => /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14("div", { className: "overflow-x-auto rounded-xl border border-border", children: /* @__PURE__ */ jsxs10("table", { className: "w-full text-sm", children: [
+        /* @__PURE__ */ jsx14("thead", { className: "bg-primary-light/40", children: /* @__PURE__ */ jsx14("tr", { children: b.headers.map((h, j) => /* @__PURE__ */ jsx14("th", { className: "text-left font-bold text-primary-dark px-3 py-2 border-b border-border", children: h }, j)) }) }),
+        /* @__PURE__ */ jsx14("tbody", { children: b.rows.map((row, r) => /* @__PURE__ */ jsx14("tr", { className: "odd:bg-card even:bg-background", children: row.map((cell, c) => /* @__PURE__ */ jsx14(
           "td",
           {
             className: "px-3 py-2 border-b border-border last:border-b-0 text-foreground align-top",
@@ -6845,25 +6903,25 @@ var renderBlock = (b, i) => {
         )) }, r)) })
       ] }) }, i);
     case "ul":
-      return /* @__PURE__ */ jsx13("ul", { className: "list-disc pl-5 space-y-1.5 text-[15px] text-foreground leading-relaxed marker:text-primary-mid", children: b.items.map((it, j) => /* @__PURE__ */ jsx13("li", { dangerouslySetInnerHTML: { __html: it } }, j)) }, i);
+      return /* @__PURE__ */ jsx14("ul", { className: "list-disc pl-5 space-y-1.5 text-[15px] text-foreground leading-relaxed marker:text-primary-mid", children: b.items.map((it, j) => /* @__PURE__ */ jsx14("li", { dangerouslySetInnerHTML: { __html: it } }, j)) }, i);
     case "divider":
-      return /* @__PURE__ */ jsx13("hr", { className: "border-t border-border my-2" }, i);
+      return /* @__PURE__ */ jsx14("hr", { className: "border-t border-border my-2" }, i);
     case "tldr":
       return /* @__PURE__ */ jsxs10(
         "div",
         {
           className: "bg-primary-light/60 border-l-[3px] border-primary-mid rounded-r-lg px-5 py-4",
           children: [
-            /* @__PURE__ */ jsx13("div", { className: "text-xs font-bold text-primary-dark uppercase tracking-wider mb-2", children: "Key Takeaways" }),
-            /* @__PURE__ */ jsx13("ul", { className: "list-disc pl-5 space-y-1.5 text-[15px] text-primary-dark leading-relaxed marker:text-primary-mid", children: b.items.map((it, j) => /* @__PURE__ */ jsx13("li", { dangerouslySetInnerHTML: { __html: it } }, j)) })
+            /* @__PURE__ */ jsx14("div", { className: "text-xs font-bold text-primary-dark uppercase tracking-wider mb-2", children: "Key Takeaways" }),
+            /* @__PURE__ */ jsx14("ul", { className: "list-disc pl-5 space-y-1.5 text-[15px] text-primary-dark leading-relaxed marker:text-primary-mid", children: b.items.map((it, j) => /* @__PURE__ */ jsx14("li", { dangerouslySetInnerHTML: { __html: it } }, j)) })
           ]
         },
         i
       );
     case "faq":
-      return /* @__PURE__ */ jsx13("div", { className: "flex flex-col gap-3", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10("div", { className: "bg-card border border-border rounded-xl p-4", children: [
-        /* @__PURE__ */ jsx13("p", { className: "text-[15px] font-bold text-foreground mb-1.5", children: it.q }),
-        /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14("div", { className: "flex flex-col gap-3", children: b.items.map((it, j) => /* @__PURE__ */ jsxs10("div", { className: "bg-card border border-border rounded-xl p-4", children: [
+        /* @__PURE__ */ jsx14("p", { className: "text-[15px] font-bold text-foreground mb-1.5", children: it.q }),
+        /* @__PURE__ */ jsx14(
           "p",
           {
             className: "text-sm text-muted-foreground leading-relaxed",
@@ -6872,7 +6930,7 @@ var renderBlock = (b, i) => {
         )
       ] }, j)) }, i);
     case "sourceLink":
-      return /* @__PURE__ */ jsx13("p", { className: "text-xs", children: /* @__PURE__ */ jsx13(
+      return /* @__PURE__ */ jsx14("p", { className: "text-xs", children: /* @__PURE__ */ jsx14(
         "a",
         {
           href: b.href,
@@ -6915,34 +6973,34 @@ var BlogPost = () => {
     }
   }, [post]);
   if (!post) {
-    return /* @__PURE__ */ jsx13("div", { className: "min-h-screen bg-background flex items-center justify-center", children: /* @__PURE__ */ jsxs10("div", { className: "text-center", children: [
-      /* @__PURE__ */ jsx13("p", { className: "text-muted-foreground mb-3", children: "Post not found." }),
-      /* @__PURE__ */ jsx13(Link4, { to: "/blog", className: "text-primary-dark underline", children: "Back to blog" })
+    return /* @__PURE__ */ jsx14("div", { className: "min-h-screen bg-background flex items-center justify-center", children: /* @__PURE__ */ jsxs10("div", { className: "text-center", children: [
+      /* @__PURE__ */ jsx14("p", { className: "text-muted-foreground mb-3", children: "Post not found." }),
+      /* @__PURE__ */ jsx14(Link5, { to: "/blog", className: "text-primary-dark underline", children: "Back to blog" })
     ] }) });
   }
   const related = POSTS.filter((p) => p.slug !== post.slug).slice(0, 4);
   return /* @__PURE__ */ jsxs10("div", { className: "min-h-screen bg-background", children: [
-    /* @__PURE__ */ jsx13(SiteHeader_default, { active: "blog" }),
+    /* @__PURE__ */ jsx14(SiteHeader_default, { active: "blog" }),
     /* @__PURE__ */ jsxs10("main", { className: "max-w-3xl mx-auto px-6 sm:px-8 py-8", children: [
       /* @__PURE__ */ jsxs10("div", { className: "flex items-center gap-4 text-xs mb-4", children: [
         /* @__PURE__ */ jsxs10(
-          Link4,
+          Link5,
           {
             to: "/blog",
             className: "inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground",
             children: [
-              /* @__PURE__ */ jsx13(ArrowLeft2, { className: "h-3.5 w-3.5" }),
+              /* @__PURE__ */ jsx14(ArrowLeft2, { className: "h-3.5 w-3.5" }),
               " All posts"
             ]
           }
         ),
         /* @__PURE__ */ jsxs10(
-          Link4,
+          Link5,
           {
             to: "/",
             className: "inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground",
             children: [
-              /* @__PURE__ */ jsx13(Home, { className: "h-3.5 w-3.5" }),
+              /* @__PURE__ */ jsx14(Home, { className: "h-3.5 w-3.5" }),
               " Home"
             ]
           }
@@ -6950,8 +7008,8 @@ var BlogPost = () => {
       ] }),
       /* @__PURE__ */ jsxs10("article", { className: "bg-card rounded-2xl border border-border p-6 sm:p-8", children: [
         /* @__PURE__ */ jsxs10("div", { className: "flex items-center gap-2 text-[0.7rem] text-muted-foreground mb-3", children: [
-          /* @__PURE__ */ jsx13("span", { className: "bg-primary-light text-primary-dark px-2 py-0.5 rounded-full font-semibold", children: post.category }),
-          /* @__PURE__ */ jsx13("span", { children: new Date(post.date).toLocaleDateString("en-IN", {
+          /* @__PURE__ */ jsx14("span", { className: "bg-primary-light text-primary-dark px-2 py-0.5 rounded-full font-semibold", children: post.category }),
+          /* @__PURE__ */ jsx14("span", { children: new Date(post.date).toLocaleDateString("en-IN", {
             day: "numeric",
             month: "long",
             year: "numeric"
@@ -6962,7 +7020,7 @@ var BlogPost = () => {
             " read"
           ] })
         ] }),
-        /* @__PURE__ */ jsx13("h1", { className: "text-2xl sm:text-3xl font-bold tracking-tight mb-2 text-foreground", children: post.title }),
+        /* @__PURE__ */ jsx14("h1", { className: "text-2xl sm:text-3xl font-bold tracking-tight mb-2 text-foreground", children: post.title }),
         /* @__PURE__ */ jsxs10("div", { className: "text-xs text-muted-foreground mb-5", children: [
           "By ",
           post.author ?? "GST Calculator Team",
@@ -6977,44 +7035,44 @@ var BlogPost = () => {
             })
           ] })
         ] }),
-        /* @__PURE__ */ jsx13("div", { className: "space-y-4", children: post.body.map(renderBlock) }),
+        /* @__PURE__ */ jsx14("div", { className: "space-y-4", children: post.body.map(renderBlock) }),
         /* @__PURE__ */ jsxs10("div", { className: "bg-background border border-border rounded-2xl p-5 mt-10", children: [
-          /* @__PURE__ */ jsx13("h3", { className: "text-sm font-bold text-foreground mb-3", children: "More from GST Calculator" }),
-          /* @__PURE__ */ jsx13("div", { className: "flex flex-col gap-2.5", children: related.map((r) => /* @__PURE__ */ jsxs10(
-            Link4,
+          /* @__PURE__ */ jsx14("h3", { className: "text-sm font-bold text-foreground mb-3", children: "More from GST Calculator" }),
+          /* @__PURE__ */ jsx14("div", { className: "flex flex-col gap-2.5", children: related.map((r) => /* @__PURE__ */ jsxs10(
+            Link5,
             {
               to: `/blog/${r.slug}`,
               className: "flex gap-2.5 items-start group",
               children: [
-                /* @__PURE__ */ jsx13("span", { className: "text-[10px] bg-primary-light text-primary-dark px-2 py-0.5 rounded-full font-semibold border border-primary-mid/30 flex-shrink-0 mt-0.5", children: r.category }),
-                /* @__PURE__ */ jsx13("span", { className: "text-sm text-foreground group-hover:text-primary-dark transition-colors leading-snug", children: r.title })
+                /* @__PURE__ */ jsx14("span", { className: "text-[10px] bg-primary-light text-primary-dark px-2 py-0.5 rounded-full font-semibold border border-primary-mid/30 flex-shrink-0 mt-0.5", children: r.category }),
+                /* @__PURE__ */ jsx14("span", { className: "text-sm text-foreground group-hover:text-primary-dark transition-colors leading-snug", children: r.title })
               ]
             },
             r.slug
           )) })
         ] }),
         /* @__PURE__ */ jsxs10("div", { className: "flex items-center gap-4 text-sm mt-6", children: [
-          /* @__PURE__ */ jsxs10(Link4, { to: "/blog", className: "text-primary-dark hover:underline inline-flex items-center gap-1.5", children: [
-            /* @__PURE__ */ jsx13(ArrowLeft2, { className: "h-3.5 w-3.5" }),
+          /* @__PURE__ */ jsxs10(Link5, { to: "/blog", className: "text-primary-dark hover:underline inline-flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsx14(ArrowLeft2, { className: "h-3.5 w-3.5" }),
             " All articles"
           ] }),
-          /* @__PURE__ */ jsxs10(Link4, { to: "/", className: "text-primary-dark hover:underline inline-flex items-center gap-1.5", children: [
-            /* @__PURE__ */ jsx13(Home, { className: "h-3.5 w-3.5" }),
+          /* @__PURE__ */ jsxs10(Link5, { to: "/", className: "text-primary-dark hover:underline inline-flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsx14(Home, { className: "h-3.5 w-3.5" }),
             " Back to calculator"
           ] })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsx13(SiteFooter_default, {})
+    /* @__PURE__ */ jsx14(SiteFooter_default, {})
   ] });
 };
 var BlogPost_default = BlogPost;
 
 // src/pages/Privacy.tsx
 import { useEffect as useEffect8 } from "react";
-import { Link as Link5 } from "react-router-dom";
+import { Link as Link6 } from "react-router-dom";
 import { ArrowLeft as ArrowLeft3 } from "lucide-react";
-import { jsx as jsx14, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx15, jsxs as jsxs11 } from "react/jsx-runtime";
 var Privacy = () => {
   useEffect8(() => {
     setPageSeo({
@@ -7026,165 +7084,165 @@ var Privacy = () => {
   }, []);
   const lastUpdated = "April 2025";
   return /* @__PURE__ */ jsxs11("div", { className: "min-h-screen bg-background", children: [
-    /* @__PURE__ */ jsx14(SiteHeader_default, { active: "privacy" }),
+    /* @__PURE__ */ jsx15(SiteHeader_default, { active: "privacy" }),
     /* @__PURE__ */ jsxs11("header", { className: "bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground", children: [
-      /* @__PURE__ */ jsxs11(Link5, { to: "/", className: "inline-flex items-center gap-1.5 text-primary-mid text-xs hover:text-primary-foreground mb-3", children: [
-        /* @__PURE__ */ jsx14(ArrowLeft3, { className: "h-3.5 w-3.5" }),
+      /* @__PURE__ */ jsxs11(Link6, { to: "/", className: "inline-flex items-center gap-1.5 text-primary-mid text-xs hover:text-primary-foreground mb-3", children: [
+        /* @__PURE__ */ jsx15(ArrowLeft3, { className: "h-3.5 w-3.5" }),
         " Back to calculator"
       ] }),
-      /* @__PURE__ */ jsx14("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "Privacy Policy" }),
+      /* @__PURE__ */ jsx15("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "Privacy Policy" }),
       /* @__PURE__ */ jsxs11("p", { className: "text-primary-mid text-sm mt-1", children: [
         "Last updated: ",
         lastUpdated
       ] })
     ] }),
-    /* @__PURE__ */ jsx14("main", { className: "max-w-3xl mx-auto px-6 sm:px-8 py-8", children: /* @__PURE__ */ jsxs11("article", { className: "bg-card rounded-2xl border border-border p-6 sm:p-8 space-y-6 text-sm leading-relaxed text-foreground", children: [
-      /* @__PURE__ */ jsx14("section", { children: /* @__PURE__ */ jsxs11("p", { className: "text-muted-foreground", children: [
+    /* @__PURE__ */ jsx15("main", { className: "max-w-3xl mx-auto px-6 sm:px-8 py-8", children: /* @__PURE__ */ jsxs11("article", { className: "bg-card rounded-2xl border border-border p-6 sm:p-8 space-y-6 text-sm leading-relaxed text-foreground", children: [
+      /* @__PURE__ */ jsx15("section", { children: /* @__PURE__ */ jsxs11("p", { className: "text-muted-foreground", children: [
         "GST Calculator (",
-        /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "gstcalculator.me" }),
+        /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "gstcalculator.me" }),
         ") is a free, browser-based tool. We've built it to be useful without being invasive \u2014 this page explains exactly what happens to your data when you use the site."
       ] }) }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "1. No accounts, no personal data collection" }),
-        /* @__PURE__ */ jsx14("p", { className: "text-muted-foreground", children: "You do not need to create an account, log in, or provide any personal information to use GST Calculator. We do not collect names, email addresses, phone numbers, GSTIN, PAN, or any other personally identifiable information." })
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "1. No accounts, no personal data collection" }),
+        /* @__PURE__ */ jsx15("p", { className: "text-muted-foreground", children: "You do not need to create an account, log in, or provide any personal information to use GST Calculator. We do not collect names, email addresses, phone numbers, GSTIN, PAN, or any other personally identifiable information." })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "2. Your financial inputs stay on your device" }),
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "2. Your financial inputs stay on your device" }),
         /* @__PURE__ */ jsxs11("p", { className: "text-muted-foreground", children: [
           "The amounts you enter into the calculator, the GST slab you choose, the inclusive/exclusive mode, and the intra-/inter-state toggle are processed ",
-          /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "entirely in your browser" }),
+          /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "entirely in your browser" }),
           ". These values are ",
-          /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "never transmitted to our servers" }),
+          /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "never transmitted to our servers" }),
           " and are ",
-          /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "never logged or stored server-side" }),
+          /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "never logged or stored server-side" }),
           "."
         ] })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "3. localStorage \u2014 what we store on your device" }),
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "3. localStorage \u2014 what we store on your device" }),
         /* @__PURE__ */ jsxs11("p", { className: "text-muted-foreground mb-2", children: [
           "To make the calculator more useful on repeat visits, we save a small amount of data in your browser's ",
-          /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "localStorage" }),
+          /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "localStorage" }),
           ". This data lives on your device only and is never sent to us."
         ] }),
         /* @__PURE__ */ jsxs11("ul", { className: "list-disc pl-5 text-muted-foreground space-y-1", children: [
-          /* @__PURE__ */ jsx14("li", { children: "Your last entered amount, selected slab, mode and transaction type \u2014 so you can resume where you left off." }),
-          /* @__PURE__ */ jsx14("li", { children: "A visit counter and calculation count \u2014 used to decide which contextual tip to show." }),
-          /* @__PURE__ */ jsx14("li", { children: "Dismissal flags for tips you've already closed, so we don't nag you." })
+          /* @__PURE__ */ jsx15("li", { children: "Your last entered amount, selected slab, mode and transaction type \u2014 so you can resume where you left off." }),
+          /* @__PURE__ */ jsx15("li", { children: "A visit counter and calculation count \u2014 used to decide which contextual tip to show." }),
+          /* @__PURE__ */ jsx15("li", { children: "Dismissal flags for tips you've already closed, so we don't nag you." })
         ] }),
-        /* @__PURE__ */ jsx14("p", { className: "text-muted-foreground mt-2", children: "localStorage data is not a cookie, is not shared across sites, and is not accessible to any third party." })
+        /* @__PURE__ */ jsx15("p", { className: "text-muted-foreground mt-2", children: "localStorage data is not a cookie, is not shared across sites, and is not accessible to any third party." })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "4. Google AdSense" }),
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "4. Google AdSense" }),
         /* @__PURE__ */ jsxs11("p", { className: "text-muted-foreground", children: [
           "We display ads served by Google AdSense to keep this tool free. Google and its partners use cookies and similar technologies to serve ads based on your prior visits to this site and other sites on the internet. Google's use of advertising cookies enables it and its partners to serve ads to you. You can opt out of personalised advertising by visiting",
           " ",
-          /* @__PURE__ */ jsx14("a", { href: "https://www.google.com/settings/ads", target: "_blank", rel: "noopener noreferrer", className: "text-primary-dark underline", children: "Google Ads Settings" }),
+          /* @__PURE__ */ jsx15("a", { href: "https://www.google.com/settings/ads", target: "_blank", rel: "noopener noreferrer", className: "text-primary-dark underline", children: "Google Ads Settings" }),
           " ",
           "or",
           " ",
-          /* @__PURE__ */ jsx14("a", { href: "https://www.aboutads.info", target: "_blank", rel: "noopener noreferrer", className: "text-primary-dark underline", children: "aboutads.info" }),
+          /* @__PURE__ */ jsx15("a", { href: "https://www.aboutads.info", target: "_blank", rel: "noopener noreferrer", className: "text-primary-dark underline", children: "aboutads.info" }),
           "."
         ] })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "5. Google Analytics" }),
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "5. Google Analytics" }),
         /* @__PURE__ */ jsxs11("p", { className: "text-muted-foreground", children: [
           "We use Google Analytics to understand aggregate traffic patterns \u2014 pages visited, country, device type, referral source. Google Analytics sets cookies on your device to do this. We do ",
-          /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "not" }),
+          /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "not" }),
           " send any of your calculator inputs or outputs to Analytics. You can opt out using the",
           " ",
-          /* @__PURE__ */ jsx14("a", { href: "https://tools.google.com/dlpage/gaoptout", target: "_blank", rel: "noopener noreferrer", className: "text-primary-dark underline", children: "Google Analytics opt-out browser add-on" }),
+          /* @__PURE__ */ jsx15("a", { href: "https://tools.google.com/dlpage/gaoptout", target: "_blank", rel: "noopener noreferrer", className: "text-primary-dark underline", children: "Google Analytics opt-out browser add-on" }),
           "."
         ] })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "6. Clearing your stored preferences" }),
-        /* @__PURE__ */ jsx14("p", { className: "text-muted-foreground mb-2", children: "You can wipe everything we've stored on your device at any time, with no impact on the site's functionality:" }),
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "6. Clearing your stored preferences" }),
+        /* @__PURE__ */ jsx15("p", { className: "text-muted-foreground mb-2", children: "You can wipe everything we've stored on your device at any time, with no impact on the site's functionality:" }),
         /* @__PURE__ */ jsxs11("ul", { className: "list-disc pl-5 text-muted-foreground space-y-1", children: [
           /* @__PURE__ */ jsxs11("li", { children: [
-            /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "Chrome / Edge:" }),
+            /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "Chrome / Edge:" }),
             ' Settings \u2192 Privacy and security \u2192 Clear browsing data \u2192 tick "Cookies and other site data" for gstcalculator.me.'
           ] }),
           /* @__PURE__ */ jsxs11("li", { children: [
-            /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "Firefox:" }),
+            /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "Firefox:" }),
             " Settings \u2192 Privacy & Security \u2192 Cookies and Site Data \u2192 Manage Data \u2192 search gstcalculator.me \u2192 Remove."
           ] }),
           /* @__PURE__ */ jsxs11("li", { children: [
-            /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "Safari:" }),
+            /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "Safari:" }),
             " Settings \u2192 Privacy \u2192 Manage Website Data \u2192 search gstcalculator.me \u2192 Remove."
           ] }),
           /* @__PURE__ */ jsxs11("li", { children: [
             "Or open DevTools (F12) \u2192 Application \u2192 Local Storage \u2192 right-click ",
-            /* @__PURE__ */ jsx14("code", { className: "bg-muted px-1 rounded", children: "gstcalculator.me" }),
+            /* @__PURE__ */ jsx15("code", { className: "bg-muted px-1 rounded", children: "gstcalculator.me" }),
             " \u2192 Clear."
           ] })
         ] })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "7. Children's privacy" }),
-        /* @__PURE__ */ jsx14("p", { className: "text-muted-foreground", children: "GST Calculator is not directed to children under 13 and we do not knowingly collect any information from them." })
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "7. Children's privacy" }),
+        /* @__PURE__ */ jsx15("p", { className: "text-muted-foreground", children: "GST Calculator is not directed to children under 13 and we do not knowingly collect any information from them." })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "8. Changes to this policy" }),
-        /* @__PURE__ */ jsx14("p", { className: "text-muted-foreground", children: `If we update this policy we'll change the "Last updated" date at the top. Material changes will be highlighted on the homepage for at least a week.` })
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "8. Changes to this policy" }),
+        /* @__PURE__ */ jsx15("p", { className: "text-muted-foreground", children: `If we update this policy we'll change the "Last updated" date at the top. Material changes will be highlighted on the homepage for at least a week.` })
       ] }),
       /* @__PURE__ */ jsxs11("section", { children: [
-        /* @__PURE__ */ jsx14("h2", { className: "text-lg font-bold mb-2", children: "9. Contact" }),
+        /* @__PURE__ */ jsx15("h2", { className: "text-lg font-bold mb-2", children: "9. Contact" }),
         /* @__PURE__ */ jsxs11("p", { className: "text-muted-foreground", children: [
           "Questions about this policy? Reach out via the contact details on",
           " ",
-          /* @__PURE__ */ jsx14("strong", { className: "text-foreground", children: "gstcalculator.me" }),
+          /* @__PURE__ */ jsx15("strong", { className: "text-foreground", children: "gstcalculator.me" }),
           "."
         ] })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx14(SiteFooter_default, {})
+    /* @__PURE__ */ jsx15(SiteFooter_default, {})
   ] });
 };
 var Privacy_default = Privacy;
 
 // src/App.tsx
-import { jsx as jsx15, jsxs as jsxs12 } from "react/jsx-runtime";
+import { jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 function TrailingSlashRedirect() {
   const location = useLocation2();
   const { pathname, search, hash } = location;
   if (pathname !== "/" && !pathname.endsWith("/") && !/\.[a-zA-Z0-9]+$/.test(pathname)) {
-    return /* @__PURE__ */ jsx15(Navigate, { to: pathname + "/" + search + hash, replace: true });
+    return /* @__PURE__ */ jsx16(Navigate, { to: pathname + "/" + search + hash, replace: true });
   }
   return null;
 }
 var queryClient = new QueryClient();
 var AppRoutes = () => /* @__PURE__ */ jsxs12(Routes, { children: [
-  /* @__PURE__ */ jsx15(Route, { path: "/", element: /* @__PURE__ */ jsx15(Index_default, {}) }),
-  /* @__PURE__ */ jsx15(Route, { path: "/blog", element: /* @__PURE__ */ jsx15(Blog_default, {}) }),
-  /* @__PURE__ */ jsx15(Route, { path: "/blog/", element: /* @__PURE__ */ jsx15(Blog_default, {}) }),
-  /* @__PURE__ */ jsx15(Route, { path: "/blog/:slug", element: /* @__PURE__ */ jsx15(BlogPost_default, {}) }),
-  /* @__PURE__ */ jsx15(Route, { path: "/blog/:slug/", element: /* @__PURE__ */ jsx15(BlogPost_default, {}) }),
-  /* @__PURE__ */ jsx15(Route, { path: "/privacy", element: /* @__PURE__ */ jsx15(Privacy_default, {}) }),
-  /* @__PURE__ */ jsx15(Route, { path: "/privacy/", element: /* @__PURE__ */ jsx15(Privacy_default, {}) }),
-  /* @__PURE__ */ jsx15(Route, { path: "*", element: /* @__PURE__ */ jsx15(NotFound_default, {}) })
+  /* @__PURE__ */ jsx16(Route, { path: "/", element: /* @__PURE__ */ jsx16(Index_default, {}) }),
+  /* @__PURE__ */ jsx16(Route, { path: "/blog", element: /* @__PURE__ */ jsx16(Blog_default, {}) }),
+  /* @__PURE__ */ jsx16(Route, { path: "/blog/", element: /* @__PURE__ */ jsx16(Blog_default, {}) }),
+  /* @__PURE__ */ jsx16(Route, { path: "/blog/:slug", element: /* @__PURE__ */ jsx16(BlogPost_default, {}) }),
+  /* @__PURE__ */ jsx16(Route, { path: "/blog/:slug/", element: /* @__PURE__ */ jsx16(BlogPost_default, {}) }),
+  /* @__PURE__ */ jsx16(Route, { path: "/privacy", element: /* @__PURE__ */ jsx16(Privacy_default, {}) }),
+  /* @__PURE__ */ jsx16(Route, { path: "/privacy/", element: /* @__PURE__ */ jsx16(Privacy_default, {}) }),
+  /* @__PURE__ */ jsx16(Route, { path: "*", element: /* @__PURE__ */ jsx16(NotFound_default, {}) })
 ] });
-var App = ({ location } = {}) => /* @__PURE__ */ jsx15(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxs12(TooltipProvider, { children: [
-  /* @__PURE__ */ jsx15(Toaster2, {}),
-  /* @__PURE__ */ jsx15(Toaster, {}),
+var App = ({ location } = {}) => /* @__PURE__ */ jsx16(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxs12(TooltipProvider, { children: [
+  /* @__PURE__ */ jsx16(Toaster2, {}),
+  /* @__PURE__ */ jsx16(Toaster, {}),
   location ? (
     // SSR prerender — StaticRouter, no TrailingSlashRedirect needed
-    /* @__PURE__ */ jsx15(StaticRouter, { location, children: /* @__PURE__ */ jsx15(AppRoutes, {}) })
+    /* @__PURE__ */ jsx16(StaticRouter, { location, children: /* @__PURE__ */ jsx16(AppRoutes, {}) })
   ) : (
     // Client — BrowserRouter with trailing slash enforcer
     /* @__PURE__ */ jsxs12(BrowserRouter, { children: [
-      /* @__PURE__ */ jsx15(TrailingSlashRedirect, {}),
-      /* @__PURE__ */ jsx15(AppRoutes, {})
+      /* @__PURE__ */ jsx16(TrailingSlashRedirect, {}),
+      /* @__PURE__ */ jsx16(AppRoutes, {})
     ] })
   )
 ] }) });
 var App_default = App;
 
 // src/entry-server.tsx
-import { jsx as jsx16 } from "react/jsx-runtime";
+import { jsx as jsx17 } from "react/jsx-runtime";
 var render = (url) => {
-  return renderToString(/* @__PURE__ */ jsx16(App_default, { location: url }));
+  return renderToString(/* @__PURE__ */ jsx17(App_default, { location: url }));
 };
 export {
   render
