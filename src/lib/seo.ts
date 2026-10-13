@@ -57,10 +57,8 @@ export const clearJsonLdScripts = () => {
 
 export const setPageSeo = ({ title, description, path, keywords, type = "website" }: PageSeoInput) => {
   // Add trailing slash for blog posts, but not for root or privacy
-  let normalizedPath = path === "/" ? "/" : path.replace(/\/$/, "");
-  if (normalizedPath.startsWith("/blog")) {
-    normalizedPath = `${normalizedPath}/`;
-  }
+  // Every non-root path ends with a slash, matching the 301 rules in public/_redirects.
+  const normalizedPath = path === "/" ? "/" : `${path.replace(/\/$/, "")}/`;
   const url = `${SITE_URL}${normalizedPath}`;
 
   document.title = title;

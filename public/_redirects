@@ -19,6 +19,7 @@
 /privacy  /privacy/  301
 /about    /about/    301
 /contact  /contact/  301
+/gst-late-fee-calculator  /gst-late-fee-calculator/  301
 
 # No 404 fallback rule here — _redirects only accepts status
 # 200/301/302/303/307/308 on a rule, so a "404" rule is silently dropped.

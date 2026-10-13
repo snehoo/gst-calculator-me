@@ -154,7 +154,7 @@ const routes = [
     path: "/",
     title: "GST Calculator India — Free Online CGST, SGST & IGST Calculator (No Login)",
     description:
-      "Free online GST calculator for India. Instantly add or remove GST for all slabs (5%, 12%, 18%, 28%) with CGST, SGST & IGST breakdown. No login needed.",
+      "Free online GST calculator for India. Add or remove GST at the current slabs (5%, 18%, 40%) with CGST, SGST & IGST breakdown. No login needed.",
     keywords:
       "GST calculator India, CGST SGST calculator, IGST calculator, reverse GST calculator, GST inclusive exclusive calculator",
     type: "website",
@@ -175,6 +175,14 @@ const routes = [
       "How GST Calculator handles your data: localStorage usage, no server-side logging of financial inputs, AdSense & Analytics cookies, and how to clear stored preferences.",
     keywords:
       "GST Calculator privacy policy, gstcalculator.me privacy, localStorage GST calculator, AdSense cookies, Google Analytics",
+    type: "website",
+  },
+  {
+    path: "/gst-late-fee-calculator",
+    title: "GST Late Fee Calculator for GSTR-3B and GSTR-1 (with Interest)",
+    description:
+      "Work out the GST late fee for a late GSTR-3B or GSTR-1: ₹50/day (₹20 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.",
+    keywords: "GST late fee calculator, GSTR-3B late fee, GSTR-1 late fee, GST interest calculator",
     type: "website",
   },
   ...POSTS.map((post) => ({
@@ -226,13 +234,9 @@ const replaceTag = (html, pattern, replacement) => {
 };
 
 const applySeo = (html, route, bodyHtml) => {
-  // Add trailing slash for blog posts and /blog, but not for /privacy
-  let path = route.path;
-  if (route.path.startsWith("/blog") && route.path !== "/blog") {
-    path = `${route.path}/`;
-  } else if (route.path === "/blog") {
-    path = `${route.path}/`;
-  }
+  // Every non-root path ends with a slash: public/_redirects 301s the
+  // slashless form, so a slashless canonical would point at a redirect.
+  let path = route.path === "/" ? "/" : `${route.path.replace(/\/$/, "")}/`;
   // The 404 route is rendered from a fake internal path (see routes above) —
   // point its canonical at the homepage instead of leaking that path out.
   const canonical = route.noindex ? `${siteUrl}/` : `${siteUrl}${path === "/" ? "/" : path}`;

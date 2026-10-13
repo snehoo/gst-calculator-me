@@ -979,10 +979,7 @@ var clearJsonLdScripts = () => {
   });
 };
 var setPageSeo = ({ title, description, path, keywords, type = "website" }) => {
-  let normalizedPath = path === "/" ? "/" : path.replace(/\/$/, "");
-  if (normalizedPath.startsWith("/blog")) {
-    normalizedPath = `${normalizedPath}/`;
-  }
+  const normalizedPath = path === "/" ? "/" : `${path.replace(/\/$/, "")}/`;
   const url = `${SITE_URL}${normalizedPath}`;
   document.title = title;
   upsertNamedMeta("description", description);
@@ -5338,7 +5335,7 @@ var POSTS = [
     category: "GST Compliance",
     readTime: "10 min",
     date: "2025-05-05",
-    updated: "2026-06-25",
+    updated: "2026-10-14",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=75&auto=format&fit=crop", alt: "Urgent deadline concept with alarm clock and financial documents" },
@@ -5350,6 +5347,7 @@ var POSTS = [
         "From <strong>July 2025</strong>, any GST return more than <strong>3 years past its due date</strong> is permanently blocked from filing \u2014 the underlying tax liability still survives.",
         "Persistent non-filing escalates through blocked e-way bills, show-cause notice, suspension, and eventual <strong>GSTIN cancellation</strong>."
       ] },
+      { type: "p", text: 'Want the number for your own return? Use the <a href="/gst-late-fee-calculator/">GST late fee calculator</a>: enter the due date, filing date and turnover, and it shows the late fee split into CGST and SGST, plus interest.' },
       { type: "p", text: "The GST portal now enforces a <strong>3-year hard lock</strong>: any return older than 3 years from its original due date <strong>cannot be filed</strong>. No amnesty, no workaround, no officer discretion. The period is permanently lost \u2014 and the underlying tax liability still exists, along with interest and penalty exposure." },
       { type: "p", text: "This guide covers every late fee and penalty scenario in detail \u2014 so you know exactly what you're facing and how to calculate it." },
       { type: "warn", html: "<strong>\u{1F512} New July 2025 Rule:</strong> GST returns cannot be filed more than 3 years after the original due date. Returns for periods before July 2022 that are still unfiled must be filed <strong>immediately</strong> before they become permanently inaccessible." },
@@ -5359,13 +5357,13 @@ var POSTS = [
       { type: "h2", text: "Late Fee Structure \u2014 GSTR-1" },
       { type: "table", headers: ["Scenario", "Per Day Rate", "Maximum Cap by Turnover"], rows: [
         ["Returns with tax liability", "\u20B950/day (\u20B925 CGST + \u20B925 SGST)", "\u20B92,000 / \u20B95,000 / \u20B910,000"],
-        ["Nil returns", "\u20B920/day (\u20B910 CGST + \u20B910 SGST)", "\u20B9500 / \u20B9500 / \u20B91,000"]
+        ["Nil returns", "\u20B920/day (\u20B910 CGST + \u20B910 SGST)", "\u20B9500 for every turnover"]
       ] },
       { type: "h3", text: "Maximum Late Fee Caps by Annual Turnover" },
       { type: "table", headers: ["Annual Turnover", "Max for Returns with Liability", "Max for Nil Returns"], rows: [
         ["Up to \u20B91.5 Crore", "\u20B92,000", "\u20B9500"],
         ["\u20B91.5 Crore \u2013 \u20B95 Crore", "\u20B95,000", "\u20B9500"],
-        ["Above \u20B95 Crore", "\u20B910,000", "\u20B91,000"]
+        ["Above \u20B95 Crore", "\u20B910,000", "\u20B9500"]
       ] },
       { type: "example", title: "Practical example", lines: [
         "You're a monthly GSTR-1 filer with turnover of \u20B980 lakh",
@@ -5378,7 +5376,7 @@ var POSTS = [
       { type: "p", text: "The per-day and cap structure is <strong>identical to GSTR-1</strong>:" },
       { type: "table", headers: ["Scenario", "Per Day", "Cap (\u2264\u20B91.5 Cr)", "Cap (\u20B91.5\u20135 Cr)", "Cap (>\u20B95 Cr)"], rows: [
         ["With tax liability", "\u20B950/day", "\u20B92,000", "\u20B95,000", "\u20B910,000"],
-        ["Nil returns", "\u20B920/day", "\u20B9500", "\u20B9500", "\u20B91,000"]
+        ["Nil returns", "\u20B920/day", "\u20B9500", "\u20B9500", "\u20B9500"]
       ] },
       { type: "p", text: "<strong>In addition to late fee, GSTR-3B also attracts interest:</strong>" },
       { type: "h3", text: "Interest on Unpaid Tax" },
@@ -7202,47 +7200,301 @@ var Privacy = () => {
 };
 var Privacy_default = Privacy;
 
-// src/App.tsx
+// src/pages/LateFeeCalculator.tsx
+import { useEffect as useEffect9, useRef as useRef2, useState as useState6 } from "react";
+import { Link as Link7 } from "react-router-dom";
+import { ArrowLeft as ArrowLeft4 } from "lucide-react";
+
+// src/lib/late-fee.ts
+var PER_DAY = { nil: 20, normal: 50 };
+var CAPS = { "upto1.5": 2e3, "1.5to5": 5e3, above5: 1e4 };
+var NIL_CAP = 500;
+var INTEREST_RATE = 0.18;
+var DAY_MS = 864e5;
+var daysBetween = (due, filed) => {
+  const d = Date.parse(due + "T00:00:00Z");
+  const f = Date.parse(filed + "T00:00:00Z");
+  if (Number.isNaN(d) || Number.isNaN(f)) return 0;
+  return Math.max(0, Math.round((f - d) / DAY_MS));
+};
+var lateFee = (days, nil, slab) => {
+  const perDay = nil ? PER_DAY.nil : PER_DAY.normal;
+  const cap = nil ? NIL_CAP : CAPS[slab];
+  const total = Math.min(days * perDay, cap);
+  const capDay = Math.ceil(cap / perDay);
+  return { perDay, cap, total, cgst: total / 2, sgst: total / 2, capped: days * perDay >= cap, capDay };
+};
+var interest = (taxInCash, days) => Math.round(Math.max(0, taxInCash) * INTEREST_RATE * days / 365);
+var monthlyDueDate = (type, period) => {
+  const [y, m] = period.split("-").map(Number);
+  if (!y || !m) return "";
+  const next = new Date(Date.UTC(y, m, type === "GSTR-1" ? 11 : 20));
+  return next.toISOString().slice(0, 10);
+};
+
+// src/pages/LateFeeCalculator.tsx
 import { jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
+var TITLE = "GST Late Fee Calculator for GSTR-3B and GSTR-1 (with Interest)";
+var DESCRIPTION = "Work out the GST late fee for a late GSTR-3B or GSTR-1: \u20B950/day (\u20B920 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.";
+var FAQ = [
+  {
+    question: "What is the late fee for GSTR-3B and GSTR-1?",
+    answer: "\u20B950 per day (\u20B925 CGST + \u20B925 SGST), or \u20B920 per day (\u20B910 + \u20B910) for a nil return. The total is capped by your aggregate turnover in the previous financial year: \u20B92,000 up to \u20B91.5 crore, \u20B95,000 from \u20B91.5 crore to \u20B95 crore, and \u20B910,000 above \u20B95 crore. Nil returns are capped at \u20B9500 whatever the turnover."
+  },
+  {
+    question: "Is interest charged on top of the late fee?",
+    answer: "Yes, if tax was paid late. Interest is 18% a year on the tax paid in cash after the due date, for each day of delay. A nil return has no tax, so no interest."
+  },
+  {
+    question: "How are the days counted?",
+    answer: "From the day after the due date up to the day you file. Filing on the due date itself attracts no late fee."
+  },
+  {
+    question: "Is there a late fee on IGST?",
+    answer: "The late fee is charged under CGST and SGST (or UTGST) in equal halves; there is no separate IGST late fee on these returns."
+  }
+];
+var inr = (n) => "\u20B9" + Math.round(n).toLocaleString("en-IN");
+var today = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+var lastMonth = () => {
+  const d = /* @__PURE__ */ new Date();
+  d.setUTCDate(1);
+  d.setUTCMonth(d.getUTCMonth() - 1);
+  return d.toISOString().slice(0, 7);
+};
+var SLAB_LABEL = {
+  "upto1.5": "Up to \u20B91.5 crore",
+  "1.5to5": "\u20B91.5 crore to \u20B95 crore",
+  above5: "Above \u20B95 crore"
+};
+var LateFeeCalculator = () => {
+  useEffect9(() => {
+    clearJsonLdScripts();
+    setPageSeo({
+      title: TITLE,
+      description: DESCRIPTION,
+      path: "/gst-late-fee-calculator",
+      keywords: "GST late fee calculator, GSTR-3B late fee, GSTR-1 late fee, GST interest calculator, late fee for nil return"
+    });
+    setWebApplicationSchema({ name: "GST Late Fee Calculator", description: DESCRIPTION });
+    setFAQPageSchema(FAQ);
+  }, []);
+  const [type, setType] = useState6("GSTR-3B");
+  const [period, setPeriod] = useState6(lastMonth());
+  const [due, setDue] = useState6(monthlyDueDate("GSTR-3B", lastMonth()));
+  const [filed, setFiled] = useState6(today());
+  const [nil, setNil] = useState6(false);
+  const [slab, setSlab] = useState6("upto1.5");
+  const [tax, setTax] = useState6("");
+  useEffect9(() => {
+    setDue(monthlyDueDate(type, period));
+  }, [type, period]);
+  const days = daysBetween(due, filed);
+  const fee = lateFee(days, nil, slab);
+  const taxAmount = Number(tax.replace(/[^0-9.]/g, "")) || 0;
+  const showInterest = type === "GSTR-3B" && !nil;
+  const int = showInterest ? interest(taxAmount, days) : 0;
+  const tracked = useRef2("");
+  useEffect9(() => {
+    const key = `${type}|${nil}|${slab}|${days > 0}`;
+    if (days <= 0 || key === tracked.current) return;
+    const t = setTimeout(() => {
+      tracked.current = key;
+      const g = window.gtag;
+      g?.("event", "gst_late_fee_calc", { return_type: type, nil, turnover: slab, capped: fee.capped });
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [type, nil, slab, days, fee.capped]);
+  const field = "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm";
+  const label = "block text-xs font-semibold text-muted-foreground mb-1";
+  return /* @__PURE__ */ jsxs12("div", { className: "min-h-screen bg-background", children: [
+    /* @__PURE__ */ jsx16(SiteHeader_default, { active: "home" }),
+    /* @__PURE__ */ jsxs12("header", { className: "bg-primary-dark px-6 sm:px-8 pb-8 text-primary-foreground", children: [
+      /* @__PURE__ */ jsxs12(Link7, { to: "/", className: "inline-flex items-center gap-1.5 text-primary-mid text-xs hover:text-primary-foreground mb-3", children: [
+        /* @__PURE__ */ jsx16(ArrowLeft4, { className: "h-3.5 w-3.5" }),
+        " GST calculator"
+      ] }),
+      /* @__PURE__ */ jsx16("h1", { className: "text-3xl sm:text-4xl font-bold tracking-tight", children: "GST late fee calculator" }),
+      /* @__PURE__ */ jsx16("p", { className: "text-primary-mid text-sm mt-2 max-w-2xl", children: "For a late GSTR-3B or GSTR-1. Enter the dates and your turnover; you get the late fee split into CGST and SGST, plus 18% interest if tax was paid late." })
+    ] }),
+    /* @__PURE__ */ jsxs12("main", { className: "max-w-3xl mx-auto px-6 sm:px-8 py-8 space-y-8", children: [
+      /* @__PURE__ */ jsxs12("section", { className: "bg-card rounded-2xl border border-border p-6 sm:p-8 space-y-5", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid sm:grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxs12("div", { children: [
+            /* @__PURE__ */ jsx16("label", { className: label, htmlFor: "lf-type", children: "Return" }),
+            /* @__PURE__ */ jsxs12("select", { id: "lf-type", className: field, value: type, onChange: (e) => setType(e.target.value), children: [
+              /* @__PURE__ */ jsx16("option", { value: "GSTR-3B", children: "GSTR-3B" }),
+              /* @__PURE__ */ jsx16("option", { value: "GSTR-1", children: "GSTR-1" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs12("div", { children: [
+            /* @__PURE__ */ jsx16("label", { className: label, htmlFor: "lf-period", children: "Tax period (month)" }),
+            /* @__PURE__ */ jsx16("input", { id: "lf-period", type: "month", className: field, value: period, onChange: (e) => setPeriod(e.target.value) })
+          ] }),
+          /* @__PURE__ */ jsxs12("div", { children: [
+            /* @__PURE__ */ jsx16("label", { className: label, htmlFor: "lf-due", children: "Due date" }),
+            /* @__PURE__ */ jsx16("input", { id: "lf-due", type: "date", className: field, value: due, onChange: (e) => setDue(e.target.value) }),
+            /* @__PURE__ */ jsxs12("p", { className: "text-[11px] text-muted-foreground mt-1", children: [
+              "Filled in for monthly filers (",
+              type === "GSTR-1" ? "11th" : "20th",
+              " of next month). QRMP filers and extended deadlines: change it."
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs12("div", { children: [
+            /* @__PURE__ */ jsx16("label", { className: label, htmlFor: "lf-filed", children: "Date filed (or planned)" }),
+            /* @__PURE__ */ jsx16("input", { id: "lf-filed", type: "date", className: field, value: filed, onChange: (e) => setFiled(e.target.value) })
+          ] }),
+          /* @__PURE__ */ jsxs12("div", { children: [
+            /* @__PURE__ */ jsx16("label", { className: label, htmlFor: "lf-slab", children: "Turnover in the previous financial year" }),
+            /* @__PURE__ */ jsx16("select", { id: "lf-slab", className: field, value: slab, onChange: (e) => setSlab(e.target.value), children: Object.keys(SLAB_LABEL).map((s) => /* @__PURE__ */ jsx16("option", { value: s, children: SLAB_LABEL[s] }, s)) })
+          ] }),
+          /* @__PURE__ */ jsx16("div", { className: "flex items-end", children: /* @__PURE__ */ jsxs12("label", { className: "inline-flex items-center gap-2 text-sm font-medium cursor-pointer", children: [
+            /* @__PURE__ */ jsx16("input", { type: "checkbox", checked: nil, onChange: (e) => setNil(e.target.checked), className: "h-4 w-4" }),
+            "Nil return (no sales, no tax)"
+          ] }) }),
+          showInterest && /* @__PURE__ */ jsxs12("div", { className: "sm:col-span-2", children: [
+            /* @__PURE__ */ jsx16("label", { className: label, htmlFor: "lf-tax", children: "Tax paid in cash after the due date (optional, for interest)" }),
+            /* @__PURE__ */ jsx16("input", { id: "lf-tax", inputMode: "decimal", placeholder: "e.g. 100000", className: field, value: tax, onChange: (e) => setTax(e.target.value) })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx16("div", { className: "rounded-xl bg-primary-light/30 border border-border p-5", "aria-live": "polite", children: days <= 0 ? /* @__PURE__ */ jsx16("p", { className: "text-sm font-semibold", children: "Filed on or before the due date: no late fee." }) : /* @__PURE__ */ jsxs12("div", { className: "space-y-2 text-sm", children: [
+          /* @__PURE__ */ jsxs12("p", { className: "text-base", children: [
+            /* @__PURE__ */ jsxs12("strong", { children: [
+              days,
+              " day",
+              days === 1 ? "" : "s",
+              " late."
+            ] }),
+            " Late fee:",
+            " ",
+            /* @__PURE__ */ jsx16("strong", { className: "text-lg", children: inr(fee.total) }),
+            " ",
+            /* @__PURE__ */ jsxs12("span", { className: "text-muted-foreground", children: [
+              "(",
+              inr(fee.cgst),
+              " CGST + ",
+              inr(fee.sgst),
+              " SGST)"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs12("p", { className: "text-muted-foreground", children: [
+            inr(fee.perDay),
+            "/day, capped at ",
+            inr(fee.cap),
+            fee.capped ? " \u2014 the cap has been reached, so filing later won't add more late fee." : `. The cap is reached on day ${fee.capDay}.`
+          ] }),
+          showInterest && taxAmount > 0 && /* @__PURE__ */ jsxs12("p", { children: [
+            "Interest at 18% a year on ",
+            inr(taxAmount),
+            " for ",
+            days,
+            " days: ",
+            /* @__PURE__ */ jsx16("strong", { children: inr(int) }),
+            ".",
+            " ",
+            "Total: ",
+            /* @__PURE__ */ jsx16("strong", { children: inr(fee.total + int) }),
+            "."
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsx16("p", { className: "text-[11px] text-muted-foreground", children: "An estimate based on the CGST Act (sections 47 and 50) and the late fee caps in Notifications 19/2021 and 20/2021\u2013Central Tax. The GST portal computes the final amount when you file; check with your CA for anything unusual." })
+      ] }),
+      /* @__PURE__ */ jsxs12("section", { className: "space-y-3 text-sm leading-relaxed", children: [
+        /* @__PURE__ */ jsx16("h2", { className: "text-xl font-bold", children: "GST late fee rates and caps" }),
+        /* @__PURE__ */ jsx16("div", { className: "overflow-x-auto rounded-xl border border-border", children: /* @__PURE__ */ jsxs12("table", { className: "w-full text-sm", children: [
+          /* @__PURE__ */ jsx16("thead", { className: "bg-primary-light/40", children: /* @__PURE__ */ jsxs12("tr", { children: [
+            /* @__PURE__ */ jsx16("th", { className: "text-left px-3 py-2", children: "Return" }),
+            /* @__PURE__ */ jsx16("th", { className: "text-left px-3 py-2", children: "Per day" }),
+            /* @__PURE__ */ jsx16("th", { className: "text-left px-3 py-2", children: "Maximum" })
+          ] }) }),
+          /* @__PURE__ */ jsxs12("tbody", { children: [
+            /* @__PURE__ */ jsxs12("tr", { className: "border-t border-border", children: [
+              /* @__PURE__ */ jsx16("td", { className: "px-3 py-2", children: "Nil return (any turnover)" }),
+              /* @__PURE__ */ jsxs12("td", { className: "px-3 py-2", children: [
+                "\u20B9",
+                PER_DAY.nil,
+                " (\u20B910 CGST + \u20B910 SGST)"
+              ] }),
+              /* @__PURE__ */ jsxs12("td", { className: "px-3 py-2", children: [
+                "\u20B9",
+                NIL_CAP
+              ] })
+            ] }),
+            Object.keys(CAPS).map((s) => /* @__PURE__ */ jsxs12("tr", { className: "border-t border-border", children: [
+              /* @__PURE__ */ jsxs12("td", { className: "px-3 py-2", children: [
+                "With tax, turnover ",
+                SLAB_LABEL[s].toLowerCase()
+              ] }),
+              /* @__PURE__ */ jsxs12("td", { className: "px-3 py-2", children: [
+                "\u20B9",
+                PER_DAY.normal,
+                " (\u20B925 CGST + \u20B925 SGST)"
+              ] }),
+              /* @__PURE__ */ jsx16("td", { className: "px-3 py-2", children: inr(CAPS[s]) })
+            ] }, s))
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs12("p", { children: [
+          "The same rates and caps apply to GSTR-3B and GSTR-1. On GSTR-3B, tax paid after the due date also attracts interest at 18% a year on the cash portion. For penalties beyond late fees, see the",
+          " ",
+          /* @__PURE__ */ jsx16(Link7, { to: "/blog/gst-late-fee-penalty-guide/", className: "underline", children: "GST late fee and penalty guide" }),
+          "."
+        ] }),
+        /* @__PURE__ */ jsx16("h2", { className: "text-xl font-bold pt-4", children: "Questions" }),
+        FAQ.map((f) => /* @__PURE__ */ jsxs12("div", { children: [
+          /* @__PURE__ */ jsx16("p", { className: "font-semibold", children: f.question }),
+          /* @__PURE__ */ jsx16("p", { className: "text-muted-foreground", children: f.answer })
+        ] }, f.question))
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx16(SiteFooter_default, {})
+  ] });
+};
+var LateFeeCalculator_default = LateFeeCalculator;
+
+// src/App.tsx
+import { jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
 function TrailingSlashRedirect() {
   const location = useLocation2();
   const { pathname, search, hash } = location;
   if (pathname !== "/" && !pathname.endsWith("/") && !/\.[a-zA-Z0-9]+$/.test(pathname)) {
-    return /* @__PURE__ */ jsx16(Navigate, { to: pathname + "/" + search + hash, replace: true });
+    return /* @__PURE__ */ jsx17(Navigate, { to: pathname + "/" + search + hash, replace: true });
   }
   return null;
 }
 var queryClient = new QueryClient();
-var AppRoutes = () => /* @__PURE__ */ jsxs12(Routes, { children: [
-  /* @__PURE__ */ jsx16(Route, { path: "/", element: /* @__PURE__ */ jsx16(Index_default, {}) }),
-  /* @__PURE__ */ jsx16(Route, { path: "/blog", element: /* @__PURE__ */ jsx16(Blog_default, {}) }),
-  /* @__PURE__ */ jsx16(Route, { path: "/blog/", element: /* @__PURE__ */ jsx16(Blog_default, {}) }),
-  /* @__PURE__ */ jsx16(Route, { path: "/blog/:slug", element: /* @__PURE__ */ jsx16(BlogPost_default, {}) }),
-  /* @__PURE__ */ jsx16(Route, { path: "/blog/:slug/", element: /* @__PURE__ */ jsx16(BlogPost_default, {}) }),
-  /* @__PURE__ */ jsx16(Route, { path: "/privacy", element: /* @__PURE__ */ jsx16(Privacy_default, {}) }),
-  /* @__PURE__ */ jsx16(Route, { path: "/privacy/", element: /* @__PURE__ */ jsx16(Privacy_default, {}) }),
-  /* @__PURE__ */ jsx16(Route, { path: "*", element: /* @__PURE__ */ jsx16(NotFound_default, {}) })
+var AppRoutes = () => /* @__PURE__ */ jsxs13(Routes, { children: [
+  /* @__PURE__ */ jsx17(Route, { path: "/", element: /* @__PURE__ */ jsx17(Index_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/blog", element: /* @__PURE__ */ jsx17(Blog_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/blog/", element: /* @__PURE__ */ jsx17(Blog_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/blog/:slug", element: /* @__PURE__ */ jsx17(BlogPost_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/blog/:slug/", element: /* @__PURE__ */ jsx17(BlogPost_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/privacy", element: /* @__PURE__ */ jsx17(Privacy_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/privacy/", element: /* @__PURE__ */ jsx17(Privacy_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/gst-late-fee-calculator", element: /* @__PURE__ */ jsx17(LateFeeCalculator_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "/gst-late-fee-calculator/", element: /* @__PURE__ */ jsx17(LateFeeCalculator_default, {}) }),
+  /* @__PURE__ */ jsx17(Route, { path: "*", element: /* @__PURE__ */ jsx17(NotFound_default, {}) })
 ] });
-var App = ({ location } = {}) => /* @__PURE__ */ jsx16(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxs12(TooltipProvider, { children: [
-  /* @__PURE__ */ jsx16(Toaster2, {}),
-  /* @__PURE__ */ jsx16(Toaster, {}),
+var App = ({ location } = {}) => /* @__PURE__ */ jsx17(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxs13(TooltipProvider, { children: [
+  /* @__PURE__ */ jsx17(Toaster2, {}),
+  /* @__PURE__ */ jsx17(Toaster, {}),
   location ? (
     // SSR prerender — StaticRouter, no TrailingSlashRedirect needed
-    /* @__PURE__ */ jsx16(StaticRouter, { location, children: /* @__PURE__ */ jsx16(AppRoutes, {}) })
+    /* @__PURE__ */ jsx17(StaticRouter, { location, children: /* @__PURE__ */ jsx17(AppRoutes, {}) })
   ) : (
     // Client — BrowserRouter with trailing slash enforcer
-    /* @__PURE__ */ jsxs12(BrowserRouter, { children: [
-      /* @__PURE__ */ jsx16(TrailingSlashRedirect, {}),
-      /* @__PURE__ */ jsx16(AppRoutes, {})
+    /* @__PURE__ */ jsxs13(BrowserRouter, { children: [
+      /* @__PURE__ */ jsx17(TrailingSlashRedirect, {}),
+      /* @__PURE__ */ jsx17(AppRoutes, {})
     ] })
   )
 ] }) });
 var App_default = App;
 
 // src/entry-server.tsx
-import { jsx as jsx17 } from "react/jsx-runtime";
+import { jsx as jsx18 } from "react/jsx-runtime";
 var render = (url) => {
-  return renderToString(/* @__PURE__ */ jsx17(App_default, { location: url }));
+  return renderToString(/* @__PURE__ */ jsx18(App_default, { location: url }));
 };
 export {
   render

@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Blog from "./pages/Blog.tsx";
 import BlogPost from "./pages/BlogPost.tsx";
 import Privacy from "./pages/Privacy.tsx";
+import LateFeeCalculator from "./pages/LateFeeCalculator.tsx";
 
 // ─────────────────────────────────────────────────────────────────
 // TrailingSlashRedirect
@@ -42,6 +43,8 @@ const AppRoutes = () => (
     <Route path="/blog/:slug/" element={<BlogPost />} />
     <Route path="/privacy" element={<Privacy />} />
     <Route path="/privacy/" element={<Privacy />} />
+    <Route path="/gst-late-fee-calculator" element={<LateFeeCalculator />} />
+    <Route path="/gst-late-fee-calculator/" element={<LateFeeCalculator />} />
     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
     <Route path="*" element={<NotFound />} />
   </Routes>

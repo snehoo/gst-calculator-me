@@ -3977,7 +3977,7 @@ export const POSTS: Post[] = [
     category: "GST Compliance",
     readTime: "10 min",
     date: "2025-05-05",
-    updated: "2026-06-25",
+    updated: "2026-10-14",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=75&auto=format&fit=crop", alt: "Urgent deadline concept with alarm clock and financial documents" },
@@ -3989,6 +3989,7 @@ export const POSTS: Post[] = [
         "From <strong>July 2025</strong>, any GST return more than <strong>3 years past its due date</strong> is permanently blocked from filing — the underlying tax liability still survives.",
         "Persistent non-filing escalates through blocked e-way bills, show-cause notice, suspension, and eventual <strong>GSTIN cancellation</strong>.",
       ]},
+      { type: "p", text: "Want the number for your own return? Use the <a href=\"/gst-late-fee-calculator/\">GST late fee calculator</a>: enter the due date, filing date and turnover, and it shows the late fee split into CGST and SGST, plus interest." },
       { type: "p", text: "The GST portal now enforces a <strong>3-year hard lock</strong>: any return older than 3 years from its original due date <strong>cannot be filed</strong>. No amnesty, no workaround, no officer discretion. The period is permanently lost — and the underlying tax liability still exists, along with interest and penalty exposure." },
       { type: "p", text: "This guide covers every late fee and penalty scenario in detail — so you know exactly what you're facing and how to calculate it." },
       { type: "warn", html: "<strong>🔒 New July 2025 Rule:</strong> GST returns cannot be filed more than 3 years after the original due date. Returns for periods before July 2022 that are still unfiled must be filed <strong>immediately</strong> before they become permanently inaccessible." },
@@ -3998,13 +3999,13 @@ export const POSTS: Post[] = [
       { type: "h2", text: "Late Fee Structure — GSTR-1" },
       { type: "table", headers: ["Scenario", "Per Day Rate", "Maximum Cap by Turnover"], rows: [
         ["Returns with tax liability", "₹50/day (₹25 CGST + ₹25 SGST)", "₹2,000 / ₹5,000 / ₹10,000"],
-        ["Nil returns", "₹20/day (₹10 CGST + ₹10 SGST)", "₹500 / ₹500 / ₹1,000"],
+        ["Nil returns", "₹20/day (₹10 CGST + ₹10 SGST)", "₹500 for every turnover"],
       ]},
       { type: "h3", text: "Maximum Late Fee Caps by Annual Turnover" },
       { type: "table", headers: ["Annual Turnover", "Max for Returns with Liability", "Max for Nil Returns"], rows: [
         ["Up to ₹1.5 Crore", "₹2,000", "₹500"],
         ["₹1.5 Crore – ₹5 Crore", "₹5,000", "₹500"],
-        ["Above ₹5 Crore", "₹10,000", "₹1,000"],
+        ["Above ₹5 Crore", "₹10,000", "₹500"],
       ]},
       { type: "example", title: "Practical example", lines: [
         "You're a monthly GSTR-1 filer with turnover of ₹80 lakh",
@@ -4017,7 +4018,7 @@ export const POSTS: Post[] = [
       { type: "p", text: "The per-day and cap structure is <strong>identical to GSTR-1</strong>:" },
       { type: "table", headers: ["Scenario", "Per Day", "Cap (≤₹1.5 Cr)", "Cap (₹1.5–5 Cr)", "Cap (>₹5 Cr)"], rows: [
         ["With tax liability", "₹50/day", "₹2,000", "₹5,000", "₹10,000"],
-        ["Nil returns", "₹20/day", "₹500", "₹500", "₹1,000"],
+        ["Nil returns", "₹20/day", "₹500", "₹500", "₹500"],
       ]},
       { type: "p", text: "<strong>In addition to late fee, GSTR-3B also attracts interest:</strong>" },
       { type: "h3", text: "Interest on Unpaid Tax" },
