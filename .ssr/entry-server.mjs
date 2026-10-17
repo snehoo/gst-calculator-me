@@ -7234,6 +7234,11 @@ var monthlyDueDate = (type, period) => {
 
 // src/pages/LateFeeCalculator.tsx
 import { jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
+var SOURCES = {
+  n19: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-19-central-tax-english-2021.pdf",
+  n20: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-20-central-tax-english-2021.pdf",
+  act: "https://cbic-gst.gov.in/gst-acts.html"
+};
 var TITLE = "GST Late Fee Calculator for GSTR-3B and GSTR-1 (with Interest)";
 var DESCRIPTION = "Work out the GST late fee for a late GSTR-3B or GSTR-1: \u20B950/day (\u20B920 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.";
 var FAQ = [
@@ -7397,7 +7402,20 @@ var LateFeeCalculator = () => {
             "."
           ] })
         ] }) }),
-        /* @__PURE__ */ jsx16("p", { className: "text-[11px] text-muted-foreground", children: "An estimate based on the CGST Act (sections 47 and 50) and the late fee caps in Notifications 19/2021 and 20/2021\u2013Central Tax. The GST portal computes the final amount when you file; check with your CA for anything unusual." })
+        /* @__PURE__ */ jsxs12("p", { className: "text-[11px] text-muted-foreground", children: [
+          "An estimate based on the",
+          " ",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.act, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "CGST Act" }),
+          " (sections 47 and 50) and the late fee caps in",
+          " ",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.n19, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "Notification 19/2021" }),
+          " ",
+          "(GSTR-3B) and",
+          " ",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.n20, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "Notification 20/2021" }),
+          " ",
+          "(GSTR-1), Central Tax. Those notifications state the caps per tax (\u20B9250, \u20B91,000 and \u20B92,500 of CGST, with the same again under SGST); the table below shows the combined totals. The GST portal computes the final amount when you file; check with your CA for anything unusual."
+        ] })
       ] }),
       /* @__PURE__ */ jsxs12("section", { className: "space-y-3 text-sm leading-relaxed", children: [
         /* @__PURE__ */ jsx16("h2", { className: "text-xl font-bold", children: "GST late fee rates and caps" }),
@@ -7435,7 +7453,14 @@ var LateFeeCalculator = () => {
           ] })
         ] }) }),
         /* @__PURE__ */ jsxs12("p", { children: [
-          "The same rates and caps apply to GSTR-3B and GSTR-1. On GSTR-3B, tax paid after the due date also attracts interest at 18% a year on the cash portion. For penalties beyond late fees, see the",
+          "The same rates and caps apply to GSTR-3B and GSTR-1 (",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.n19, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "Notification 19/2021" }),
+          ",",
+          " ",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.n20, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "Notification 20/2021" }),
+          "). Above \u20B95 crore turnover the notifications set no lower cap, so the CGST Act's own maximum applies. On GSTR-3B, tax paid after the due date also attracts interest at 18% a year on the cash portion (",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.act, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "CGST Act, section 50" }),
+          "). For penalties beyond late fees, see the",
           " ",
           /* @__PURE__ */ jsx16(Link7, { to: "/blog/gst-late-fee-penalty-guide/", className: "underline", children: "GST late fee and penalty guide" }),
           "."

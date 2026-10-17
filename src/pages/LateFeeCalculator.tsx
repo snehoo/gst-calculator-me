@@ -16,6 +16,13 @@ import {
   type TurnoverSlab,
 } from "@/lib/late-fee";
 
+// Official sources (verified 2026-10-17: both PDFs load from gstcouncil.gov.in; the cbic.gov.in copy returns 500).
+const SOURCES = {
+  n19: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-19-central-tax-english-2021.pdf",
+  n20: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-20-central-tax-english-2021.pdf",
+  act: "https://cbic-gst.gov.in/gst-acts.html",
+};
+
 const TITLE = "GST Late Fee Calculator for GSTR-3B and GSTR-1 (with Interest)";
 const DESCRIPTION =
   "Work out the GST late fee for a late GSTR-3B or GSTR-1: ₹50/day (₹20 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.";
@@ -192,9 +199,15 @@ const LateFeeCalculator = () => {
             )}
           </div>
           <p className="text-[11px] text-muted-foreground">
-            An estimate based on the CGST Act (sections 47 and 50) and the late fee caps in Notifications 19/2021 and
-            20/2021–Central Tax. The GST portal computes the final amount when you file; check with your CA for anything
-            unusual.
+            An estimate based on the{" "}
+            <a href={SOURCES.act} target="_blank" rel="noopener noreferrer" className="underline">CGST Act</a> (sections 47
+            and 50) and the late fee caps in{" "}
+            <a href={SOURCES.n19} target="_blank" rel="noopener noreferrer" className="underline">Notification 19/2021</a>{" "}
+            (GSTR-3B) and{" "}
+            <a href={SOURCES.n20} target="_blank" rel="noopener noreferrer" className="underline">Notification 20/2021</a>{" "}
+            (GSTR-1), Central Tax. Those notifications state the caps per tax (₹250, ₹1,000 and ₹2,500 of CGST, with the
+            same again under SGST); the table below shows the combined totals. The GST portal computes the final amount
+            when you file; check with your CA for anything unusual.
           </p>
         </section>
 
@@ -226,8 +239,12 @@ const LateFeeCalculator = () => {
             </table>
           </div>
           <p>
-            The same rates and caps apply to GSTR-3B and GSTR-1. On GSTR-3B, tax paid after the due date also attracts
-            interest at 18% a year on the cash portion. For penalties beyond late fees, see the{" "}
+            The same rates and caps apply to GSTR-3B and GSTR-1 (
+            <a href={SOURCES.n19} target="_blank" rel="noopener noreferrer" className="underline">Notification 19/2021</a>,{" "}
+            <a href={SOURCES.n20} target="_blank" rel="noopener noreferrer" className="underline">Notification 20/2021</a>).
+            Above ₹5 crore turnover the notifications set no lower cap, so the CGST Act's own maximum applies. On GSTR-3B,
+            tax paid after the due date also attracts interest at 18% a year on the cash portion (
+            <a href={SOURCES.act} target="_blank" rel="noopener noreferrer" className="underline">CGST Act, section 50</a>). For penalties beyond late fees, see the{" "}
             <Link to="/blog/gst-late-fee-penalty-guide/" className="underline">GST late fee and penalty guide</Link>.
           </p>
 
