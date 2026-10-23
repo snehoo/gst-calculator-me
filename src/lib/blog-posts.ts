@@ -133,7 +133,7 @@ export const POSTS: Post[] = [
     category: "Basics",
     readTime: "5 min",
     date: "2026-04-20",
-    updated: "2026-08-18",
+    updated: "2026-10-23",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "GST — Goods and Services Tax — is India's unified indirect tax on almost every product and service bought or sold in the country. It replaced a confusing web of 17 different central and state taxes when it launched on 1 July 2017." },
@@ -147,6 +147,7 @@ export const POSTS: Post[] = [
       ]},
       { type: "p", text: "India's tax system before GST was, frankly, a mess. Businesses had to navigate VAT, service tax, excise duty, octroi, and several other levies — each with its own filing system, rate structure, and compliance requirement. GST's \"One Nation, One Tax\" framework was one of the most significant economic reforms in independent India's history." },
       { type: "stat", num: "1 July 2017", label: "Date GST replaced VAT, service tax, excise duty, and 14 other indirect taxes across India" },
+      { type: "p", text: "How big is it today? GSTN reports <a href=\"https://tutorial.gst.gov.in/offlineutilities/gst_statistics/9YearsReport.pdf\" target=\"_blank\" rel=\"noopener\">1,67,14,646 active GST taxpayers as on 30 June 2026</a>, and gross GST revenue of Rs 2,03,521 crore in September 2026, 14.7% more than September 2025 (<a href=\"https://tutorial.gst.gov.in/downloads/news/final_gst_revenue_report_for_publishing_monthly_sep_2026.pdf\" target=\"_blank\" rel=\"noopener\">GSTN monthly report</a>, provisional figures)." },
       { type: "h2", text: "What Does GST Stand For — and What Does It Tax?" },
       { type: "p", text: "GST stands for <strong>Goods and Services Tax</strong>. It is a <strong>destination-based, multi-stage indirect tax</strong> — collected at every stage of the supply chain where value is added, and ultimately borne by the final consumer." },
       { type: "p", text: "GST applies to virtually all goods and services in India. However, certain items are exempt or zero-rated. Specifically, fresh fruits and vegetables, milk, eggs, and educational services attract zero GST. Electricity, petrol, diesel, alcohol, and real estate operate under separate state-level tax regimes." },
@@ -202,7 +203,7 @@ export const POSTS: Post[] = [
     category: "Tax Rates",
     readTime: "6 min",
     date: "2026-04-20",
-    updated: "2026-08-18",
+    updated: "2026-10-23",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "Since GST 2.0 took effect on September 22, 2025, India's GST framework places every product and service into one of four rate categories instead of the old six. Knowing which slab applies to your transaction is the single most important step in any GST calculation." },
@@ -217,6 +218,7 @@ export const POSTS: Post[] = [
       { type: "p", text: "This guide breaks down every GST 2.0 rate slab with real-world product examples, so you can identify the correct rate quickly. It also explains how HSN and SAC codes connect products and services to their applicable rates." },
       { type: "h2", text: "What Are the GST Rate Slabs in India Under GST 2.0?" },
       { type: "p", text: "The GST Council's 56th meeting replaced India's old 5%/12%/18%/28% structure with a simplified system effective September 22, 2025: 0%, 5%, 18%, and a new 40% slab for luxury and sin goods. A small number of goods still attract special rates of 0.25% (rough diamonds) and 1.5% (cut and polished diamonds). The majority of everyday goods and most services now fall under the 5% or 18% slabs." },
+      { type: "p", text: "In the GST Council's own words, the new system is &ldquo;a 2 rate structure with a Standard Rate of 18% and a Merit Rate of 5%; a special de-merit rate of 40% for a select few goods and services&rdquo;, effective 22 September 2025 (<a href=\"https://gstcouncil.gov.in/sites/default/files/2025-09/press_release_press_information_bureau_0.pdf\" target=\"_blank\" rel=\"noopener\">GST Council press release</a>)." },
       { type: "slabGrid", items: [
         { r: "0%", l: "Essential goods — nil rated" },
         { r: "5%", l: "Merit goods — necessities (absorbed most of old 12%)" },
@@ -3977,7 +3979,7 @@ export const POSTS: Post[] = [
     category: "GST Compliance",
     readTime: "10 min",
     date: "2025-05-05",
-    updated: "2026-10-14",
+    updated: "2026-10-23",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=75&auto=format&fit=crop", alt: "Urgent deadline concept with alarm clock and financial documents" },
@@ -3990,6 +3992,7 @@ export const POSTS: Post[] = [
         "Persistent non-filing escalates through blocked e-way bills, show-cause notice, suspension, and eventual <strong>GSTIN cancellation</strong>.",
       ]},
       { type: "p", text: "Want the number for your own return? Use the <a href=\"/gst-late-fee-calculator/\">GST late fee calculator</a>: enter the due date, filing date and turnover, and it shows the late fee split into CGST and SGST, plus interest." },
+      { type: "p", text: "Where the caps come from: for GSTR-3B, <a href=\"https://cbic-gst.gov.in/pdf/central-tax/notfctn-19-central-tax-english-2021.pdf\" target=\"_blank\" rel=\"noopener\">CBIC Notification 19/2021-Central Tax</a> (1 June 2021) caps the CGST late fee at Rs 250 for a nil return and Rs 1,000 for turnover up to Rs 1.5 crore. The same amount applies again as SGST, so the totals are Rs 500 and Rs 2,000 per return." },
       { type: "p", text: "The GST portal now enforces a <strong>3-year hard lock</strong>: any return older than 3 years from its original due date <strong>cannot be filed</strong>. No amnesty, no workaround, no officer discretion. The period is permanently lost — and the underlying tax liability still exists, along with interest and penalty exposure." },
       { type: "p", text: "This guide covers every late fee and penalty scenario in detail — so you know exactly what you're facing and how to calculate it." },
       { type: "warn", html: "<strong>🔒 New July 2025 Rule:</strong> GST returns cannot be filed more than 3 years after the original due date. Returns for periods before July 2022 that are still unfiled must be filed <strong>immediately</strong> before they become permanently inaccessible." },
