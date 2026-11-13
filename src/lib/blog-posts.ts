@@ -133,7 +133,7 @@ export const POSTS: Post[] = [
     category: "Basics",
     readTime: "5 min",
     date: "2026-04-20",
-    updated: "2026-10-23",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "GST — Goods and Services Tax — is India's unified indirect tax on almost every product and service bought or sold in the country. It replaced a confusing web of 17 different central and state taxes when it launched on 1 July 2017." },
@@ -203,7 +203,7 @@ export const POSTS: Post[] = [
     category: "Tax Rates",
     readTime: "6 min",
     date: "2026-04-20",
-    updated: "2026-10-23",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "Since GST 2.0 took effect on September 22, 2025, India's GST framework places every product and service into one of four rate categories instead of the old six. Knowing which slab applies to your transaction is the single most important step in any GST calculation." },
@@ -3979,7 +3979,7 @@ export const POSTS: Post[] = [
     category: "GST Compliance",
     readTime: "10 min",
     date: "2025-05-05",
-    updated: "2026-10-23",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=75&auto=format&fit=crop", alt: "Urgent deadline concept with alarm clock and financial documents" },

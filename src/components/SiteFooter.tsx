@@ -6,10 +6,10 @@ const SiteFooter = () => (
       <Link to="/" className="hover:text-foreground transition-colors">
         Calculator
       </Link>
-      <Link to="/blog" className="hover:text-foreground transition-colors">
+      <Link to="/blog/" className="hover:text-foreground transition-colors">
         Blog
       </Link>
-      <Link to="/privacy" className="hover:text-foreground transition-colors">
+      <Link to="/privacy/" className="hover:text-foreground transition-colors">
         Privacy Policy
       </Link>
     </div>

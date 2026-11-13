@@ -59,7 +59,7 @@ const NotFound = () => {
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/blog">
+              <Link to="/blog/">
                 <BookOpen className="h-4 w-4" />
                 Browse the blog
               </Link>

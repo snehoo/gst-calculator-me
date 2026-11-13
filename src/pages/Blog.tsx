@@ -62,7 +62,7 @@ const Blog = () => {
         {POSTS.map((p) => (
           <Link
             key={p.slug}
-            to={`/blog/${p.slug}`}
+            to={`/blog/${p.slug}/`}
             className="block bg-card rounded-2xl border border-border p-5 hover:border-primary-mid hover:shadow-md transition-all group"
           >
             <div className="flex items-center gap-2 text-[0.7rem] text-muted-foreground mb-2">

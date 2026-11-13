@@ -5,6 +5,7 @@ import { ContextualTip } from "@/components/ContextualTip";
 import { getRandomTip } from "@/lib/gst-tips";
 import { useSessionStats } from "@/hooks/useSessionStats";
 import { buildContext, pickTip } from "@/lib/tips-engine";
+import { HOME_FAQ } from "@/lib/home-faq";
 import { setPageSeo, setWebApplicationSchema, setFAQPageSchema, clearJsonLdScripts } from "@/lib/seo";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
@@ -42,38 +43,7 @@ const Index = () => {
         "Free GST calculator for India 2026-27. Instantly compute GST for all slabs (5%, 18%, 40% under GST 2.0) with CGST, SGST & IGST breakdown.",
     });
 
-    setFAQPageSchema([
-      {
-        question: "How do I calculate 18% GST on a price?",
-        answer:
-          "Multiply the base amount by 0.18 to get the GST amount, then add it to the base. For example, ₹1,000 at 18% GST: GST = ₹180, invoice total = ₹1,180. For intra-state, split as CGST ₹90 + SGST ₹90; for inter-state, apply IGST ₹180.",
-      },
-      {
-        question: "How do I remove GST from a GST-inclusive price (reverse GST)?",
-        answer:
-          "Use: GST Amount = Total Price − [Total Price × 100 ÷ (100 + GST Rate)]. For ₹1,180 at 18% GST: GST Amount = 1,180 − [1,180 × 100 ÷ 118] = ₹180. Never simply subtract the percentage — that gives the wrong answer.",
-      },
-      {
-        question: "What are the current GST slabs in India after GST 2.0?",
-        answer:
-          "After GST 2.0 (effective September 22, 2025), India has 4 active GST slabs: 0% (nil — essentials, fresh food, books, insurance), 5% (packaged food, medicines, textiles), 18% (electronics, most services, vehicles, cement), and 40% (luxury and sin goods — tobacco, aerated drinks, high-end SUVs). The old 12% and 28% slabs have been abolished.",
-      },
-      {
-        question: "When does CGST + SGST apply instead of IGST?",
-        answer:
-          "CGST + SGST applies to intra-state transactions — buyer and seller in the same state. The total GST rate splits equally: 18% GST becomes 9% CGST + 9% SGST. IGST at the full rate applies to inter-state transactions — buyer and seller in different states.",
-      },
-      {
-        question: "What is the GST registration threshold for businesses?",
-        answer:
-          "Goods suppliers with annual turnover above ₹40 lakh must register for GST. Service providers must register above ₹20 lakh. Businesses in special category states (North-East) have a lower threshold of ₹20 lakh for goods and ₹10 lakh for services.",
-      },
-      {
-        question: "How do I calculate GST for a ₹1,000 product at 5%?",
-        answer:
-          "GST Amount = (₹1,000 × 5) ÷ 100 = ₹50. Invoice total = ₹1,050. For intra-state: CGST = ₹25 + SGST = ₹25. For inter-state: IGST = ₹50.",
-      },
-    ]);
+    setFAQPageSchema(HOME_FAQ.map(({ question, answer }) => ({ question, answer })));
   }, []);
 
   // Page-level tips depend only on date + visit count.
@@ -213,47 +183,33 @@ const Index = () => {
           <p>
             For intra-state sales the GST splits equally: 18% becomes 9% CGST + 9% SGST (₹90 + ₹90 in the example
             above). For inter-state sales the full 18% applies as IGST (₹180). Read the full guide on{" "}
-            <a href="/blog/how-to-calculate-gst" className="text-primary-dark underline">how to calculate GST in India</a>{" "}
+            <a href="/blog/how-to-calculate-gst/" className="text-primary-dark underline">how to calculate GST in India</a>{" "}
             or the explainer on{" "}
-            <a href="/blog/cgst-sgst-igst-difference" className="text-primary-dark underline">CGST vs SGST vs IGST</a>.
+            <a href="/blog/cgst-sgst-igst-difference/" className="text-primary-dark underline">CGST vs SGST vs IGST</a>.
           </p>
         </div>
 
         <div>
           <h2 className="text-xl font-bold text-foreground mb-3">GST Calculator — Frequently Asked Questions</h2>
           <div className="flex flex-col gap-4">
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">Is this GST calculator free?</h3>
-              <p>Yes — completely free with no login, no account, and no usage limits. It runs entirely in your browser; amounts you enter are never sent to a server.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">How do I calculate 18% GST on an amount?</h3>
-              <p>Multiply the amount by 0.18. On ₹1,00,000 that is ₹18,000 GST, making the total ₹1,18,000 — shown instantly above with the CGST/SGST or IGST split.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">How do I remove GST from a price (reverse GST)?</h3>
-              <p>Switch the calculator to inclusive mode. It applies the formula Base = Total × 100 ÷ (100 + rate) — e.g. ₹1,18,000 inclusive of 18% GST has a base of ₹1,00,000 and ₹18,000 tax.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">Which GST rate should I use?</h3>
-              <p>After GST 2.0 (September 22, 2025, per the 56th GST Council): essentials are 0–5%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the <a href="/blog/gst-rate-slabs-india" className="text-primary-dark underline">GST rate slabs guide</a>.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">When do CGST/SGST apply instead of IGST?</h3>
-              <p>If the supplier and place of supply are in the same state, GST splits into equal CGST and SGST halves. If they are in different states, the full rate applies as IGST.</p>
-            </div>
+            {HOME_FAQ.map((f) => (
+              <div key={f.question}>
+                <h3 className="font-semibold text-foreground mb-1">{f.question}</h3>
+                {f.html ? <p dangerouslySetInnerHTML={{ __html: f.html }} /> : <p>{f.answer}</p>}
+              </div>
+            ))}
           </div>
         </div>
 
         <div>
           <h2 className="text-xl font-bold text-foreground mb-3">Popular GST Guides</h2>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li><a href="/blog/input-tax-credit-gst" className="text-primary-dark underline">Input Tax Credit (ITC) in GST — meaning, formula and example</a></li>
-            <li><a href="/blog/how-to-file-gstr-1" className="text-primary-dark underline">How to file GSTR-1 online, step by step</a></li>
-            <li><a href="/blog/new-gst-rate-slab-list-2025-26" className="text-primary-dark underline">New GST rate slab list 2025–26 after GST 2.0</a></li>
-            <li><a href="/blog/gst-on-restaurants-food-india-2025" className="text-primary-dark underline">GST on restaurants and food — dine-in, Zomato &amp; Swiggy</a></li>
-            <li><a href="/blog/gst-composition-scheme" className="text-primary-dark underline">GST Composition Scheme — who qualifies and how it works</a></li>
-            <li><a href="/blog/zoho-gst-calculator-alternative" className="text-primary-dark underline">Zoho GST calculator vs GSTCalculator.me</a></li>
+            <li><a href="/blog/input-tax-credit-gst/" className="text-primary-dark underline">Input Tax Credit (ITC) in GST — meaning, formula and example</a></li>
+            <li><a href="/blog/how-to-file-gstr-1/" className="text-primary-dark underline">How to file GSTR-1 online, step by step</a></li>
+            <li><a href="/blog/new-gst-rate-slab-list-2025-26/" className="text-primary-dark underline">New GST rate slab list 2025–26 after GST 2.0</a></li>
+            <li><a href="/blog/gst-on-restaurants-food-india-2025/" className="text-primary-dark underline">GST on restaurants and food — dine-in, Zomato &amp; Swiggy</a></li>
+            <li><a href="/blog/gst-composition-scheme/" className="text-primary-dark underline">GST Composition Scheme — who qualifies and how it works</a></li>
+            <li><a href="/blog/zoho-gst-calculator-alternative/" className="text-primary-dark underline">Zoho GST calculator vs GSTCalculator.me</a></li>
           </ul>
         </div>
 

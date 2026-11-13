@@ -25,6 +25,16 @@ const loadPosts = async () => {
 
 const POSTS = await loadPosts();
 
+const loadHomeFaq = async () => {
+  const source = await fs.readFile(path.resolve("src/lib/home-faq.ts"), "utf8");
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.ES2020, target: ts.ScriptTarget.ES2020 },
+  });
+  const { HOME_FAQ } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString("base64")}`);
+  return HOME_FAQ;
+};
+const HOME_FAQ = await loadHomeFaq();
+
 // ---------- 2. Bundle the SSR entry with esbuild ----------
 const ssrOutFile = path.resolve(".ssr/entry-server.mjs");
 await fs.mkdir(path.dirname(ssrOutFile), { recursive: true });
@@ -284,48 +294,11 @@ const applySeo = (html, route, bodyHtml) => {
     schemas.push({
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "What is the GST registration threshold for goods?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Businesses with an annual turnover of ₹40 lakh or more need to register for GST. Goods suppliers above this threshold must register.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "What is the GST registration threshold for services?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Service providers with an annual turnover of ₹20 lakh or more need to register for GST. This is lower than the goods threshold.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "What is the GST Composition Scheme?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Businesses with turnover up to ₹1.5 Cr (goods) or ₹75 lakh (services) can opt for the simplified Composition Scheme and pay flat GST rates with quarterly filing instead of monthly, reducing compliance burden.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Who needs to file e-invoicing?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "E-invoicing is mandatory for businesses with turnover above ₹5 Cr from FY 2023-24. It integrates directly with the GST portal for better tracking and reduced fraud.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "What are the main GST slabs in India?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "India has 5 main GST slabs: 0% (nil rate on essentials), 5% (essential goods/services), 12% (standard rate I), 18% (standard rate II - most common), and 28% (luxury goods). Different products fall into different slabs based on their nature.",
-          },
-        },
-      ],
+      mainEntity: HOME_FAQ.map((f) => ({
+        "@type": "Question",
+        name: f.question,
+        acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
     });
   }
 
@@ -357,7 +330,7 @@ const applySeo = (html, route, bodyHtml) => {
       headline: route.post.title,
       description: route.post.description,
       datePublished: route.post.date,
-      dateModified: route.post.date,
+      dateModified: route.post.updated ?? route.post.date,
       inLanguage: "en-IN",
       url: canonical,
       mainEntityOfPage: canonical,
@@ -425,3 +398,22 @@ for (const route of routes) {
 }
 
 console.log(`[prerender] done — ${routes.length} routes`);
+
+// Keep sitemap <lastmod> in step with each post's real `updated` date (the same
+// date its Article JSON-LD declares as dateModified). Never moves a date back.
+{
+  const sitemapPath = path.join(distDir, "sitemap.xml");
+  let xml = await fs.readFile(sitemapPath, "utf8");
+  let bumped = 0;
+  for (const post of POSTS) {
+    const modified = post.updated ?? post.date;
+    const loc = `${siteUrl}/blog/${post.slug}/`;
+    const re = new RegExp(`(<loc>${loc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc>\\s*<lastmod>)(\\d{4}-\\d\\d-\\d\\d)(</lastmod>)`);
+    xml = xml.replace(re, (m, a, current, b) => {
+      if (modified > current) { bumped++; return `${a}${modified}${b}`; }
+      return m;
+    });
+  }
+  await fs.writeFile(sitemapPath, xml, "utf8");
+  console.log(`[prerender] sitemap lastmod bumped for ${bumped} posts`);
+}

@@ -23,11 +23,11 @@ const SiteHeader = ({ active = "home", showUpdatedLabel = false, hideWordmark = 
       )}
 
       <div className="flex items-center gap-5 text-xs">
-        <Link to="/blog" className={navLinkClass("blog")}>
+        <Link to="/blog/" className={navLinkClass("blog")}>
           Blog
         </Link>
 
-        <Link to="/privacy" className={navLinkClass("privacy")}>
+        <Link to="/privacy/" className={navLinkClass("privacy")}>
           Privacy
         </Link>
 
