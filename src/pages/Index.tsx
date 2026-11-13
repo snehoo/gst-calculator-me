@@ -185,7 +185,9 @@ const Index = () => {
             above). For inter-state sales the full 18% applies as IGST (₹180). Read the full guide on{" "}
             <a href="/blog/how-to-calculate-gst/" className="text-primary-dark underline">how to calculate GST in India</a>{" "}
             or the explainer on{" "}
-            <a href="/blog/cgst-sgst-igst-difference/" className="text-primary-dark underline">CGST vs SGST vs IGST</a>.
+            <a href="/blog/cgst-sgst-igst-difference/" className="text-primary-dark underline">CGST vs SGST vs IGST</a>.{" "}
+            Filing a return late? The{" "}
+            <a href="/gst-late-fee-calculator/" className="text-primary-dark underline">late fee calculator for GSTR-3B and GSTR-1</a> works out the fee and interest.
           </p>
         </div>
 

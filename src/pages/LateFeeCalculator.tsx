@@ -15,40 +15,31 @@ import {
   type ReturnType,
   type TurnoverSlab,
 } from "@/lib/late-fee";
+import { LATE_FEE_FAQ } from "@/lib/late-fee-faq";
 
 // Official sources (verified 2026-10-17: both PDFs load from gstcouncil.gov.in; the cbic.gov.in copy returns 500).
 const SOURCES = {
   n19: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-19-central-tax-english-2021.pdf",
   n20: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-20-central-tax-english-2021.pdf",
   act: "https://cbic-gst.gov.in/gst-acts.html",
+  // GST portal manual for GSTR-3B (checked 2026-11-13): late fee is system computed in tile 5.1 and paid from the cash ledger only.
+  manual3b: "https://tutorial.gst.gov.in/userguide/returns/Create_and_Submit_GSTR3B.htm",
+  // CGST Act s.128, power to waive penalty or fee (checked 2026-11-13).
+  s128: "https://taxinformation.cbic.gov.in/content/html/tax_repository/gst/acts/2017_CGST_act/active/chapter19/section128_v1.00.html",
 };
 
-const TITLE = "GST Late Fee Calculator for GSTR-3B and GSTR-1 (with Interest)";
+const TITLE = "GST Late Fee Calculator for GSTR-3B & GSTR-1, with Interest";
 const DESCRIPTION =
   "Work out the GST late fee for a late GSTR-3B or GSTR-1: ₹50/day (₹20 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.";
 
-const FAQ = [
-  {
-    question: "What is the late fee for GSTR-3B and GSTR-1?",
-    answer:
-      "₹50 per day (₹25 CGST + ₹25 SGST), or ₹20 per day (₹10 + ₹10) for a nil return. The total is capped by your aggregate turnover in the previous financial year: ₹2,000 up to ₹1.5 crore, ₹5,000 from ₹1.5 crore to ₹5 crore, and ₹10,000 above ₹5 crore. Nil returns are capped at ₹500 whatever the turnover.",
-  },
-  {
-    question: "Is interest charged on top of the late fee?",
-    answer:
-      "Yes, if tax was paid late. Interest is 18% a year on the tax paid in cash after the due date, for each day of delay. A nil return has no tax, so no interest.",
-  },
-  {
-    question: "How are the days counted?",
-    answer:
-      "From the day after the due date up to the day you file. Filing on the due date itself attracts no late fee.",
-  },
-  {
-    question: "Is there a late fee on IGST?",
-    answer:
-      "The late fee is charged under CGST and SGST (or UTGST) in equal halves; there is no separate IGST late fee on these returns.",
-  },
-];
+const FAQ = LATE_FEE_FAQ;
+
+// Worked examples: every figure is computed from src/lib/late-fee.ts, the same code the calculator runs.
+const EX_NIL = lateFee(12, true, "upto1.5");
+const EX_3B = lateFee(30, false, "upto1.5");
+const EX_3B_TAX = 40000;
+const EX_3B_INT = interest(EX_3B_TAX, 30);
+const EX_G1 = lateFee(150, false, "1.5to5");
 
 const inr = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
 const today = () => new Date().toISOString().slice(0, 10);
@@ -248,6 +239,33 @@ const LateFeeCalculator = () => {
             <Link to="/blog/gst-late-fee-penalty-guide/" className="underline">GST late fee and penalty guide</Link>.
           </p>
 
+          <h2 className="text-xl font-bold pt-4">Worked examples</h2>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>
+              <strong>Nil GSTR-3B filed 12 days late:</strong> 12 × ₹{PER_DAY.nil} = <strong>{inr(EX_NIL.total)}</strong>{" "}
+              ({inr(EX_NIL.cgst)} CGST + {inr(EX_NIL.sgst)} SGST). No interest, because a nil return has no tax.
+            </li>
+            <li>
+              <strong>GSTR-3B, turnover ₹80 lakh, filed 30 days late, {inr(EX_3B_TAX)} of tax paid late:</strong> late fee
+              30 × ₹{PER_DAY.normal} = {inr(EX_3B.total)} (under the {inr(EX_3B.cap)} cap), plus interest of {inr(EX_3B_TAX)} ×
+              18% × 30/365 = {inr(EX_3B_INT)}. Total <strong>{inr(EX_3B.total + EX_3B_INT)}</strong>.
+            </li>
+            <li>
+              <strong>GSTR-1, turnover ₹3 crore, filed 150 days late:</strong> 150 × ₹{PER_DAY.normal} = {inr(150 * PER_DAY.normal)},
+              capped at <strong>{inr(EX_G1.total)}</strong>. GSTR-1 carries no interest, because no tax is paid with it.
+            </li>
+          </ul>
+
+          <h2 className="text-xl font-bold pt-4">How to pay the late fee on GSTR-3B</h2>
+          <p>
+            You don't work it out on the portal yourself. Per the{" "}
+            <a href={SOURCES.manual3b} target="_blank" rel="noopener noreferrer" className="underline">GST portal's GSTR-3B manual</a>,
+            the late fee is computed by the system from the number of days after the due date and shown in the
+            "5.1 Interest and Late fee for previous tax period" tile. It can be paid only from the balance in your
+            electronic cash ledger: input tax credit can't be used for late fee or interest. Add cash to the ledger if
+            the balance is short, pay through "Proceed to payment", then file the return.
+          </p>
+
           <h2 className="text-xl font-bold pt-4">Questions</h2>
           {FAQ.map((f) => (
             <div key={f.question}>
@@ -255,6 +273,11 @@ const LateFeeCalculator = () => {
               <p className="text-muted-foreground">{f.answer}</p>
             </div>
           ))}
+          <p className="text-xs text-muted-foreground">
+            Waiver power:{" "}
+            <a href={SOURCES.s128} target="_blank" rel="noopener noreferrer" className="underline">CGST Act, section 128</a>. Current caps:{" "}
+            <a href={SOURCES.n19} target="_blank" rel="noopener noreferrer" className="underline">Notification 19/2021</a>.
+          </p>
         </section>
       </main>
 

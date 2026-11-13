@@ -935,6 +935,31 @@ function getRandomTip() {
   return QUICK_TIPS[Math.floor(Math.random() * QUICK_TIPS.length)];
 }
 
+// src/lib/home-faq.ts
+var HOME_FAQ = [
+  {
+    question: "Is this GST calculator free?",
+    answer: "Yes \u2014 completely free with no login, no account, and no usage limits. It runs entirely in your browser; amounts you enter are never sent to a server."
+  },
+  {
+    question: "How do I calculate 18% GST on an amount?",
+    answer: "Multiply the amount by 0.18. On \u20B91,00,000 that is \u20B918,000 GST, making the total \u20B91,18,000 \u2014 shown instantly above with the CGST/SGST or IGST split."
+  },
+  {
+    question: "How do I remove GST from a price (reverse GST)?",
+    answer: "Switch the calculator to inclusive mode. It applies the formula Base = Total \xD7 100 \xF7 (100 + rate) \u2014 e.g. \u20B91,18,000 inclusive of 18% GST has a base of \u20B91,00,000 and \u20B918,000 tax."
+  },
+  {
+    question: "Which GST rate should I use?",
+    answer: "After GST 2.0 (September 22, 2025, per the 56th GST Council): essentials are 0\u20135%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the GST rate slabs guide.",
+    html: 'After GST 2.0 (September 22, 2025, per the 56th GST Council): essentials are 0\u20135%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the <a href="/blog/gst-rate-slabs-india/" class="text-primary-dark underline">GST rate slabs guide</a>.'
+  },
+  {
+    question: "When do CGST/SGST apply instead of IGST?",
+    answer: "If the supplier and place of supply are in the same state, GST splits into equal CGST and SGST halves. If they are in different states, the full rate applies as IGST."
+  }
+];
+
 // src/lib/seo.ts
 var SITE_URL = "https://gstcalculator.me";
 var upsertNamedMeta = (name, content) => {
@@ -1087,8 +1112,8 @@ var SiteHeader = ({ active = "home", showUpdatedLabel = false, hideWordmark = fa
       /* @__PURE__ */ jsx8("span", { className: "text-primary-mid", children: " Calculator" })
     ] }),
     /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-5 text-xs", children: [
-      /* @__PURE__ */ jsx8(Link, { to: "/blog", className: navLinkClass("blog"), children: "Blog" }),
-      /* @__PURE__ */ jsx8(Link, { to: "/privacy", className: navLinkClass("privacy"), children: "Privacy" }),
+      /* @__PURE__ */ jsx8(Link, { to: "/blog/", className: navLinkClass("blog"), children: "Blog" }),
+      /* @__PURE__ */ jsx8(Link, { to: "/privacy/", className: navLinkClass("privacy"), children: "Privacy" }),
       showUpdatedLabel && /* @__PURE__ */ jsx8("span", { className: "text-primary-mid hidden sm:inline", children: "Updated for 2025" })
     ] })
   ] });
@@ -1100,8 +1125,8 @@ import { Link as Link2 } from "react-router-dom";
 import { jsx as jsx9, jsxs as jsxs6 } from "react/jsx-runtime";
 var SiteFooter = () => /* @__PURE__ */ jsx9("footer", { className: "border-t border-border mt-4", children: /* @__PURE__ */ jsxs6("div", { className: "max-w-6xl mx-auto px-6 sm:px-8 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground", children: [
   /* @__PURE__ */ jsx9(Link2, { to: "/", className: "hover:text-foreground transition-colors", children: "Calculator" }),
-  /* @__PURE__ */ jsx9(Link2, { to: "/blog", className: "hover:text-foreground transition-colors", children: "Blog" }),
-  /* @__PURE__ */ jsx9(Link2, { to: "/privacy", className: "hover:text-foreground transition-colors", children: "Privacy Policy" })
+  /* @__PURE__ */ jsx9(Link2, { to: "/blog/", className: "hover:text-foreground transition-colors", children: "Blog" }),
+  /* @__PURE__ */ jsx9(Link2, { to: "/privacy/", className: "hover:text-foreground transition-colors", children: "Privacy Policy" })
 ] }) });
 var SiteFooter_default = SiteFooter;
 
@@ -1131,32 +1156,7 @@ var Index = () => {
       name: "GST Calculator India",
       description: "Free GST calculator for India 2026-27. Instantly compute GST for all slabs (5%, 18%, 40% under GST 2.0) with CGST, SGST & IGST breakdown."
     });
-    setFAQPageSchema([
-      {
-        question: "How do I calculate 18% GST on a price?",
-        answer: "Multiply the base amount by 0.18 to get the GST amount, then add it to the base. For example, \u20B91,000 at 18% GST: GST = \u20B9180, invoice total = \u20B91,180. For intra-state, split as CGST \u20B990 + SGST \u20B990; for inter-state, apply IGST \u20B9180."
-      },
-      {
-        question: "How do I remove GST from a GST-inclusive price (reverse GST)?",
-        answer: "Use: GST Amount = Total Price \u2212 [Total Price \xD7 100 \xF7 (100 + GST Rate)]. For \u20B91,180 at 18% GST: GST Amount = 1,180 \u2212 [1,180 \xD7 100 \xF7 118] = \u20B9180. Never simply subtract the percentage \u2014 that gives the wrong answer."
-      },
-      {
-        question: "What are the current GST slabs in India after GST 2.0?",
-        answer: "After GST 2.0 (effective September 22, 2025), India has 4 active GST slabs: 0% (nil \u2014 essentials, fresh food, books, insurance), 5% (packaged food, medicines, textiles), 18% (electronics, most services, vehicles, cement), and 40% (luxury and sin goods \u2014 tobacco, aerated drinks, high-end SUVs). The old 12% and 28% slabs have been abolished."
-      },
-      {
-        question: "When does CGST + SGST apply instead of IGST?",
-        answer: "CGST + SGST applies to intra-state transactions \u2014 buyer and seller in the same state. The total GST rate splits equally: 18% GST becomes 9% CGST + 9% SGST. IGST at the full rate applies to inter-state transactions \u2014 buyer and seller in different states."
-      },
-      {
-        question: "What is the GST registration threshold for businesses?",
-        answer: "Goods suppliers with annual turnover above \u20B940 lakh must register for GST. Service providers must register above \u20B920 lakh. Businesses in special category states (North-East) have a lower threshold of \u20B920 lakh for goods and \u20B910 lakh for services."
-      },
-      {
-        question: "How do I calculate GST for a \u20B91,000 product at 5%?",
-        answer: "GST Amount = (\u20B91,000 \xD7 5) \xF7 100 = \u20B950. Invoice total = \u20B91,050. For intra-state: CGST = \u20B925 + SGST = \u20B925. For inter-state: IGST = \u20B950."
-      }
-    ]);
+    setFAQPageSchema(HOME_FAQ.map(({ question, answer }) => ({ question, answer })));
   }, []);
   const pageCtx = useMemo2(
     () => buildContext({ slab: 0, amount: 0, type: "intra", stats }),
@@ -1261,52 +1261,35 @@ var Index = () => {
         /* @__PURE__ */ jsxs7("p", { children: [
           "For intra-state sales the GST splits equally: 18% becomes 9% CGST + 9% SGST (\u20B990 + \u20B990 in the example above). For inter-state sales the full 18% applies as IGST (\u20B9180). Read the full guide on",
           " ",
-          /* @__PURE__ */ jsx10("a", { href: "/blog/how-to-calculate-gst", className: "text-primary-dark underline", children: "how to calculate GST in India" }),
+          /* @__PURE__ */ jsx10("a", { href: "/blog/how-to-calculate-gst/", className: "text-primary-dark underline", children: "how to calculate GST in India" }),
           " ",
           "or the explainer on",
           " ",
-          /* @__PURE__ */ jsx10("a", { href: "/blog/cgst-sgst-igst-difference", className: "text-primary-dark underline", children: "CGST vs SGST vs IGST" }),
-          "."
+          /* @__PURE__ */ jsx10("a", { href: "/blog/cgst-sgst-igst-difference/", className: "text-primary-dark underline", children: "CGST vs SGST vs IGST" }),
+          ".",
+          " ",
+          "Filing a return late? The",
+          " ",
+          /* @__PURE__ */ jsx10("a", { href: "/gst-late-fee-calculator/", className: "text-primary-dark underline", children: "late fee calculator for GSTR-3B and GSTR-1" }),
+          " works out the fee and interest."
         ] })
       ] }),
       /* @__PURE__ */ jsxs7("div", { children: [
         /* @__PURE__ */ jsx10("h2", { className: "text-xl font-bold text-foreground mb-3", children: "GST Calculator \u2014 Frequently Asked Questions" }),
-        /* @__PURE__ */ jsxs7("div", { className: "flex flex-col gap-4", children: [
-          /* @__PURE__ */ jsxs7("div", { children: [
-            /* @__PURE__ */ jsx10("h3", { className: "font-semibold text-foreground mb-1", children: "Is this GST calculator free?" }),
-            /* @__PURE__ */ jsx10("p", { children: "Yes \u2014 completely free with no login, no account, and no usage limits. It runs entirely in your browser; amounts you enter are never sent to a server." })
-          ] }),
-          /* @__PURE__ */ jsxs7("div", { children: [
-            /* @__PURE__ */ jsx10("h3", { className: "font-semibold text-foreground mb-1", children: "How do I calculate 18% GST on an amount?" }),
-            /* @__PURE__ */ jsx10("p", { children: "Multiply the amount by 0.18. On \u20B91,00,000 that is \u20B918,000 GST, making the total \u20B91,18,000 \u2014 shown instantly above with the CGST/SGST or IGST split." })
-          ] }),
-          /* @__PURE__ */ jsxs7("div", { children: [
-            /* @__PURE__ */ jsx10("h3", { className: "font-semibold text-foreground mb-1", children: "How do I remove GST from a price (reverse GST)?" }),
-            /* @__PURE__ */ jsx10("p", { children: "Switch the calculator to inclusive mode. It applies the formula Base = Total \xD7 100 \xF7 (100 + rate) \u2014 e.g. \u20B91,18,000 inclusive of 18% GST has a base of \u20B91,00,000 and \u20B918,000 tax." })
-          ] }),
-          /* @__PURE__ */ jsxs7("div", { children: [
-            /* @__PURE__ */ jsx10("h3", { className: "font-semibold text-foreground mb-1", children: "Which GST rate should I use?" }),
-            /* @__PURE__ */ jsxs7("p", { children: [
-              "After GST 2.0 (September 22, 2025, per the 56th GST Council): essentials are 0\u20135%; most services and electronics fall under 18%; luxury and sin goods (tobacco, aerated drinks, high-end SUVs) are 40%. The 12% and 28% slabs are abolished. See the ",
-              /* @__PURE__ */ jsx10("a", { href: "/blog/gst-rate-slabs-india", className: "text-primary-dark underline", children: "GST rate slabs guide" }),
-              "."
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxs7("div", { children: [
-            /* @__PURE__ */ jsx10("h3", { className: "font-semibold text-foreground mb-1", children: "When do CGST/SGST apply instead of IGST?" }),
-            /* @__PURE__ */ jsx10("p", { children: "If the supplier and place of supply are in the same state, GST splits into equal CGST and SGST halves. If they are in different states, the full rate applies as IGST." })
-          ] })
-        ] })
+        /* @__PURE__ */ jsx10("div", { className: "flex flex-col gap-4", children: HOME_FAQ.map((f) => /* @__PURE__ */ jsxs7("div", { children: [
+          /* @__PURE__ */ jsx10("h3", { className: "font-semibold text-foreground mb-1", children: f.question }),
+          f.html ? /* @__PURE__ */ jsx10("p", { dangerouslySetInnerHTML: { __html: f.html } }) : /* @__PURE__ */ jsx10("p", { children: f.answer })
+        ] }, f.question)) })
       ] }),
       /* @__PURE__ */ jsxs7("div", { children: [
         /* @__PURE__ */ jsx10("h2", { className: "text-xl font-bold text-foreground mb-3", children: "Popular GST Guides" }),
         /* @__PURE__ */ jsxs7("ul", { className: "list-disc pl-5 space-y-1.5", children: [
-          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/input-tax-credit-gst", className: "text-primary-dark underline", children: "Input Tax Credit (ITC) in GST \u2014 meaning, formula and example" }) }),
-          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/how-to-file-gstr-1", className: "text-primary-dark underline", children: "How to file GSTR-1 online, step by step" }) }),
-          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/new-gst-rate-slab-list-2025-26", className: "text-primary-dark underline", children: "New GST rate slab list 2025\u201326 after GST 2.0" }) }),
-          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/gst-on-restaurants-food-india-2025", className: "text-primary-dark underline", children: "GST on restaurants and food \u2014 dine-in, Zomato & Swiggy" }) }),
-          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/gst-composition-scheme", className: "text-primary-dark underline", children: "GST Composition Scheme \u2014 who qualifies and how it works" }) }),
-          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/zoho-gst-calculator-alternative", className: "text-primary-dark underline", children: "Zoho GST calculator vs GSTCalculator.me" }) })
+          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/input-tax-credit-gst/", className: "text-primary-dark underline", children: "Input Tax Credit (ITC) in GST \u2014 meaning, formula and example" }) }),
+          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/how-to-file-gstr-1/", className: "text-primary-dark underline", children: "How to file GSTR-1 online, step by step" }) }),
+          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/new-gst-rate-slab-list-2025-26/", className: "text-primary-dark underline", children: "New GST rate slab list 2025\u201326 after GST 2.0" }) }),
+          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/gst-on-restaurants-food-india-2025/", className: "text-primary-dark underline", children: "GST on restaurants and food \u2014 dine-in, Zomato & Swiggy" }) }),
+          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/gst-composition-scheme/", className: "text-primary-dark underline", children: "GST Composition Scheme \u2014 who qualifies and how it works" }) }),
+          /* @__PURE__ */ jsx10("li", { children: /* @__PURE__ */ jsx10("a", { href: "/blog/zoho-gst-calculator-alternative/", className: "text-primary-dark underline", children: "Zoho GST calculator vs GSTCalculator.me" }) })
         ] })
       ] }),
       /* @__PURE__ */ jsx10("div", { className: "text-xs text-muted-foreground/60 border-t border-border pt-4", children: /* @__PURE__ */ jsxs7("p", { children: [
@@ -1399,7 +1382,7 @@ var NotFound = () => {
           /* @__PURE__ */ jsx12(Calculator, { className: "h-4 w-4" }),
           "Open the GST Calculator"
         ] }) }),
-        /* @__PURE__ */ jsx12(Button, { asChild: true, variant: "outline", size: "lg", children: /* @__PURE__ */ jsxs8(Link3, { to: "/blog", children: [
+        /* @__PURE__ */ jsx12(Button, { asChild: true, variant: "outline", size: "lg", children: /* @__PURE__ */ jsxs8(Link3, { to: "/blog/", children: [
           /* @__PURE__ */ jsx12(BookOpen, { className: "h-4 w-4" }),
           "Browse the blog"
         ] }) })
@@ -1509,7 +1492,7 @@ var POSTS = [
     category: "Basics",
     readTime: "5 min",
     date: "2026-04-20",
-    updated: "2026-08-18",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "GST \u2014 Goods and Services Tax \u2014 is India's unified indirect tax on almost every product and service bought or sold in the country. It replaced a confusing web of 17 different central and state taxes when it launched on 1 July 2017." },
@@ -1523,6 +1506,7 @@ var POSTS = [
       ] },
       { type: "p", text: `India's tax system before GST was, frankly, a mess. Businesses had to navigate VAT, service tax, excise duty, octroi, and several other levies \u2014 each with its own filing system, rate structure, and compliance requirement. GST's "One Nation, One Tax" framework was one of the most significant economic reforms in independent India's history.` },
       { type: "stat", num: "1 July 2017", label: "Date GST replaced VAT, service tax, excise duty, and 14 other indirect taxes across India" },
+      { type: "p", text: 'How big is it today? GSTN reports <a href="https://tutorial.gst.gov.in/offlineutilities/gst_statistics/9YearsReport.pdf" target="_blank" rel="noopener">1,67,14,646 active GST taxpayers as on 30 June 2026</a>, and gross GST revenue of Rs 2,03,521 crore in September 2026, 14.7% more than September 2025 (<a href="https://tutorial.gst.gov.in/downloads/news/final_gst_revenue_report_for_publishing_monthly_sep_2026.pdf" target="_blank" rel="noopener">GSTN monthly report</a>, provisional figures).' },
       { type: "h2", text: "What Does GST Stand For \u2014 and What Does It Tax?" },
       { type: "p", text: "GST stands for <strong>Goods and Services Tax</strong>. It is a <strong>destination-based, multi-stage indirect tax</strong> \u2014 collected at every stage of the supply chain where value is added, and ultimately borne by the final consumer." },
       { type: "p", text: "GST applies to virtually all goods and services in India. However, certain items are exempt or zero-rated. Specifically, fresh fruits and vegetables, milk, eggs, and educational services attract zero GST. Electricity, petrol, diesel, alcohol, and real estate operate under separate state-level tax regimes." },
@@ -1577,7 +1561,7 @@ var POSTS = [
     category: "Tax Rates",
     readTime: "6 min",
     date: "2026-04-20",
-    updated: "2026-08-18",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "Since GST 2.0 took effect on September 22, 2025, India's GST framework places every product and service into one of four rate categories instead of the old six. Knowing which slab applies to your transaction is the single most important step in any GST calculation." },
@@ -1592,6 +1576,7 @@ var POSTS = [
       { type: "p", text: "This guide breaks down every GST 2.0 rate slab with real-world product examples, so you can identify the correct rate quickly. It also explains how HSN and SAC codes connect products and services to their applicable rates." },
       { type: "h2", text: "What Are the GST Rate Slabs in India Under GST 2.0?" },
       { type: "p", text: "The GST Council's 56th meeting replaced India's old 5%/12%/18%/28% structure with a simplified system effective September 22, 2025: 0%, 5%, 18%, and a new 40% slab for luxury and sin goods. A small number of goods still attract special rates of 0.25% (rough diamonds) and 1.5% (cut and polished diamonds). The majority of everyday goods and most services now fall under the 5% or 18% slabs." },
+      { type: "p", text: `In the GST Council's own words, the new system is &ldquo;a 2 rate structure with a Standard Rate of 18% and a Merit Rate of 5%; a special de-merit rate of 40% for a select few goods and services&rdquo;, effective 22 September 2025 (<a href="https://gstcouncil.gov.in/sites/default/files/2025-09/press_release_press_information_bureau_0.pdf" target="_blank" rel="noopener">GST Council press release</a>).` },
       { type: "slabGrid", items: [
         { r: "0%", l: "Essential goods \u2014 nil rated" },
         { r: "5%", l: "Merit goods \u2014 necessities (absorbed most of old 12%)" },
@@ -1789,7 +1774,7 @@ var POSTS = [
     category: "Tax Credit",
     readTime: "6 min",
     date: "2026-04-20",
-    updated: "2026-07-11",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "Input Tax Credit is one of the most powerful \u2014 and most misunderstood \u2014 features of India's GST system. Moreover, it is the mechanism that prevents the dreaded cascading effect of taxes. Furthermore, businesses that claim ITC correctly reduce their effective tax burden significantly. However, those who claim it incorrectly face 100% penalties plus interest." },
@@ -1842,7 +1827,7 @@ var POSTS = [
       { type: "h3", text: "GSTR-2B reconciliation \u2014 why it matters" },
       { type: "p", text: "Since October 2022, ITC claims in GSTR-3B must match exactly with invoices appearing in your <strong>GSTR-2B</strong>. Specifically, GSTR-2B is an auto-generated statement showing all purchases declared by your suppliers in GSTR-1. Consequently, you cannot claim provisional ITC on purchases that your supplier has not yet uploaded. Moreover, regular reconciliation of your purchase register against GSTR-2B is now essential \u2014 not optional \u2014 for every GST filer." },
       { type: "h2", text: "What ITC Cannot Be Claimed \u2014 Blocked Credits Under Section 17(5)" },
-      { type: "p", text: "The GST Act explicitly blocks ITC on certain categories regardless of how the purchase is used. Moreover, claiming blocked credit \u2014 even accidentally \u2014 triggers 100% penalty plus 18% interest. Furthermore, the blocked credit list covers some surprisingly common business expenses." },
+      { type: "p", text: 'The GST Act explicitly blocks ITC on certain categories regardless of how the purchase is used. Moreover, claiming blocked credit \u2014 even accidentally \u2014 triggers 100% penalty plus 18% interest. Furthermore, the blocked credit list covers some surprisingly common business expenses. For late-filing costs specifically, see the <a href="/gst-late-fee-calculator/">GSTR-3B late fee and interest calculator</a>.' },
       { type: "example", title: "Common blocked credits \u2014 ITC not available on these", lines: [
         "<strong>Motor vehicles</strong> (unless used for transportation of goods/passengers or driver training)",
         "<strong>Food and beverages, outdoor catering, beauty treatments, health services</strong> (unless providing these as outward supply)",
@@ -3891,7 +3876,7 @@ var POSTS = [
     category: "Sector-Specific GST",
     readTime: "11 min",
     date: "2025-11-03",
-    updated: "2026-07-17",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=75&auto=format&fit=crop", alt: "Restaurant interior with food being served to customers" },
@@ -3904,6 +3889,7 @@ var POSTS = [
         "Restaurants must <strong>not double-report</strong> aggregator sales in GSTR-3B \u2014 the platform reports those via GSTR-8.",
         "Restaurants on the 5% scheme can still claim ITC on <strong>platform commission GST (18%)</strong>, even though they can't claim ITC on food ingredients."
       ] },
+      { type: "highlight", html: '<strong>Your next step:</strong> check the GST on your own bill. Open the <a href="/">GST calculator</a>, enter the food amount and choose 5% (for a Zomato or Swiggy order, run the delivery fee separately at 18%). Wondering why the bill shows two tax lines? See <a href="/blog/cgst-sgst-igst-difference/">CGST vs SGST vs IGST</a>.' },
       { type: "h2", text: "What GST Rate Applies to Restaurant Food in India?" },
       { type: "p", text: "GST on restaurant food in India depends primarily on the type of establishment and the room tariff (for hotel restaurants), not on whether the seating is air-conditioned. Most standalone restaurants, takeaway counters, and food delivery orders are taxed at a flat 5% without Input Tax Credit, while premium hotel restaurants and outdoor catering are taxed at 18% with ITC available." },
       { type: "p", text: "GST on food and restaurant services may seem straightforward \u2014 but the rules differ based on where you eat, whether the restaurant has air conditioning, whether you're ordering through a delivery platform, and whether you're at a hotel restaurant. Understanding these distinctions matters both for compliance and for consumer awareness." },
@@ -4630,7 +4616,7 @@ var POSTS = [
     category: "GST Returns Filing",
     readTime: "12 min",
     date: "2025-05-05",
-    updated: "2026-06-25",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=75&auto=format&fit=crop", alt: "Tax filing documents and calculator on a desk" },
@@ -4707,8 +4693,9 @@ var POSTS = [
       { type: "ul", items: ["<strong>Merging B2B and B2C in Table 12</strong> \u2014 The portal will reject the return from April 2025. Each type needs its own row.", "<strong>Wrong or missing HSN codes</strong> \u2014 Incorrect HSN codes attract penalties under Section 122 of the CGST Act and can block your buyers' ITC claims.", "<strong>Skipping nil GSTR-1</strong> \u2014 Even with zero sales, you must file a nil return or face late fees and blocked GSTR-3B filing.", "<strong>Filing GSTR-3B before GSTR-1</strong> \u2014 Since July 2025, GSTR-1 data locks into GSTR-3B automatically. Always file GSTR-1 first.", "<strong>Not using IFF under QRMP</strong> \u2014 If you have large B2B buyers, failing to upload invoices via IFF monthly delays their ITC, straining business relationships."] },
       { type: "h2", text: "What Are the Late Fees for Missing the GSTR-1 Deadline?" },
       { type: "p", text: "Missing the GSTR-1 due date triggers automatic late fees from Day 1:" },
-      { type: "table", headers: ["Annual Turnover", "Max Late Fee (with liability)", "Max Late Fee (nil return)"], rows: [["Up to \u20B91.5 Crore", "\u20B92,000", "\u20B9500"], ["\u20B91.5 Crore \u2013 \u20B95 Crore", "\u20B95,000", "\u20B9500"], ["Above \u20B95 Crore", "\u20B910,000", "\u20B91,000"]] },
+      { type: "table", headers: ["Annual Turnover", "Max Late Fee (with liability)", "Max Late Fee (nil return)"], rows: [["Up to \u20B91.5 Crore", "\u20B92,000", "\u20B9500"], ["\u20B91.5 Crore \u2013 \u20B95 Crore", "\u20B95,000", "\u20B9500"], ["Above \u20B95 Crore", "\u20B910,000", "\u20B9500"]] },
       { type: "p", text: "The per-day rate is <strong>\u20B950/day</strong> (\u20B925 CGST + \u20B925 SGST) for returns with tax liability, and <strong>\u20B920/day</strong> for nil returns \u2014 capped at the amounts above." },
+      { type: "p", text: 'To see what a specific delay costs, use the <a href="/gst-late-fee-calculator/">late fee calculator</a>.' },
       { type: "p", text: "Late GSTR-1 also has a domino effect: <strong>your buyers cannot claim ITC</strong> on your invoices until you file, and <strong>you cannot file your own GSTR-3B</strong> for subsequent periods if GSTR-1 is pending." },
       { type: "h2", text: "GSTR-1 vs GSTR-3B \u2014 What's the Difference?" },
       { type: "table", headers: ["Feature", "GSTR-1", "GSTR-3B"], rows: [["Purpose", "Report all outward supplies (sales)", "Summary return \u2014 pay net GST"], ["Detail level", "Invoice-by-invoice", "Consolidated totals only"], ["Due date (monthly)", "11th of next month", "20th of next month"], ["Can be revised?", "No \u2014 amend in next period", "No"], ["Feeds into", "Buyer's GSTR-2B (their ITC)", "Tax payment ledger"], ["File order", "<strong>File first</strong>", "File after GSTR-1"]] },
@@ -4736,7 +4723,7 @@ var POSTS = [
     category: "GST Returns Filing",
     readTime: "11 min",
     date: "2025-05-05",
-    updated: "2026-06-25",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=1200&q=75&auto=format&fit=crop", alt: "Person working on financial documents with a calculator" },
@@ -4797,6 +4784,7 @@ var POSTS = [
       { type: "h3", text: "Step 7 \u2014 Fill Interest and Late Fees (If Applicable)" },
       { type: "p", text: "If filing after the due date, compute and enter:" },
       { type: "ul", items: ["<strong>Interest:</strong> 18% p.a. on net tax liability from due date to payment date", "<strong>Late fee:</strong> As applicable per turnover slab"] },
+      { type: "p", text: 'The <a href="/gst-late-fee-calculator/">GST late fee calculator</a> works out both numbers from your due date, filing date and turnover.' },
       { type: "h3", text: "Step 8 \u2014 Save and Preview Draft" },
       { type: "p", text: 'Click "Save GSTR-3B" \u2014 this saves but does not submit. Download the preview PDF and verify all numbers one final time.' },
       { type: "h3", text: "Step 9 \u2014 Offset Tax Liability and Pay" },
@@ -5335,7 +5323,7 @@ var POSTS = [
     category: "GST Compliance",
     readTime: "10 min",
     date: "2025-05-05",
-    updated: "2026-10-14",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "image", src: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=75&auto=format&fit=crop", alt: "Urgent deadline concept with alarm clock and financial documents" },
@@ -5348,6 +5336,7 @@ var POSTS = [
         "Persistent non-filing escalates through blocked e-way bills, show-cause notice, suspension, and eventual <strong>GSTIN cancellation</strong>."
       ] },
       { type: "p", text: 'Want the number for your own return? Use the <a href="/gst-late-fee-calculator/">GST late fee calculator</a>: enter the due date, filing date and turnover, and it shows the late fee split into CGST and SGST, plus interest.' },
+      { type: "p", text: 'Where the caps come from: for GSTR-3B, <a href="https://cbic-gst.gov.in/pdf/central-tax/notfctn-19-central-tax-english-2021.pdf" target="_blank" rel="noopener">CBIC Notification 19/2021-Central Tax</a> (1 June 2021) caps the CGST late fee at Rs 250 for a nil return and Rs 1,000 for turnover up to Rs 1.5 crore. The same amount applies again as SGST, so the totals are Rs 500 and Rs 2,000 per return.' },
       { type: "p", text: "The GST portal now enforces a <strong>3-year hard lock</strong>: any return older than 3 years from its original due date <strong>cannot be filed</strong>. No amnesty, no workaround, no officer discretion. The period is permanently lost \u2014 and the underlying tax liability still exists, along with interest and penalty exposure." },
       { type: "p", text: "This guide covers every late fee and penalty scenario in detail \u2014 so you know exactly what you're facing and how to calculate it." },
       { type: "warn", html: "<strong>\u{1F512} New July 2025 Rule:</strong> GST returns cannot be filed more than 3 years after the original due date. Returns for periods before July 2022 that are still unfiled must be filed <strong>immediately</strong> before they become permanently inaccessible." },
@@ -5916,7 +5905,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
     category: "Tools & Guides",
     readTime: "9 min",
     date: "2025-05-13",
-    updated: "2026-06-25",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "We tested five of the most-used free GST calculators in India \u2014 all with zero login, zero account, and zero cost. They're not all equal. Here's the honest ranking, with scores for speed, accuracy, mobile experience, and feature depth." },
@@ -5938,7 +5927,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
       { type: "p", text: "All five tools scored 10/10 on accuracy \u2014 the GST formula is public law and all tested calculators applied it correctly. Furthermore, all five confirmed zero login requirement. The rankings are therefore determined by speed, mobile experience, and feature depth \u2014 the factors that differentiate daily usability." },
       { type: "h2", text: "Rank #1: GSTCalculator.me" },
       { type: "p", text: "Built specifically for one purpose \u2014 instant, accurate GST calculation for Indian businesses \u2014 GSTCalculator.me outperforms every other tool on speed and mobile experience. The page loads in under a second on a 4G connection. The input fields are large, the slab selector is clearly labelled, and the CGST + SGST or IGST result appears without clicking any button. Inclusive and exclusive modes are immediately accessible via a prominent toggle, not buried in a dropdown." },
-      { type: "p", text: "On mobile (iPhone Safari, Android Chrome), the experience is identical to desktop. No zoom-in required. No horizontal scrolling. No popups or consent banners blocking the calculator. Additionally, the result display is clear \u2014 pre-tax amount, GST amount, and total are each labelled distinctly with the CGST/SGST split shown prominently. The tool's single weakness is depth: it does one thing. There's no GSTIN validator, no ITC optimiser, no late fee calculator. For those features, TaxAdda is the supplement." },
+      { type: "p", text: `On mobile (iPhone Safari, Android Chrome), the experience is identical to desktop. No zoom-in required. No horizontal scrolling. No popups or consent banners blocking the calculator. Additionally, the result display is clear \u2014 pre-tax amount, GST amount, and total are each labelled distinctly with the CGST/SGST split shown prominently. The tool's single weakness is depth: beyond the GST calculator and a <a href="/gst-late-fee-calculator/">late fee calculator</a>, there's no GSTIN validator and no ITC optimiser. For those features, TaxAdda is the supplement.` },
       { type: "h2", text: "Rank #2: TaxAdda GST Calculator Suite" },
       { type: "p", text: `TaxAdda's <a href="https://calculator.taxadda.com/gst-calculator">calculator subdomain</a> is the deepest free toolkit available in India \u2014 no login, no account, no payment. The basic GST calculator allows you to enter any one of three values (amount without GST, amount with GST, or GST amount itself) and calculates the other two. Additionally, the full suite includes an ITC optimiser (applying Rule 88A's correct set-off sequence), a composition scheme calculator, a bulk GSTIN validator, a GST late fee calculator, and an Amazon/Flipkart ecom profit tool.` },
       { type: "p", text: "The speed penalty is real, however. The calculator subdomain loads notably more slowly than GSTCalculator.me, particularly on mobile data connections in tier-2 cities. The UI is functional but visually dated. On mobile, the input fields require precise tapping and the results can feel cramped on smaller screens. Nevertheless, for accountants and ecom sellers who need the extended toolkit, TaxAdda remains the best free option in this category." },
@@ -6423,7 +6412,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
     category: "Tools & Guides",
     readTime: "10 min",
     date: "2025-05-13",
-    updated: "2026-08-05",
+    updated: "2026-11-13",
     author: "GST Calculator Team",
     body: [
       { type: "lead", text: "TaxAdda has quietly built one of the most comprehensive free GST calculator suites in India \u2014 and most users only know about the basic one. Here's the full picture: what it does well, where it falls short, and when a purpose-built alternative serves you better." },
@@ -6453,7 +6442,7 @@ Note: Unlike the pre-2019 system, you don't separately deduct land value. The ra
       { type: "p", text: "<strong>Speed (Calculation):</strong> GSTCalculator.me delivers results in under 2 seconds on mobile, with a tool-first interface. TaxAdda's basic calculator is accurate but loads as part of a content-heavy site, making it noticeably slower on slow connections (common in tier-2 and tier-3 Indian cities)." },
       { type: "p", text: "<strong>UI Simplicity:</strong> GSTCalculator.me has a two-field, minimalist design that requires zero cognitive load \u2014 just type and go. TaxAdda's three-input design (amount, rate, inclusive/exclusive) is smart but requires slightly more visual parsing." },
       { type: "p", text: "<strong>Mobile Experience:</strong> GSTCalculator.me is fully optimised for mobile devices with responsive design that works at any screen size. TaxAdda's calculator works on mobile but feels designed for desktop first." },
-      { type: "p", text: "<strong>Tool Depth / Suite:</strong> TaxAdda offers six distinct calculators (basic, ITC optimiser, composition, ecom, GSTIN validator, late fee). GSTCalculator.me focuses exclusively on instant CGST/SGST/IGST calculations across all slabs." },
+      { type: "p", text: '<strong>Tool Depth / Suite:</strong> TaxAdda offers six distinct calculators (basic, ITC optimiser, composition, ecom, GSTIN validator, late fee). GSTCalculator.me has two: the instant CGST/SGST/IGST calculator across all slabs, and a <a href="/gst-late-fee-calculator/">late fee and interest calculator for GSTR-3B and GSTR-1</a>.' },
       { type: "p", text: "<strong>ITC Optimiser:</strong> TaxAdda includes this \u2014 a genuinely valuable tool that applies Rule 88A correctly. GSTCalculator.me does not include this feature." },
       { type: "p", text: "<strong>Ecom Profit Tool:</strong> TaxAdda has one built for Amazon/Flipkart sellers. GSTCalculator.me does not." },
       { type: "table", headers: ["Factor", "GSTCalculator.me", "TaxAdda"], rows: [
@@ -6678,7 +6667,7 @@ var Blog = () => {
     /* @__PURE__ */ jsx13("main", { className: "max-w-4xl mx-auto px-6 sm:px-8 py-8 grid gap-4", children: POSTS.map((p) => /* @__PURE__ */ jsxs9(
       Link4,
       {
-        to: `/blog/${p.slug}`,
+        to: `/blog/${p.slug}/`,
         className: "block bg-card rounded-2xl border border-border p-5 hover:border-primary-mid hover:shadow-md transition-all group",
         children: [
           /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 text-[0.7rem] text-muted-foreground mb-2", children: [
@@ -7232,16 +7221,8 @@ var monthlyDueDate = (type, period) => {
   return next.toISOString().slice(0, 10);
 };
 
-// src/pages/LateFeeCalculator.tsx
-import { jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
-var SOURCES = {
-  n19: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-19-central-tax-english-2021.pdf",
-  n20: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-20-central-tax-english-2021.pdf",
-  act: "https://cbic-gst.gov.in/gst-acts.html"
-};
-var TITLE = "GST Late Fee Calculator for GSTR-3B and GSTR-1 (with Interest)";
-var DESCRIPTION = "Work out the GST late fee for a late GSTR-3B or GSTR-1: \u20B950/day (\u20B920 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.";
-var FAQ = [
+// src/lib/late-fee-faq.ts
+var LATE_FEE_FAQ = [
   {
     question: "What is the late fee for GSTR-3B and GSTR-1?",
     answer: "\u20B950 per day (\u20B925 CGST + \u20B925 SGST), or \u20B920 per day (\u20B910 + \u20B910) for a nil return. The total is capped by your aggregate turnover in the previous financial year: \u20B92,000 up to \u20B91.5 crore, \u20B95,000 from \u20B91.5 crore to \u20B95 crore, and \u20B910,000 above \u20B95 crore. Nil returns are capped at \u20B9500 whatever the turnover."
@@ -7257,8 +7238,32 @@ var FAQ = [
   {
     question: "Is there a late fee on IGST?",
     answer: "The late fee is charged under CGST and SGST (or UTGST) in equal halves; there is no separate IGST late fee on these returns."
+  },
+  {
+    question: "Can the GST late fee be waived?",
+    answer: "Only by a government notification. Section 128 of the CGST Act lets the Government waive or reduce late fees for a class of taxpayers, on the GST Council's recommendation; Notification 19/2021 is one example, and it is where today's lower caps come from. Otherwise the GST portal adds the late fee automatically when a return is filed late."
   }
 ];
+
+// src/pages/LateFeeCalculator.tsx
+import { jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
+var SOURCES = {
+  n19: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-19-central-tax-english-2021.pdf",
+  n20: "https://gstcouncil.gov.in/sites/default/files/2024-05/notfctn-20-central-tax-english-2021.pdf",
+  act: "https://cbic-gst.gov.in/gst-acts.html",
+  // GST portal manual for GSTR-3B (checked 2026-11-13): late fee is system computed in tile 5.1 and paid from the cash ledger only.
+  manual3b: "https://tutorial.gst.gov.in/userguide/returns/Create_and_Submit_GSTR3B.htm",
+  // CGST Act s.128, power to waive penalty or fee (checked 2026-11-13).
+  s128: "https://taxinformation.cbic.gov.in/content/html/tax_repository/gst/acts/2017_CGST_act/active/chapter19/section128_v1.00.html"
+};
+var TITLE = "GST Late Fee Calculator for GSTR-3B & GSTR-1, with Interest";
+var DESCRIPTION = "Work out the GST late fee for a late GSTR-3B or GSTR-1: \u20B950/day (\u20B920 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.";
+var FAQ = LATE_FEE_FAQ;
+var EX_NIL = lateFee(12, true, "upto1.5");
+var EX_3B = lateFee(30, false, "upto1.5");
+var EX_3B_TAX = 4e4;
+var EX_3B_INT = interest(EX_3B_TAX, 30);
+var EX_G1 = lateFee(150, false, "1.5to5");
 var inr = (n) => "\u20B9" + Math.round(n).toLocaleString("en-IN");
 var today = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 var lastMonth = () => {
@@ -7465,11 +7470,73 @@ var LateFeeCalculator = () => {
           /* @__PURE__ */ jsx16(Link7, { to: "/blog/gst-late-fee-penalty-guide/", className: "underline", children: "GST late fee and penalty guide" }),
           "."
         ] }),
+        /* @__PURE__ */ jsx16("h2", { className: "text-xl font-bold pt-4", children: "Worked examples" }),
+        /* @__PURE__ */ jsxs12("ul", { className: "list-disc pl-5 space-y-2", children: [
+          /* @__PURE__ */ jsxs12("li", { children: [
+            /* @__PURE__ */ jsx16("strong", { children: "Nil GSTR-3B filed 12 days late:" }),
+            " 12 \xD7 \u20B9",
+            PER_DAY.nil,
+            " = ",
+            /* @__PURE__ */ jsx16("strong", { children: inr(EX_NIL.total) }),
+            " ",
+            "(",
+            inr(EX_NIL.cgst),
+            " CGST + ",
+            inr(EX_NIL.sgst),
+            " SGST). No interest, because a nil return has no tax."
+          ] }),
+          /* @__PURE__ */ jsxs12("li", { children: [
+            /* @__PURE__ */ jsxs12("strong", { children: [
+              "GSTR-3B, turnover \u20B980 lakh, filed 30 days late, ",
+              inr(EX_3B_TAX),
+              " of tax paid late:"
+            ] }),
+            " late fee 30 \xD7 \u20B9",
+            PER_DAY.normal,
+            " = ",
+            inr(EX_3B.total),
+            " (under the ",
+            inr(EX_3B.cap),
+            " cap), plus interest of ",
+            inr(EX_3B_TAX),
+            " \xD7 18% \xD7 30/365 = ",
+            inr(EX_3B_INT),
+            ". Total ",
+            /* @__PURE__ */ jsx16("strong", { children: inr(EX_3B.total + EX_3B_INT) }),
+            "."
+          ] }),
+          /* @__PURE__ */ jsxs12("li", { children: [
+            /* @__PURE__ */ jsx16("strong", { children: "GSTR-1, turnover \u20B93 crore, filed 150 days late:" }),
+            " 150 \xD7 \u20B9",
+            PER_DAY.normal,
+            " = ",
+            inr(150 * PER_DAY.normal),
+            ", capped at ",
+            /* @__PURE__ */ jsx16("strong", { children: inr(EX_G1.total) }),
+            ". GSTR-1 carries no interest, because no tax is paid with it."
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx16("h2", { className: "text-xl font-bold pt-4", children: "How to pay the late fee on GSTR-3B" }),
+        /* @__PURE__ */ jsxs12("p", { children: [
+          "You don't work it out on the portal yourself. Per the",
+          " ",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.manual3b, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "GST portal's GSTR-3B manual" }),
+          `, the late fee is computed by the system from the number of days after the due date and shown in the "5.1 Interest and Late fee for previous tax period" tile. It can be paid only from the balance in your electronic cash ledger: input tax credit can't be used for late fee or interest. Add cash to the ledger if the balance is short, pay through "Proceed to payment", then file the return.`
+        ] }),
         /* @__PURE__ */ jsx16("h2", { className: "text-xl font-bold pt-4", children: "Questions" }),
         FAQ.map((f) => /* @__PURE__ */ jsxs12("div", { children: [
           /* @__PURE__ */ jsx16("p", { className: "font-semibold", children: f.question }),
           /* @__PURE__ */ jsx16("p", { className: "text-muted-foreground", children: f.answer })
-        ] }, f.question))
+        ] }, f.question)),
+        /* @__PURE__ */ jsxs12("p", { className: "text-xs text-muted-foreground", children: [
+          "Waiver power:",
+          " ",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.s128, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "CGST Act, section 128" }),
+          ". Current caps:",
+          " ",
+          /* @__PURE__ */ jsx16("a", { href: SOURCES.n19, target: "_blank", rel: "noopener noreferrer", className: "underline", children: "Notification 19/2021" }),
+          "."
+        ] })
       ] })
     ] }),
     /* @__PURE__ */ jsx16(SiteFooter_default, {})

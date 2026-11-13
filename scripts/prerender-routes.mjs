@@ -35,6 +35,16 @@ const loadHomeFaq = async () => {
 };
 const HOME_FAQ = await loadHomeFaq();
 
+const loadLateFeeFaq = async () => {
+  const source = await fs.readFile(path.resolve("src/lib/late-fee-faq.ts"), "utf8");
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.ES2020, target: ts.ScriptTarget.ES2020 },
+  });
+  const { LATE_FEE_FAQ } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString("base64")}`);
+  return LATE_FEE_FAQ;
+};
+const LATE_FEE_FAQ = await loadLateFeeFaq();
+
 // ---------- 2. Bundle the SSR entry with esbuild ----------
 const ssrOutFile = path.resolve(".ssr/entry-server.mjs");
 await fs.mkdir(path.dirname(ssrOutFile), { recursive: true });
@@ -189,7 +199,7 @@ const routes = [
   },
   {
     path: "/gst-late-fee-calculator",
-    title: "GST Late Fee Calculator for GSTR-3B and GSTR-1 (with Interest)",
+    title: "GST Late Fee Calculator for GSTR-3B & GSTR-1, with Interest",
     description:
       "Work out the GST late fee for a late GSTR-3B or GSTR-1: ₹50/day (₹20 for nil), capped by turnover, split into CGST and SGST, plus 18% interest on tax paid late.",
     keywords: "GST late fee calculator, GSTR-3B late fee, GSTR-1 late fee, GST interest calculator",
@@ -251,6 +261,10 @@ const applySeo = (html, route, bodyHtml) => {
   // point its canonical at the homepage instead of leaking that path out.
   const canonical = route.noindex ? `${siteUrl}/` : `${siteUrl}${path === "/" ? "/" : path}`;
   let nextHtml = html;
+  // The <noscript> fallback in index.html is the homepage's H1 and copy. Every
+  // route (the homepage too) is prerendered with its own content and H1, so the
+  // fallback only duplicated them: a second H1 and ~390 identical words per page.
+  nextHtml = nextHtml.replace(/\s*<noscript>[\s\S]*?<\/noscript>/, "");
 
   nextHtml = replaceTag(nextHtml, /<title>.*?<\/title>/s, `<title>${escapeHtml(route.title)}</title>`);
   nextHtml = replaceTag(nextHtml, /<meta name="description"\s+content="[^"]*">/, `<meta name="description" content="${escapeHtml(route.description)}">`);
@@ -295,6 +309,18 @@ const applySeo = (html, route, bodyHtml) => {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       mainEntity: HOME_FAQ.map((f) => ({
+        "@type": "Question",
+        name: f.question,
+        acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
+    });
+  }
+
+  if (route.path === "/gst-late-fee-calculator") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: LATE_FEE_FAQ.map((f) => ({
         "@type": "Question",
         name: f.question,
         acceptedAnswer: { "@type": "Answer", text: f.answer },
